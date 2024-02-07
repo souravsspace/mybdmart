@@ -1,7 +1,5 @@
-import { ShoppingCart } from "lucide-react";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -9,33 +7,77 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { CartLogo } from "@/components/ui/cart-logo";
+import CartMainSection from "./cart-main-section";
 
 export default function Cart() {
+  const cartTitle = "Cart (1)";
+  const cartDescription =
+    "Streamline Your Shopping Experience with Our Checkout Cart: Effortlessly Organize Your Selections.";
+
+  // const itemId = "dsd324";
+  const itemQuantity = 2;
+
   return (
     <>
-      <Drawer>
-        <DrawerTrigger>
-          <div className="relative mx-3.5">
-            <ShoppingCart className="h-6 w-6 cursor-pointer" />
-            <div className="absolute -top-2 left-5 right-0 flex h-3 w-5 items-center justify-center rounded-full bg-primary p-2 text-xs font-medium">
-              <span className="text-white">0</span>
-            </div>
-          </div>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {/* for mobile */}
+      <div className="block md:hidden">
+        <Drawer>
+          <DrawerTrigger>
+            <CartLogo />
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle className="text-left">{cartTitle}</DrawerTitle>
+              <DrawerDescription className="text-left">
+                {cartDescription}
+                {/* <hr className="mt-2.5 sm:mt-3.5" /> */}
+              </DrawerDescription>
+            </DrawerHeader>
+
+            <DrawerFooter>
+              {itemQuantity <= 0 ? (
+                <></>
+              ) : (
+                <CartMainSection
+                  // itemId={itemId}
+                  itemQuantity={itemQuantity}
+                />
+              )}
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* for desktop */}
+      <div className="hidden md:block">
+        <Sheet>
+          <SheetTrigger>
+            <CartLogo />
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>{cartTitle}</SheetTitle>
+              <SheetDescription>
+                <p className="mb-6">{cartDescription}</p>
+
+                <CartMainSection
+                  // itemId={itemId}
+                  itemQuantity={itemQuantity}
+                />
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
     </>
   );
 }

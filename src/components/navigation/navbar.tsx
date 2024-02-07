@@ -31,13 +31,13 @@ export default function Navbar() {
           /> */}
         </Link>
         {/* Desktop */}
-        <div className="hidden sm:flex sm:items-center sm:gap-x-4">
+        <div className="hidden md:flex md:items-center md:gap-x-2.5 lg:gap-x-4">
           {navLinks.map(({ name, path }) => (
             <Link
               key={path + name}
               href={path}
               // className="relative text-sm uppercase text-gray-300 transition-all hover:text-white"
-              className="relative font-sans text-sm font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
+              className="relative font-sans text-sm font-medium uppercase text-gray-500 transition-all hover:text-gray-950 max-lg:text-xs md:text-xs lg:text-sm"
             >
               {name}
 

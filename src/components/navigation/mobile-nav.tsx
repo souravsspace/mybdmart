@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 export default function MobileNav() {
   return (
-    <div className="block sm:hidden">
+    <div className="block md:hidden">
       <Sheet>
         <SheetTrigger>
           <MdMenuOpen className="mr-3.5 h-7 w-7" />
