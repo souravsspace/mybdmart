@@ -4,9 +4,14 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import Cart from "@/components/navigation/cart";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 export default function NavIcons() {
-  const isLoggedIn = false;
+  const session = useSession();
+  const isLoggedIn = session.status === "authenticated";
+
+  console.log(isLoggedIn);
+  console.log(session.data?.user);
 
   return (
     <div className="flex items-center justify-center">

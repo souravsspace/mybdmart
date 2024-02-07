@@ -5,9 +5,12 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { compare } from "bcrypt";
+import { AuthCredentialsValidator } from "@/lib/account-credentials-validator";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,6 +54,45 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "name@example.com",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "********",
+        },
+      },
+      async authorize(credentials) {
+        if (!credentials) return null;
+        if (!credentials.email || !credentials.password) return null;
+
+        const validatedCredentials =
+          AuthCredentialsValidator.safeParse(credentials);
+
+        if (!validatedCredentials.success) return null;
+
+        const { email, password } = validatedCredentials.data;
+
+        const user = await db.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
+        if (!user) return null;
+
+        const isValid = await compare(password, user.password);
+        if (!isValid) return null;
+
+        return user;
+      },
+    }),
+
     /**
      * ...add more providers here.
      *
