@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navigation/navbar";
 
 const inter = Inter({
   subsets: ["latin"],

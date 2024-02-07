@@ -20,15 +20,15 @@ export const navLinks = [
   },
   {
     name: "Hot Deals",
-    path: "/hot-deals",
+    path: "#hot-deals",
   },
   {
     name: "Accessories",
-    path: "/accessories",
+    path: "#accessories",
   },
   {
     name: "Featured Products",
-    path: "/featured-products",
+    path: "#featured-products",
   },
   {
     name: "Contact Us",
