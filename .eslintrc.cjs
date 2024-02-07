@@ -8,7 +8,8 @@ const config = {
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
+    // "plugin:@typescript-eslint/stylistic-type-checked",
+    // skiping empty interface rule
   ],
   rules: {
     // These opinionated rules are enabled in stylistic-type-checked above.
