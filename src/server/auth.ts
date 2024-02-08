@@ -5,10 +5,9 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
-
 import { env } from "@/env";
 import { db } from "@/server/db";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { AuthCredentialsValidator } from "@/lib/account-credentials-validator";
 
@@ -22,8 +21,8 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      // role: ROLE;
       // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
 
@@ -40,20 +39,30 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: ({ session, user }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user?.id,
+        },
+      };
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    secret: "test",
+  },
+  secret: env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login",
+    newUser: "/register",
+    signOut: "/",
   },
   adapter: PrismaAdapter(db),
   providers: [
-    GithubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -76,7 +85,7 @@ export const authOptions: NextAuthOptions = {
           AuthCredentialsValidator.safeParse(credentials);
 
         if (!validatedCredentials.success) return null;
-
+        
         const { email, password } = validatedCredentials.data;
 
         const user = await db.user.findUnique({
@@ -86,11 +95,15 @@ export const authOptions: NextAuthOptions = {
         });
         if (!user) return null;
 
-        const isValid = await compare(password, user.password);
+        const isValid = await compare(password, user.password as string);
         if (!isValid) return null;
 
         return user;
       },
+    }),
+    GithubProvider({
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
 
     /**

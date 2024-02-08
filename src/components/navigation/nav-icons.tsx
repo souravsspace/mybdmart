@@ -4,22 +4,38 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import Cart from "@/components/navigation/cart";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function NavIcons() {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
 
-  console.log(isLoggedIn);
   console.log(session.data?.user);
 
   return (
     <div className="flex items-center justify-center">
       {isLoggedIn ? (
-        <Link
-          href="/profile"
-          className="h-7 w-7 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div className="h-7 w-7 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Order</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOut()}>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <>
           <Link
@@ -31,8 +47,8 @@ export default function NavIcons() {
           >
             Create Account
           </Link>
-
           <div className="hidden h-5 w-[2px] bg-gray-500 sm:block" />
+
           <Link
             href="/login"
             className={buttonVariants({

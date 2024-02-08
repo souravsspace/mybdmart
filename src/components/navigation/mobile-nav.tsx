@@ -13,6 +13,7 @@ import { navLinks } from "@/constant";
 import Link from "next/link";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
 
 export default function MobileNav() {
   return (
@@ -56,7 +57,7 @@ export default function MobileNav() {
                   >
                     My Orders
                   </Link>
-                  <Button>Logout</Button>
+                  <Button onClick={() => signOut()}>Logout</Button>
                 </div>
               </div>
             </SheetDescription>

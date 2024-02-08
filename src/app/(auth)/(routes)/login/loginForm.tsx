@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const {
@@ -22,10 +23,13 @@ export default function LoginForm() {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
+  const router = useRouter();
+
   const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
     const result = await signIn("credentials", {
       email,
       password,
+      redirect: false,
     });
 
     if (result?.error) {
@@ -34,6 +38,7 @@ export default function LoginForm() {
     }
 
     toast.success("Welcome back!");
+    router.push("/");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

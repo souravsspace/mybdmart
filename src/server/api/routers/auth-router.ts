@@ -1,4 +1,3 @@
-import { db } from "@/server/db";
 import bcrypt from "bcrypt";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
@@ -7,21 +6,21 @@ import { AuthCredentialsValidator } from "@/lib/account-credentials-validator";
 export const authRouter = createTRPCRouter({
   createAccount: publicProcedure
     .input(AuthCredentialsValidator)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { email, password } = input;
 
-      const user = await db.user.findFirst({
+      const existingUser = await ctx.db.user.findUnique({
         where: {
           email,
         },
       });
 
-      if (user) throw new TRPCError({ code: "CONFLICT" });
+      if (existingUser != null) throw new TRPCError({ code: "CONFLICT" });
 
-      await db.user.create({
+      await ctx.db.user.create({
         data: {
           email,
-          password: bcrypt.hashSync(password, 12),
+          password: await bcrypt.hash(password, 10),
         },
       });
 
