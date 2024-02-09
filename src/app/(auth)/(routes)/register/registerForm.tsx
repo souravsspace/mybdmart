@@ -14,6 +14,7 @@ import { api } from "@/trpc/react";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
 import { useRouter } from "next/navigation";
+import sendMail from "@/actions/sendMail";
 
 export default function RegisterForm() {
   const {
@@ -39,15 +40,22 @@ export default function RegisterForm() {
       }
       toast.error("Something went wrong. Please try again.");
     },
-    onSuccess: ({ sentToEmail }) => {
-      toast.success(`Verification email sent to ${sentToEmail}.`);
-      router.push("/verify-email?to=" + sentToEmail);
+    onSuccess: async ({ sentToEmail }) => {
+      try {
+        await sendMail({ email: sentToEmail });
+        
+        toast.success(`Verification email sent to ${sentToEmail}.`);
+        router.push("/verify-email?to=" + sentToEmail);
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      }
     },
   });
 
   const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
     mutate({ email, password });
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-2">

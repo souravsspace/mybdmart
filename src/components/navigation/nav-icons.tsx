@@ -4,7 +4,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import Cart from "@/components/navigation/cart";
 import { cn } from "@/lib/utils";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,12 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useUserAuth from "@/hooks/use-user-auth";
 
 export default function NavIcons() {
-  const session = useSession();
-  const isLoggedIn = session.status === "authenticated";
-
-  console.log(session.data?.user);
+  const {isLoggedIn} = useUserAuth();
 
   return (
     <div className="flex items-center justify-center">
@@ -30,7 +28,9 @@ export default function NavIcons() {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Order</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="orders">My Orders</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => signOut()}>
               Logout
             </DropdownMenuItem>

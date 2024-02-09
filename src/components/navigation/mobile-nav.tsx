@@ -14,8 +14,11 @@ import Link from "next/link";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
+import useUserAuth from "@/hooks/use-user-auth";
 
 export default function MobileNav() {
+  const { isLoggedIn } = useUserAuth();
+
   return (
     <div className="block md:hidden">
       <Sheet>
@@ -34,12 +37,9 @@ export default function MobileNav() {
                     <Link
                       key={path + name}
                       href={path}
-                      // className="relative text-sm uppercase text-gray-300 transition-all hover:text-white"
                       className="relative font-sans text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
                     >
                       {name}
-
-                      {/* <span className="absolute bottom-0 left-0 right-0 h-px w-full bg-primary" /> */}
                     </Link>
                   ))}
                 </div>
@@ -47,17 +47,25 @@ export default function MobileNav() {
                 <hr className="my-8" />
 
                 <div className="flex flex-col gap-y-3">
-                  <Link
-                    href="orders"
-                    className={cn(
-                      buttonVariants({
-                        variant: "secondary",
-                      }),
-                    )}
-                  >
-                    My Orders
-                  </Link>
-                  <Button onClick={() => signOut()}>Logout</Button>
+                  {isLoggedIn ? (
+                    <>
+                      <Link
+                        href="orders"
+                        className={cn(
+                          buttonVariants({
+                            variant: "secondary",
+                          }),
+                        )}
+                      >
+                        My Orders
+                      </Link>
+                      <Button onClick={() => signOut()}>Logout</Button>
+                    </>
+                  ) : (
+                    <Link href="register" className={cn(buttonVariants())}>
+                      Register
+                    </Link>
+                  )}
                 </div>
               </div>
             </SheetDescription>
