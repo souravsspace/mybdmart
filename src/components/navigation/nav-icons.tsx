@@ -52,7 +52,7 @@ export default function NavIcons() {
           >
             Create Account
           </Link>
-          <div className="hidden h-5 w-[2px] bg-gray-500 md:block" />
+          <div className="hidden h-5 w-[2px] bg-gray-500 sm:block" />
 
           <Link
             href="/login"
@@ -66,7 +66,7 @@ export default function NavIcons() {
       )}
 
       <div
-        className={cn("hidden h-5 w-[2px] bg-gray-500 sm:block", {
+        className={cn("h-5 w-[2px] bg-gray-500", {
           "ml-3": isLoggedIn,
         })}
       />

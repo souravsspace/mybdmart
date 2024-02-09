@@ -25,8 +25,8 @@ export default function RegisterEmail({ token }: Props) {
           <Container className="mx-auto my-0">
             <Img
               src={`${process.env.NEXTAUTH_URL}/logo/logo-light.png`}
-              width="170"
-              height="90"
+              width="180"
+              height="80"
               alt="MyBDmart"
               className="mx-auto my-0"
             />
@@ -36,7 +36,9 @@ export default function RegisterEmail({ token }: Props) {
               the OTP below to Continue.
             </Text>
             <Section className="mx-auto my-5 text-center">
-              <Text className="rounded-md bg-red-50 p-4 font-semibold">{token}</Text>
+              <Text className="rounded-md bg-red-50 p-4 font-semibold">
+                {token}
+              </Text>
             </Section>
             <Text>
               Best,
