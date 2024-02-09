@@ -48,20 +48,23 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  password      String?
-  emailVerified DateTime?
-  accounts      Account[]
-  sessions      Session[]
-  role          ROLE?     @default(USER)
+  id                 String              @id @default(cuid())
+  name               String?
+  email              String?             @unique
+  password           String?
+  emailVerified      DateTime?
+  accounts           Account[]
+  sessions           Session[]
+  role               ROLE?               @default(USER)
+  verificationTokens VerificationToken[]
 }
 
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
 
   @@unique([identifier, token])
 }

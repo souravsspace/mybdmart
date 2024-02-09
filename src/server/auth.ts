@@ -85,7 +85,7 @@ export const authOptions: NextAuthOptions = {
           AuthCredentialsValidator.safeParse(credentials);
 
         if (!validatedCredentials.success) return null;
-        
+
         const { email, password } = validatedCredentials.data;
 
         const user = await db.user.findUnique({

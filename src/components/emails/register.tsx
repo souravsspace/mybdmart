@@ -1,6 +1,5 @@
 import {
   Html,
-  Button,
   Head,
   Body,
   Container,
@@ -11,15 +10,12 @@ import {
   Img,
 } from "@react-email/components";
 import { Tailwind } from "@react-email/tailwind";
-import { buttonVariants } from "@/components/ui/button";
-import { env } from "@/env";
 
 type Props = {
   token: string;
 };
 
 export default function RegisterEmail({ token }: Props) {
-  const verifyEmail = env.NEXTAUTH_URL + "verify-email?token=" + token;
   return (
     <Html>
       <Head />
@@ -28,21 +24,19 @@ export default function RegisterEmail({ token }: Props) {
         <Body className="bg-blue-50 font-serif">
           <Container className="mx-auto my-0">
             <Img
-              src={`${process.env.NEXT_PUBLIC_SERVER_URL}/logo/logo-light.png`}
-              width="150"
-              height="150"
+              src={`${process.env.NEXTAUTH_URL}/logo/logo-light.png`}
+              width="170"
+              height="90"
               alt="MyBDmart"
               className="mx-auto my-0"
             />
             <Text className="text-base">Hi there,</Text>
             <Text className="text-base">
               Welcome to MyBDmart, the marketplace for high quality goods. Use
-              the button below to Continue registration.
+              the OTP below to Continue.
             </Text>
-            <Section className="text-center">
-              <Button className={buttonVariants()} href={verifyEmail}>
-                Verify Email
-              </Button>
+            <Section className="mx-auto my-5 text-center">
+              <Text className="rounded-md bg-red-50 p-4 font-semibold">{token}</Text>
             </Section>
             <Text>
               Best,
@@ -59,7 +53,3 @@ export default function RegisterEmail({ token }: Props) {
     </Html>
   );
 }
-
-// export default function RegisterEmailHtml() {
-//   render(<RegisterEmail />, { pretty: true });
-// }
