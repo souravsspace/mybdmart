@@ -7,7 +7,7 @@ import useUserAuth from "@/hooks/use-user-auth";
 import {
   type TVerificationCodeSchema,
   VerificationCodeSchema,
-} from "@/lib/verification-validator";
+} from "@/types/verification-validator";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,8 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Image from "next/image";
+import { formatPrice } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type CartMainSectionProps = {
   itemQuantity: number;
@@ -11,9 +14,9 @@ export default function CartMainSection({
   // itemId,
 }: CartMainSectionProps) {
   const itemPrice = 100;
-
   const deliveryCharge = 70;
-  const total = deliveryCharge + itemPrice * itemQuantity;
+  const totalItemsQuantityPrice = itemPrice * itemQuantity;
+  const total = formatPrice(deliveryCharge + totalItemsQuantityPrice);
 
   return (
     <>
@@ -29,10 +32,10 @@ export default function CartMainSection({
               alt="Shoe"
             />
             <span>
-              {itemQuantity} x {itemPrice}
+              {formatPrice(itemQuantity)} x {formatPrice(itemPrice)}
             </span>
           </div>
-          <span>{itemPrice * itemQuantity}</span>
+          <span>{formatPrice(totalItemsQuantityPrice)}</span>
         </div>
       </div>
 
@@ -41,7 +44,7 @@ export default function CartMainSection({
       <ul className="flex flex-col gap-y-2.5 text-sm text-gray-600">
         <li className="flex items-center justify-between">
           <span>Delivery Charge</span>
-          <span>{deliveryCharge}</span>
+          <span>{formatPrice(deliveryCharge)}</span>
         </li>
         <li className="flex items-center justify-between text-base font-medium text-gray-950">
           <span>Total</span>
@@ -49,6 +52,9 @@ export default function CartMainSection({
         </li>
       </ul>
 
+      <Button className="w-full sm:mt-1" variant="secondary">
+        View Cart
+      </Button>
       <Button className="w-full md:mt-3">Continue to Checkout</Button>
     </>
   );

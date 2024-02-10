@@ -62,11 +62,16 @@ export default function NavIcons() {
           >
             Login
           </Link>
+          <div
+            className={cn("h-5 w-[2px] bg-gray-500 sm:hidden", {
+              hidden: isLoggedIn,
+            })}
+          />
         </>
       )}
 
       <div
-        className={cn("h-5 w-[2px] bg-gray-500", {
+        className={cn("hidden h-5 w-[2px] bg-gray-500 sm:block", {
           "ml-3": isLoggedIn,
         })}
       />

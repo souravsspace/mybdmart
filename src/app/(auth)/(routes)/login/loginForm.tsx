@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AuthCredentialsValidator,
   type TAuthCredentialsValidator,
-} from "@/lib/account-credentials-validator";
+} from "@/types/account-credentials-validator";
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";

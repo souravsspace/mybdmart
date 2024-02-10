@@ -19,7 +19,7 @@ import { CartLogo } from "@/components/ui/cart-logo";
 import CartMainSection from "./cart-main-section";
 
 export default function Cart() {
-  const cartTitle = "Cart (1)";
+  const cartTitle = "Your Cart (1)";
   const cartDescription =
     "Streamline Your Shopping Experience with Our Checkout Cart: Effortlessly Organize Your Selections.";
 

@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { db } from "@/server/db";
 import { randomUUID } from "crypto";
 import RegisterEmail from "@/components/emails/register";
+import { deleteToken } from "@/actions/deleteToken";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
@@ -15,8 +16,10 @@ export default async function sendMail({ email }: Props) {
   const tokenIdentifier = randomUUID();
   const tokenValue = randomUUID();
 
+  const expirationMinuteTime = 10;
+
   const expirationTime = new Date();
-  expirationTime.setMinutes(expirationTime.getMinutes() + 10);
+  expirationTime.setMinutes(expirationTime.getMinutes() + expirationMinuteTime);
 
   const user = await db.user.findUnique({
     where: {
@@ -34,6 +37,19 @@ export default async function sendMail({ email }: Props) {
       userId: user.id,
     },
   });
+
+  const timeoutSeconds = 1000 * 60 * expirationMinuteTime;
+
+  // Schedule token deletion after expiration time
+  setTimeout(() => {
+    deleteToken(createToken.identifier, createToken.token)
+      .then(() => {
+        console.log("Token deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting token:", error);
+      });
+  }, timeoutSeconds);
 
   try {
     const { data, error } = await resend.emails.send({

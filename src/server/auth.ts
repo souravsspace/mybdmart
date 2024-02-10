@@ -9,7 +9,7 @@ import { env } from "@/env";
 import { db } from "@/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
-import { AuthCredentialsValidator } from "@/lib/account-credentials-validator";
+import { AuthCredentialsValidator } from "@/types/account-credentials-validator";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`

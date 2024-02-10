@@ -1,18 +1,24 @@
 import Hero from "@/components/hero";
+import ProductReel from "@/components/products/product-reel";
+import Wrapper from "@/components/ui/wrapper";
 import { unstable_noStore as noStore } from "next/cache";
-// import Link from "next/link";
-
-// import { getServerAuthSession } from "@/server/auth";
-// import { api } from "@/trpc/server";
 
 export default async function Home() {
   noStore();
-  // const hello = await api.post.hello.query({ text: "from tRPC" });
-  // const session = await getServerAuthSession();
 
   return (
     <main>
       <Hero />
+
+      <Wrapper>
+        <section>
+          <ProductReel
+            title="Brand New"
+            subtitle="Check those out, newly added items."
+            href="/new-products"
+          />
+        </section>
+      </Wrapper>
     </main>
   );
 }

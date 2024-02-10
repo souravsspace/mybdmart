@@ -78,25 +78,25 @@ export const tshirt = [
   {
     name: "Dylan Morales",
     price: 120,
-    image: "/shoes/tshirt_1.jpg",
+    image: "/tshirt/tshirt_1.jpg",
     color: "black",
   },
   {
     name: "Cecilia Schmidt",
     price: 120,
-    image: "/shoes/tshirt_1.jpg",
+    image: "/tshirt/tshirt_1.jpg",
     color: "white",
   },
   {
     name: "Lottie Foster",
     price: 120,
-    image: "/shoes/tshirt_1.jpg",
+    image: "/tshirt/tshirt_1.jpg",
     color: "white",
   },
   {
     name: "Mark Guzman",
     price: 120,
-    image: "/shoes/tshirt_1.jpg",
+    image: "/tshirt/tshirt_1.jpg",
     color: "blue",
   },
 ] as const;
