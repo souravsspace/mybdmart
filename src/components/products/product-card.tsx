@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import ProductSkeletonHero from "./product-skeleton-hero";
-import Image from "next/image";
+import ImageSlider from "@/components/ui/image-slider";
+import { useEffect, useState } from "react";
 
 type Product = {
   name: string;
@@ -12,26 +15,44 @@ type Product = {
 };
 
 type Props = {
+  id: number;
   product: Product;
   index: number;
 };
 
-export default function ProductCard({ product, index }: Props) {
-  if (!product) return <ProductSkeletonHero />;
+export default function ProductCard({ product, id, index }: Props) {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 75);
+
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  if (!product || !isVisible) return <ProductSkeletonHero />;
+
+  const validUrls = [
+    "/shoes/shoes_1.jpg",
+    "/shoes/shoes_2.jpg",
+    "/shoes/shoes_3.jpg",
+  ].filter((url) => url);
+
   return (
-    <Link className="h-full w-full cursor-pointer" href="/">
-      <div className="flex w-full flex-col bg-blue-200">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="w-48 max-w-fit object-contain"
-        />
+    <Link
+      className={cn("group/main invisible h-full w-full cursor-pointer", {
+        "visible animate-in fade-in-5": isVisible,
+      })}
+      href={`/products/${id}`}
+    >
+      <div className="flex w-full flex-col">
+        <ImageSlider urls={validUrls} />
 
         <h3 className="mt-4 text-sm font-medium text-gray-700">
           {product.name}
         </h3>
-        <p className="mt-1 text-sm text-gray-500">{product.brand}</p>
+        <p className="mt-1 text-sm text-gray-500">{product.name}</p>
         <p className="mt-1 text-sm font-medium text-gray-900">
           {formatPrice(product.price)}
         </p>

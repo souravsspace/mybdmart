@@ -18,6 +18,13 @@ export default async function Home() {
             href="/new-products"
           />
         </section>
+        <section id="trending-product">
+          <ProductReel
+            title="Trending"
+            subtitle="Check those out, newly added items."
+            href="/trending-products"
+          />
+        </section>
       </Wrapper>
     </main>
   );

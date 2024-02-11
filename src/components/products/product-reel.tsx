@@ -1,7 +1,6 @@
 import Link from "next/link";
-import ProductCard from "@/components/products/product-card";
 import { shoes } from "@/constant";
-import Image from "next/image";
+import ProductCard from "@/components/products/product-card";
 
 type Props = {
   title: string;
@@ -14,7 +13,7 @@ export default function ProductReel({ title, subtitle, href }: Props) {
   const productList = shoes;
 
   return (
-    <section className="py-12">
+    <section className="px-2 py-12">
       <div className="mb-4 md:flex md:items-center md:justify-between">
         <div className="max-w-2xl px-4 lg:max-w-4xl lg:px-0">
           {title ? (
@@ -38,22 +37,15 @@ export default function ProductReel({ title, subtitle, href }: Props) {
       </div>
 
       <div className="relative">
-        <div className="mt-6 flex w-full">
-          <div className="grid w-full grid-cols-1 gap-x-1 sm:grid-cols-2 sm:gap-x-2 md:grid-cols-3 md:gap-x-3 lg:grid-cols-4 lg:gap-x-4">
+        <div className="mt-6 flex w-full items-center">
+          <div className="grid w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-10 lg:gap-x-8">
             {productList.map((product, index) => (
-              // <ProductCard
-              //   key={`product-${index}`}
-              //   product={product}
-              //   index={index}
-              // />
-              <div key={product.name + index}>
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="w-48 max-w-fit object-contain"
-                />
-              </div>
+              <ProductCard
+                key={`product-${index}`}
+                product={product}
+                index={index}
+                id={index}
+              />
             ))}
           </div>
         </div>

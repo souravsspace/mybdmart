@@ -18,11 +18,11 @@ export default function Hero() {
             team to ensure our highest quality standards.
           </p>
           <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row">
-            <Link href="/" className={buttonVariants()}>
+            <Link href="#trending-product" className={buttonVariants()}>
               Browse Trending
             </Link>
             <Link
-              href="/"
+              href="/products"
               className={buttonVariants({
                 variant: "ghost",
               })}

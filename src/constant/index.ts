@@ -65,13 +65,6 @@ export const shoes = [
     image: "/shoes/shoes_4.jpg",
     color: "blue",
   },
-  {
-    brand: "Nike",
-    name: "Air Max 270",
-    price: 165,
-    image: "/shoes/shoes_5.jpg",
-    color: "black",
-  },
 ] as const;
 
 export const tshirt = [
