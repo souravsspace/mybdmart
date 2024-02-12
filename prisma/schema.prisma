@@ -69,3 +69,15 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model DeliveryAddress {
+  id             String  @id @default(cuid())
+  address        String
+  city           String
+  zip            String
+  googleMapLink  String
+  insideDhaka    Boolean
+  phoneNumber    Int
+  email          String
+  additionalInfo String?
+}

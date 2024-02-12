@@ -1,7 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { ProfileValidation } from "@/types/settings-validators";
+import {
+  ProfileValidation,
+  SecurityValidation,
+} from "@/types/settings-validators";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 
 export const userFrontend = createTRPCRouter({
   updateProfile: publicProcedure
@@ -26,6 +30,53 @@ export const userFrontend = createTRPCRouter({
         data: {
           name,
           username,
+        },
+      });
+
+      return {
+        success: true,
+      };
+    }),
+
+  changePassword: publicProcedure
+    .input(
+      SecurityValidation.extend({
+        email: z.string().email(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { oldPassword, newPassword, email } = input;
+
+      if (!email || !oldPassword || !newPassword) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+        });
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      const oldPasswordMatch = await bcrypt.compare(
+        oldPassword,
+        user!.password as string,
+      );
+
+      if (!oldPasswordMatch)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+        });
+
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+      await ctx.db.user.update({
+        where: {
+          email,
+        },
+        data: {
+          password: newHashedPassword,
         },
       });
 

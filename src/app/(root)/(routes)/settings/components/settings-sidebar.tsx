@@ -17,6 +17,10 @@ const navItems = [
     label: "Appearance",
     route: "/settings/appearance",
   },
+  {
+    label: "Delivery Address",
+    route: "/settings/delivery-address",
+  },
 ] as const;
 
 export default function SettingsSidebar() {
@@ -29,6 +33,7 @@ export default function SettingsSidebar() {
           key={item.route + index}
           href={item.route}
           onClick={() => setActiveIndex(index)}
+          scroll={false}
           className={cn(
             "w-full rounded-md px-3 py-1.5 text-center text-[15px] md:text-left",
             {

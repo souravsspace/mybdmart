@@ -40,14 +40,13 @@ export default function MobileNav() {
               <div className="relative mt-5 flex h-full flex-col justify-between">
                 <div className="flex flex-col gap-y-3">
                   {navLinks.map(({ name, path }) => (
-                    <SheetClose key={path + name}>
-                      <Link
-                        href={path}
-                        className="relative font-sans text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
-                      >
-                        {name}
-                      </Link>
-                    </SheetClose>
+                    <Link
+                      key={path + name}
+                      href={path}
+                      className="text-left text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
+                    >
+                      <SheetClose>{name}</SheetClose>
+                    </Link>
                   ))}
                 </div>
 

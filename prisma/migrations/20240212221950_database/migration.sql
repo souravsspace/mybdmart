@@ -33,10 +33,11 @@ CREATE TABLE "Session" (
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "email" TEXT,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "password" TEXT,
     "emailVerified" TIMESTAMP(3),
-    "role" "ROLE" DEFAULT 'USER',
+    "role" "ROLE" NOT NULL DEFAULT 'USER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -49,11 +50,29 @@ CREATE TABLE "VerificationToken" (
     "userId" TEXT
 );
 
+-- CreateTable
+CREATE TABLE "DeliveryAddress" (
+    "id" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "city" TEXT NOT NULL,
+    "zip" TEXT NOT NULL,
+    "googleMapLink" TEXT NOT NULL,
+    "insideDhaka" BOOLEAN NOT NULL,
+    "phoneNumber" INTEGER NOT NULL,
+    "email" TEXT NOT NULL,
+    "additionalInfo" TEXT,
+
+    CONSTRAINT "DeliveryAddress_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

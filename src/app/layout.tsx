@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import ToastProvider from "@/components/provider/toast-provider";
 import NextAuthProvider from "@/components/provider/next-auth-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,7 +26,16 @@ export default function RootLayout({
       <body className={`bg-gray-50 font-sans ${inter.variable}`}>
         <NextAuthProvider>
           <ToastProvider />
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </TRPCReactProvider>
         </NextAuthProvider>
       </body>
     </html>
