@@ -1,6 +1,8 @@
 "use client";
 
-import { MdMenuOpen } from "react-icons/md";
+// import { MdMenuOpen } from "react-icons/md";
+import { CgMenuLeft } from "react-icons/cg";
+
 import {
   Sheet,
   SheetClose,
@@ -24,26 +26,28 @@ export default function MobileNav() {
     <div className="block md:hidden">
       <Sheet>
         <SheetTrigger>
-          <MdMenuOpen className="mr-3.5 h-7 w-7" />
+          {/* <MdMenuOpen className="mr-3.5 h-7 w-7" /> */}
+          <CgMenuLeft className="mr-3.5 h-7 w-7" />
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
             <SheetTitle className="text-left text-xl">
               {isLoggedIn
-                ? `Welcome, ${userAuthData?.email?.split("@")[0]}!`
+                ? `Welcome, ${userAuthData?.name || userAuthData?.username || userAuthData?.email?.split("@")[0]}!`
                 : "Welcome to MyBDmart"}
             </SheetTitle>
             <SheetDescription className="text-left">
               <div className="relative mt-5 flex h-full flex-col justify-between">
                 <div className="flex flex-col gap-y-3">
                   {navLinks.map(({ name, path }) => (
-                    <Link
-                      key={path + name}
-                      href={path}
-                      className="relative font-sans text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
-                    >
-                      <SheetClose>{name}</SheetClose>
-                    </Link>
+                    <SheetClose key={path + name}>
+                      <Link
+                        href={path}
+                        className="relative font-sans text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
+                      >
+                        {name}
+                      </Link>
+                    </SheetClose>
                   ))}
                 </div>
 

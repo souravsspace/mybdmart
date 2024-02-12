@@ -1,7 +1,7 @@
 "use client";
 
-import Wrapper from "@/components/ui/wrapper";
 import Link from "next/link";
+import Wrapper from "@/components/ui/wrapper";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function Hero() {

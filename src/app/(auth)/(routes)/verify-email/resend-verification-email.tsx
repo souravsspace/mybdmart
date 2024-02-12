@@ -21,8 +21,10 @@ type Props = {
 };
 
 export default function ResendVerificationEmail({ email }: Props) {
-  const router = useRouter();
   const { userAuthData } = useUserAuth();
+
+  const router = useRouter();
+  const [isResending, setIsResending] = useState(false);
 
   const [userEmail] = useState(() => {
     if (userAuthData?.email) {
@@ -71,9 +73,16 @@ export default function ResendVerificationEmail({ email }: Props) {
 
   const resendEmail = async (userEmail: string) => {
     try {
+      setIsResending(true);
       await sendMail({ email: userEmail });
+      toast.success("Email sent successfully.");
     } catch (error) {
-      console.error(error);
+      setIsResending(false);
+      toast.error("Could not send email. Please try again.");
+    } finally {
+      setTimeout(() => {
+        setIsResending(false);
+      }, 60000);
     }
   };
 
@@ -93,7 +102,7 @@ export default function ResendVerificationEmail({ email }: Props) {
         Submit
       </Button>
       <Button
-        disabled={isLoading}
+        disabled={isLoading || isResending}
         variant="secondary"
         type="button"
         className="mt-2 w-full"

@@ -21,6 +21,7 @@ export const authRouter = createTRPCRouter({
       await ctx.db.user.create({
         data: {
           email,
+          username: email.split("@")[0] as string,
           password: await bcrypt.hash(password, 10),
         },
       });

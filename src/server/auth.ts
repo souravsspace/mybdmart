@@ -10,6 +10,7 @@ import { db } from "@/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { AuthCredentialsValidator } from "@/types/account-credentials-validator";
+import { type ROLE } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,7 +22,8 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // role: ROLE;
+      role: ROLE;
+      username: string;
       // ...other properties
     } & DefaultSession["user"];
   }
@@ -45,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: user?.id,
+          // role: user?.role,
         },
       };
     },
@@ -53,7 +56,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   jwt: {
-    secret: "test",
+    secret: env.NEXTAUTH_SECRET,
   },
   secret: env.NEXTAUTH_SECRET,
   pages: {

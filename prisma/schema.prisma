@@ -50,12 +50,13 @@ model Session {
 model User {
   id                 String              @id @default(cuid())
   name               String?
-  email              String?             @unique
+  username           String              @unique
+  email              String              @unique
   password           String?
   emailVerified      DateTime?
   accounts           Account[]
   sessions           Session[]
-  role               ROLE?               @default(USER)
+  role               ROLE                @default(USER)
   verificationTokens VerificationToken[]
 }
 

@@ -16,7 +16,7 @@ import {
 import useUserAuth from "@/hooks/use-user-auth";
 
 export default function NavIcons() {
-  const { isLoggedIn } = useUserAuth();
+  const { isLoggedIn, userAuthData } = useUserAuth();
 
   return (
     <div className="flex items-center justify-center">
@@ -27,7 +27,12 @@ export default function NavIcons() {
               <div className="h-7 w-7 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                My Account -{" "}
+                {userAuthData?.name ||
+                  userAuthData?.username ||
+                  userAuthData?.email?.split("@")[0]}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link href="orders">My Orders</Link>

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { shoes } from "@/constant";
+import Heading from "@/components/ui/heading";
 import ProductCard from "@/components/products/product-card";
 
 type Props = {
   title: string;
   subtitle?: string;
   href?: string;
-  // query: TQueryValidator;
 };
 
 export default function ProductReel({ title, subtitle, href }: Props) {
@@ -15,16 +15,7 @@ export default function ProductReel({ title, subtitle, href }: Props) {
   return (
     <section className="px-2 py-12">
       <div className="mb-4 md:flex md:items-center md:justify-between">
-        <div className="max-w-2xl px-4 lg:max-w-4xl lg:px-0">
-          {title ? (
-            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              {title}
-            </h1>
-          ) : null}
-          {subtitle ? (
-            <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-          ) : null}
-        </div>
+        <Heading title={title} subtitle={subtitle} />
 
         {href ? (
           <Link
