@@ -56,7 +56,7 @@ CREATE TABLE "DeliveryAddress" (
     "address" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "zip" TEXT NOT NULL,
-    "googleMapLink" TEXT NOT NULL,
+    "googleMapLink" TEXT,
     "insideDhaka" BOOLEAN NOT NULL,
     "phoneNumber" INTEGER NOT NULL,
     "email" TEXT NOT NULL,

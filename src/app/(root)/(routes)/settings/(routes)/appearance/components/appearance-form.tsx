@@ -166,7 +166,7 @@ export function AppearanceForm() {
             variant="outline"
             onClick={updateSystemPreferences}
           >
-            Update System preferences
+            Use System
           </Button>
           <Button type="submit">Update preferences</Button>
         </div>

@@ -14,12 +14,12 @@ const navItems = [
     route: "/settings/security",
   },
   {
-    label: "Appearance",
-    route: "/settings/appearance",
+    label: "Address",
+    route: "/settings/delivery-address",
   },
   {
-    label: "Delivery Address",
-    route: "/settings/delivery-address",
+    label: "Appearance",
+    route: "/settings/appearance",
   },
 ] as const;
 
@@ -27,7 +27,7 @@ export default function SettingsSidebar() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <div className="flex items-start justify-center px-2 md:flex-col md:gap-y-0.5">
+    <div className="flex flex-nowrap items-start justify-center px-2 md:flex-col md:gap-y-0.5">
       {navItems.map((item, index) => (
         <Link
           key={item.route + index}

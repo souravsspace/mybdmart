@@ -29,11 +29,8 @@ export const DeliveryAddressFormValidation = z.object({
   city: z.string().min(2, {
     message: "City must be at least 2 characters.",
   }),
-  zip: z.number().min(4, {
+  zip: z.number().min(3, {
     message: "Postal code must be at least 3 characters.",
-  }),
-  postalCode: z.string().min(4, {
-    message: "Postal code must be at least 4 characters.",
   }),
   googleMapLink: z
     .string()
@@ -48,7 +45,6 @@ export const DeliveryAddressFormValidation = z.object({
   email: z.string().email({
     message: "Invalid email address.",
   }),
-
   additionalInfo: z.string().optional(),
 });
 

@@ -75,7 +75,7 @@ model DeliveryAddress {
   address        String
   city           String
   zip            String
-  googleMapLink  String
+  googleMapLink  String?
   insideDhaka    Boolean
   phoneNumber    Int
   email          String
