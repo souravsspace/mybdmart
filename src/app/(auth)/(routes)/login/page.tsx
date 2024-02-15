@@ -2,8 +2,7 @@ import Link from "next/link";
 import Logo from "@/components/ui/logo";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-
-import LoginForm from "./loginForm";
+import LoginForm from "@/components/auth/loginForm";
 
 export default function LoginPage() {
   return (

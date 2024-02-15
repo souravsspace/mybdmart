@@ -3,7 +3,7 @@ import Logo from "@/components/ui/logo";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
-import RegisterForm from "./registerForm";
+import RegisterForm from "@/components/auth/registerForm";
 
 export default function RegisterPage() {
   return (

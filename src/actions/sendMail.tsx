@@ -53,7 +53,7 @@ export default async function sendMail({ email }: Props) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Register <onboarding@resend.dev>",
+      from: "no-replay <onboarding@resend.dev>",
       to: email,
       reply_to: "onboarding@resend.dev",
       subject: "Verify your account",

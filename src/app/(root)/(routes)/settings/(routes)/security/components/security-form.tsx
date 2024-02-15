@@ -21,10 +21,10 @@ import {
 import useUserAuth from "@/hooks/use-user-auth";
 import { api } from "@/trpc/react";
 import toast from "react-hot-toast";
+import useResetPass from "@/hooks/use-reset-pass";
 
 export function SecurityForm() {
   const { userAuthData } = useUserAuth();
-
   const form = useForm<TSecurityValidation>({
     resolver: zodResolver(SecurityValidation),
     defaultValues: {
@@ -51,9 +51,19 @@ export function SecurityForm() {
     },
   });
 
+  const { mutate: resetPassMutate, isLoadingForget } = useResetPass();
+
   function onSubmit({ oldPassword, newPassword }: TSecurityValidation) {
     mutate({ oldPassword, newPassword, email: userAuthData!.email! });
   }
+
+  const handleForgotPassword = () => {
+    if (!userAuthData?.email) {
+      toast.error("Email not found.");
+      return;
+    }
+    resetPassMutate({ email: userAuthData.email });
+  };
 
   return (
     <Form {...form}>
@@ -89,16 +99,26 @@ export function SecurityForm() {
             </FormItem>
           )}
         />
+
+        <button
+          disabled={isLoading || isLoadingForget}
+          type="button"
+          onClick={handleForgotPassword}
+          className="tracking-tighter"
+        >
+          Forget password?
+        </button>
+
         <div className="flex items-center gap-x-2">
           <Button
-            disabled={isLoading}
+            disabled={isLoading || isLoadingForget}
             type="button"
             variant="outline"
             onClick={() => form.reset()}
           >
             Clear Changes
           </Button>
-          <Button disabled={isLoading} type="submit">
+          <Button disabled={isLoading || isLoadingForget} type="submit">
             Update Password
           </Button>
         </div>

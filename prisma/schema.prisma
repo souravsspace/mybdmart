@@ -20,6 +20,105 @@ enum ROLE {
   MOD
 }
 
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  CANCELLED
+  DELIVERED
+  REFUNDED
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id           String        @id @default(cuid())
+  name         String        @db.VarChar(255)
+  price        Decimal       @db.Decimal()
+  newPrice     Decimal?      @db.Decimal()
+  description  String        @db.Text
+  isFeatured   Boolean       @default(false)
+  isArchived   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  categories   Category?     @relation(fields: [categoriesId], references: [id])
+  categoriesId String?
+  size         Size?         @relation(fields: [sizeId], references: [id])
+  sizeId       String?
+  color        Color?        @relation(fields: [colorId], references: [id])
+  colorId      String?
+  images       Image[]
+  orderItems   OrderedItem[]
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  imageUrl  String   @db.Text
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+}
+
+model Size {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  value     String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Color {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  value     String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Order {
+  id           String        @id @default(cuid())
+  price        Decimal       @db.Decimal()
+  status       OrderStatus   @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  orderedItems OrderedItem[]
+}
+
+model OrderedItem {
+  id                String           @id @default(cuid())
+  order             Order?           @relation(fields: [orderId], references: [id])
+  orderId           String?
+  product           Product?         @relation(fields: [productId], references: [id])
+  productId         String?
+  delivery          DeliveryAddress? @relation(fields: [deliveryAddressId], references: [id])
+  deliveryAddressId String?
+}
+
+model DeliveryAddress {
+  id             String        @id @default(cuid())
+  address        String        @db.VarChar(255)
+  city           String        @db.VarChar(255)
+  zip            Int           @db.Integer
+  googleMapLink  String?
+  insideDhaka    Boolean
+  phoneNumber    Int
+  email          String
+  additionalInfo String?
+  user           User?         @relation(fields: [userId], references: [id])
+  userId         String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  orderedItems   OrderedItem[]
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -58,6 +157,8 @@ model User {
   sessions           Session[]
   role               ROLE                @default(USER)
   verificationTokens VerificationToken[]
+  deliveryAddress    DeliveryAddress[]
+  orders             Order[]
 }
 
 model VerificationToken {
@@ -68,16 +169,4 @@ model VerificationToken {
   userId     String?
 
   @@unique([identifier, token])
-}
-
-model DeliveryAddress {
-  id             String  @id @default(cuid())
-  address        String
-  city           String
-  zip            String
-  googleMapLink  String?
-  insideDhaka    Boolean
-  phoneNumber    Int
-  email          String
-  additionalInfo String?
 }

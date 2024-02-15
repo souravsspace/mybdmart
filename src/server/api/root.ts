@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { products } from "@/server/api/routers/products";
+import { resetPass } from "@/server/api/routers/reset-pass";
 import { authRouter } from "@/server/api/routers/auth-router";
 import { userFrontend } from "@/server/api/routers/user-frontend";
 
@@ -10,8 +10,8 @@ import { userFrontend } from "@/server/api/routers/user-frontend";
  */
 export const appRouter = createTRPCRouter({
   authRouter: authRouter,
-  products: products,
   userFrontend: userFrontend,
+  resetPass: resetPass,
 });
 
 // export type definition of API

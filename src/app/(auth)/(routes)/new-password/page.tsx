@@ -1,6 +1,6 @@
+import CopyButton from "@/components/auth/copy-button";
 import Image from "next/image";
 import Link from "next/link";
-import ResendVerificationEmail from "@/components/auth/resend-verification-email";
 
 type Props = {
   searchParams: {
@@ -8,10 +8,14 @@ type Props = {
   };
 };
 
-export default function VerifyEmail({ searchParams }: Props) {
+export default function NewPassword({ searchParams }: Props) {
   const toEmail = searchParams.to;
+  const otp = searchParams.otp;
 
-  if (typeof toEmail !== "string" && !toEmail) {
+  if (
+    (typeof toEmail !== "string" && !toEmail) ||
+    (typeof otp !== "string" && !otp)
+  ) {
     return null;
   }
 
@@ -32,17 +36,20 @@ export default function VerifyEmail({ searchParams }: Props) {
             />
           </Link>
 
-          <h3 className="text-2xl font-semibold">Check your email</h3>
+          <h3 className="text-2xl font-semibold">Copy your new password.</h3>
 
           <p className="text-center text-muted-foreground">
-            We&apos;ve sent a verification OTP to{" "}
-            <span className="font-semibold">{toEmail}</span>
-            <br />
-            Please check your email and enter the OTP to verify your email.
+            Your password has been reset successfully.
           </p>
+          <p className="text-center text-muted-foreground">
+            Please login and go to{" "}
+            <span className="font-semibold">settings{" > "}security</span> and
+            change you password.
+          </p>
+
+          <CopyButton text={otp} />
         </div>
       </div>
-      <ResendVerificationEmail email={toEmail as string} />
     </div>
   );
 }

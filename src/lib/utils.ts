@@ -11,3 +11,8 @@ export function formatPrice(price: number) {
     currency: "BDT",
   }).format(price);
 }
+
+export async function copyText(value: string) {
+  // await navigator.clipboard.writeText(value);
+  return navigator.clipboard.writeText(value);
+}

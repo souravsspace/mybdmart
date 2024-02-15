@@ -1,6 +1,6 @@
+import ForgetVerificationEmail from "@/components/auth/forget-verification-email";
 import Image from "next/image";
 import Link from "next/link";
-import ResendVerificationEmail from "@/components/auth/resend-verification-email";
 
 type Props = {
   searchParams: {
@@ -8,7 +8,7 @@ type Props = {
   };
 };
 
-export default function VerifyEmail({ searchParams }: Props) {
+export default function ForgetPasswordPage({ searchParams }: Props) {
   const toEmail = searchParams.to;
 
   if (typeof toEmail !== "string" && !toEmail) {
@@ -38,11 +38,11 @@ export default function VerifyEmail({ searchParams }: Props) {
             We&apos;ve sent a verification OTP to{" "}
             <span className="font-semibold">{toEmail}</span>
             <br />
-            Please check your email and enter the OTP to verify your email.
+            Please check your email and enter the OTP to reset your email.
           </p>
         </div>
       </div>
-      <ResendVerificationEmail email={toEmail as string} />
+      <ForgetVerificationEmail email={toEmail as string} />
     </div>
   );
 }

@@ -12,18 +12,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import useResetPass from "@/hooks/use-reset-pass";
+import { ForgetPasswordSchema } from "@/types/forget-pass-validation";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isLoading },
   } = useForm<TAuthCredentialsValidator>({
     resolver: zodResolver(AuthCredentialsValidator),
   });
-
-  const router = useRouter();
 
   const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
     const result = await signIn("credentials", {
@@ -40,6 +43,21 @@ export default function LoginForm() {
     toast.success("Welcome back!");
     router.push("/");
   };
+
+  const { mutate, isLoadingForget } = useResetPass();
+
+  const handleForgotPassword = () => {
+    const validateEmail = ForgetPasswordSchema.safeParse({
+      email: getValues("email"),
+    });
+
+    if (!validateEmail.success)
+      return toast.error("Please enter a valid email address.");
+    const { email } = validateEmail.data;
+
+    mutate({ email });
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-2">
@@ -73,13 +91,18 @@ export default function LoginForm() {
           )}
         </div>
 
-        {/* <div>
-          <p className="text-[13px] tracking-tighter">
-            By creating an account, you agree our terms of service.
-          </p>
-        </div> */}
+        <div className="flex items-end justify-end text-sm text-muted-foreground hover:text-gray-950">
+          <button
+            disabled={isLoading || isLoadingForget}
+            type="button"
+            onClick={handleForgotPassword}
+            className="tracking-tighter"
+          >
+            Forget password?
+          </button>
+        </div>
 
-        <Button disabled={isLoading} type="submit">
+        <Button disabled={isLoading || isLoadingForget} type="submit">
           Login
         </Button>
       </div>

@@ -1,8 +1,8 @@
+import { z } from "zod";
 import bcrypt from "bcrypt";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { AuthCredentialsValidator } from "@/types/account-credentials-validator";
-import { z } from "zod";
 
 export const authRouter = createTRPCRouter({
   createAccount: publicProcedure
@@ -78,6 +78,6 @@ export const authRouter = createTRPCRouter({
         },
       });
 
-      return { success: true };
+      return { success: true, userEmail: email };
     }),
 });
