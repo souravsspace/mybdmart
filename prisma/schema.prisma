@@ -104,19 +104,22 @@ model OrderedItem {
 
 model DeliveryAddress {
   id             String        @id @default(cuid())
+  name           String        @db.VarChar(255)
   address        String        @db.VarChar(255)
   city           String        @db.VarChar(255)
-  zip            Int           @db.Integer
+  zip            String        @db.VarChar(20)
   googleMapLink  String?
   insideDhaka    Boolean
-  phoneNumber    Int
+  phoneNumber    String        @db.VarChar(20)
   email          String
   additionalInfo String?
-  user           User?         @relation(fields: [userId], references: [id])
-  userId         String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   orderedItems   OrderedItem[]
+  user           User?         @relation(fields: [userId], references: [id])
+  userId         String?
+
+  @@unique([userId, phoneNumber])
 }
 
 // Necessary for Next auth
@@ -157,8 +160,8 @@ model User {
   sessions           Session[]
   role               ROLE                @default(USER)
   verificationTokens VerificationToken[]
-  deliveryAddress    DeliveryAddress[]
   orders             Order[]
+  DeliveryAddress    DeliveryAddress[]
 }
 
 model VerificationToken {

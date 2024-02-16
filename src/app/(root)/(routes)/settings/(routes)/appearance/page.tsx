@@ -1,5 +1,5 @@
-import SettingsSectionWrapper from "../../components/settings-section-wrapper";
-import { AppearanceForm } from "./components/appearance-form";
+import SettingsSectionWrapper from "@/components/settings/settings-section-wrapper";
+import { AppearanceForm } from "@/components/settings/appearance-form";
 
 export default function AppearancePage() {
   return (

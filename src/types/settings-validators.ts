@@ -23,25 +23,28 @@ export const SecurityValidation = z.object({
 export type TSecurityValidation = z.infer<typeof SecurityValidation>;
 
 export const DeliveryAddressFormValidation = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
   address: z.string().min(5, {
     message: "Address must be at least 5 characters.",
   }),
   city: z.string().min(2, {
     message: "City must be at least 2 characters.",
   }),
-  zip: z.number().min(3, {
+  zip: z.string().min(3, {
     message: "Postal code must be at least 3 characters.",
   }),
-  googleMapLink: z
+  googleMapLink: z.string().optional(),
+  insideDhaka: z.boolean().optional(),
+  phoneNumber: z
     .string()
-    .url({
-      message: "Invalid Google Map link.",
+    .min(11, {
+      message: "Phone number must be at least 11 characters.",
     })
-    .optional(),
-  insideDhaka: z.boolean(),
-  phoneNumber: z.string().min(11, {
-    message: "Phone number must be at least 11 characters.",
-  }),
+    .max(11, {
+      message: "Phone number must be at most 11 characters.",
+    }),
   email: z.string().email({
     message: "Invalid email address.",
   }),

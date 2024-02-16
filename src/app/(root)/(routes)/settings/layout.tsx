@@ -2,7 +2,7 @@ import { type PropsWithChildren } from "react";
 import Heading from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import Wrapper from "@/components/ui/wrapper";
-import SettingsSidebar from "./components/settings-sidebar";
+import SettingsSidebar from "@/components/settings/settings-sidebar";
 import { getServerAuthSession } from "@/server/auth";
 import LoginToView from "@/components/ui/login-to-view";
 

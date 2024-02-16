@@ -88,17 +88,18 @@ CREATE TABLE "OrderedItem" (
 -- CreateTable
 CREATE TABLE "DeliveryAddress" (
     "id" TEXT NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
     "address" VARCHAR(255) NOT NULL,
     "city" VARCHAR(255) NOT NULL,
-    "zip" INTEGER NOT NULL,
+    "zip" VARCHAR(20) NOT NULL,
     "googleMapLink" TEXT,
     "insideDhaka" BOOLEAN NOT NULL,
-    "phoneNumber" INTEGER NOT NULL,
+    "phoneNumber" VARCHAR(20) NOT NULL,
     "email" TEXT NOT NULL,
     "additionalInfo" TEXT,
-    "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT,
 
     CONSTRAINT "DeliveryAddress_pkey" PRIMARY KEY ("id")
 );
@@ -151,6 +152,9 @@ CREATE TABLE "VerificationToken" (
     "expires" TIMESTAMP(3) NOT NULL,
     "userId" TEXT
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DeliveryAddress_userId_phoneNumber_key" ON "DeliveryAddress"("userId", "phoneNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");

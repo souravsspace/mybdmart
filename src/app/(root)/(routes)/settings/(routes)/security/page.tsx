@@ -1,5 +1,5 @@
-import SettingsSectionWrapper from "../../components/settings-section-wrapper";
-import { SecurityForm } from "./components/security-form";
+import SettingsSectionWrapper from "@/components/settings/settings-section-wrapper";
+import { SecurityForm } from "@/components/settings/security-form";
 
 export default function SecurityPage() {
   return (

@@ -1,5 +1,5 @@
-import SettingsSectionWrapper from "../../components/settings-section-wrapper";
-// import DeliveryAddressForm from "./components/delivery-address-form";
+import { DeliveryAddressForm } from "@/components/settings/delivery-address-form";
+import SettingsSectionWrapper from "@/components/settings/settings-section-wrapper";
 
 export default function DeliveryAddress() {
   return (
@@ -7,9 +7,7 @@ export default function DeliveryAddress() {
       title="Delivery Address"
       subtitle="Customize your delivery address."
     >
-      {/* <DeliveryAddressForm /> */}
-
-      <h1>Delivery Address</h1>
+      <DeliveryAddressForm />
     </SettingsSectionWrapper>
   );
 }
