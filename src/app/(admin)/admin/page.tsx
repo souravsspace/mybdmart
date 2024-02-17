@@ -61,7 +61,7 @@ const uesrSalesData: SalesProps[] = [
 
 export default function AdminPage() {
   return (
-    <div className="flex w-full flex-col  gap-5">
+    <div className="flex w-full flex-col gap-5">
       <PageTitle title="Dashboard" />
       <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
         {cardData.map((d, i) => (

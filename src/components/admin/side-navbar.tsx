@@ -52,7 +52,7 @@ export default function SideNavbar() {
             variant: "ghost",
           },
           {
-            title: "Ordrs",
+            title: "Orders",
             href: "/admin/orders",
             icon: ShoppingCart,
             variant: "ghost",

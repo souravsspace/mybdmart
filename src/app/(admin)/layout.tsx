@@ -2,6 +2,12 @@ import SideNavbar from "@/components/admin/side-navbar";
 import { cn } from "@/lib/utils";
 import { type PropsWithChildren } from "react";
 
+export const metadata = {
+  title: "Admin Panel | MyBDmart",
+};
+
+export const revalidate = 0;
+
 export default function AdminLayout({ children }: PropsWithChildren) {
   return (
     <main

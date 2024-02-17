@@ -8,7 +8,9 @@ export const authRouter = createTRPCRouter({
   createAccount: publicProcedure
     .input(AuthCredentialsValidator)
     .mutation(async ({ input, ctx }) => {
-      const { email, password } = input;
+      const { email: userEmail, password } = input;
+
+      const email = userEmail.toLowerCase();
 
       const existingUser = await ctx.db.user.findUnique({
         where: {
