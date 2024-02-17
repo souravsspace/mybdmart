@@ -21,6 +21,6 @@ const settingSubPages = [
   },
 ];
 
-export default function Breadcrumb() {
+export default function Navbar() {
   return <div>Breadcrumb</div>;
 }

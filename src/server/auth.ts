@@ -1,10 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import {
-  getServerSession,
-  type DefaultSession,
-  type NextAuthOptions,
-} from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import { type User, getServerSession, type NextAuthOptions } from "next-auth";
 import { env } from "@/env";
 import { db } from "@/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,20 +13,22 @@ import { type ROLE } from "@prisma/client";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: ROLE;
+    username: string;
+  }
+}
 declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
+  interface Session {
+    user: User & {
       id: string;
       role: ROLE;
       username: string;
-      // ...other properties
-    } & DefaultSession["user"];
+    };
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -41,14 +38,34 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user?.id,
-          // role: user?.role,
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.username = token.username;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findUnique({
+        where: {
+          email: token.email as string,
         },
+      });
+
+      if (!dbUser) {
+        token.id !== user.id;
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        role: dbUser.role,
+        email: dbUser.email,
+        username: dbUser.username,
       };
     },
   },
@@ -103,10 +120,6 @@ export const authOptions: NextAuthOptions = {
 
         return user;
       },
-    }),
-    GithubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
 
     /**
