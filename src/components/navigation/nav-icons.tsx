@@ -35,10 +35,10 @@ export default function NavIcons() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link href="orders">My Orders</Link>
+                <Link href="/orders">My Orders</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link href="settings">Settings</Link>
+                <Link href="/settings">Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => signOut()}>
                 Logout

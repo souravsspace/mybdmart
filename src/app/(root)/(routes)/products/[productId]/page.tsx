@@ -1,9 +1,9 @@
-import ProductReel from "@/components/products/product-reel";
 import Wrapper from "@/components/ui/wrapper";
-import ProductBreadcrumb from "./components/product-breadcrumb";
-import ProductMainDetails from "./components/product-main-details";
-import ProductAddToCart from "./components/product-add-to-cart";
 import ImageSlider from "@/components/ui/image-slider";
+import ProductReel from "@/components/products/product-reel";
+import ProductBreadcrumb from "@/components/products/product-breadcrumb";
+import ProductMainDetails from "@/components/products/product-main-details";
+import ProductAddToCart from "@/components/products/product-add-to-cart";
 
 type Props = {
   params: {
