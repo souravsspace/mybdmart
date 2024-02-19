@@ -59,6 +59,8 @@ const uesrSalesData: SalesProps[] = [
   },
 ];
 
+export const revalidate = 0;
+
 export default function AdminPage() {
   return (
     <div className="flex w-full flex-col gap-5">

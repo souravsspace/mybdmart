@@ -3,6 +3,8 @@ import { type Role } from "@/components/admin/users/column";
 import UsersDataTable from "@/components/admin/users/data-table";
 import { api } from "@/trpc/server";
 
+export const revalidate = 0;
+
 export default async function UsersPage() {
   const data = await api.usersData.getUser.query();
 

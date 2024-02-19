@@ -2,6 +2,8 @@
 import PageTitle from "@/components/admin/page-title";
 // import { api } from "@/trpc/server";
 
+export const revalidate = 0;
+
 export default async function OrdersPage() {
   // const data = await api.orderdata.getOrders.query();
 

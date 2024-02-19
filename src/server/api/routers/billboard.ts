@@ -19,6 +19,10 @@ export const Billboard = createTRPCRouter({
 
       return data;
     }),
+  getAllBillboards: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.billboard.findMany();
+    return data;
+  }),
   createBillboard: publicProcedure
     .input(
       z.object({
@@ -98,10 +102,56 @@ export const Billboard = createTRPCRouter({
         where: {
           id: input.id,
         },
-
         data: {
-          name: input.name,
-          imageUrl: input.imageUrl,
+          name: input.name as string,
+          imageUrl: input.imageUrl as string,
+        },
+      });
+
+      return {
+        success: true,
+      };
+    }),
+  deleteBillboard: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      const role = ctx.session?.user.role;
+
+      if (!userId || !role) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to create a billboard",
+        });
+      }
+
+      if (!userId || role !== ROLE.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to create a billboard",
+        });
+      }
+
+      const billboard = await ctx.db.billboard.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!billboard) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Billboard not found",
+        });
+      }
+
+      await ctx.db.billboard.delete({
+        where: {
+          id: input.id,
         },
       });
 

@@ -121,7 +121,7 @@ export const UserColumn: ColumnDef<UserType>[] = [
             : "bg-green-200",
         )}
       >
-        {row.getValue("email") ? "Yes" : "No"}
+        {row.getValue("verified") ? "Yes" : "No"}
       </div>
     ),
   },
