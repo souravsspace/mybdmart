@@ -36,6 +36,7 @@ export default function BillboardForm({ initialData }: Props) {
   const billboardId = initialData?.id;
   const { covertToBase64, theImage } = useImageToBase64();
   const {
+    isBillboardLoading,
     createBillboardMutate,
     deleteBillboardMutate,
     updateBillboardMutate,
@@ -55,6 +56,8 @@ export default function BillboardForm({ initialData }: Props) {
     form.formState.isLoading ||
     form.formState.isValidating ||
     form.formState.isSubmitting;
+
+  const isLoading = isFormLoading || isBillboardLoading;
 
   const onSubmit = ({ name }: TbillboardValidator) => {
     if (!billboardId || !initialData) {
@@ -84,7 +87,7 @@ export default function BillboardForm({ initialData }: Props) {
             />
 
             <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
-              <Button disabled={isFormLoading} type="submit">
+              <Button disabled={isFormLoading || isLoading} type="submit">
                 {actionButton}
               </Button>
               <Button

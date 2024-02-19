@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 export default function useBillboard() {
   const router = useRouter();
 
-  const { mutate: createBillboardMutate } =
+  const { mutate: createBillboardMutate, isLoading: createIsLoading } =
     api.billboard.createBillboard.useMutation({
       onError: (error) => {
         if (error.data?.code === "UNAUTHORIZED") {
@@ -25,7 +25,7 @@ export default function useBillboard() {
       },
     });
 
-  const { mutate: deleteBillboardMutate } =
+  const { mutate: deleteBillboardMutate, isLoading: deleteIsLoading } =
     api.billboard.deleteBillboard.useMutation({
       onError: (error) => {
         if (error.data?.code === "UNAUTHORIZED") {
@@ -45,7 +45,7 @@ export default function useBillboard() {
       },
     });
 
-  const { mutate: updateBillboardMutate } =
+  const { mutate: updateBillboardMutate, isLoading: updateIsLoading } =
     api.billboard.updateBillboard.useMutation({
       onError: (error) => {
         if (error.data?.code === "UNAUTHORIZED") {
@@ -65,9 +65,12 @@ export default function useBillboard() {
       },
     });
 
+  const isBillboardLoading = createIsLoading || deleteIsLoading || updateIsLoading;
+
   return {
     createBillboardMutate,
     deleteBillboardMutate,
     updateBillboardMutate,
+    isBillboardLoading,
   };
 }
