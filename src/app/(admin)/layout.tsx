@@ -15,7 +15,7 @@ export const revalidate = 0;
 export default async function AdminLayout({ children }: PropsWithChildren) {
   const session = await getServerAuthSession();
 
-  if (session?.user.role == ROLE.USER) {
+  if (session?.user.role == ROLE.USER || !session) {
     redirect("/");
   }
 
