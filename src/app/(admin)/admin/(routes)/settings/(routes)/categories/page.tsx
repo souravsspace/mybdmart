@@ -22,14 +22,17 @@ export default async function CategoriesPage() {
         <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
           <Link
             href="/admin/settings/categories/new"
-            className={buttonVariants()}
+            className={buttonVariants({
+              size: "sm",
+            })}
           >
-            <Plus className="mr-2 h-5 w-5" />
+            <Plus className="mr-1.5 h-5 w-5" />
             Add New
           </Link>
           <Link
             className={buttonVariants({
               variant: "secondary",
+              size: "sm",
             })}
             href="/admin/settings"
           >

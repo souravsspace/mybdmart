@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 interface NavProps {
   isCollapsed: boolean;
@@ -27,6 +28,10 @@ interface NavProps {
 
 export function Navbar({ links, isCollapsed }: NavProps) {
   const pathName = usePathname();
+  const { theme } = useTheme();
+
+  const logo =
+    theme === "dark" ? "/logo/logo-dark.png" : "/logo/logo-light.png";
 
   return (
     <TooltipProvider>
@@ -34,9 +39,9 @@ export function Navbar({ links, isCollapsed }: NavProps) {
         data-collapsed={isCollapsed}
         className="group flex items-center justify-between gap-4 py-2 data-[collapsed=true]:py-2 md:items-start md:justify-start"
       >
-        <Link className="-ml-3.5 mr-auto md:hidden" href="/">
+        <Link className="mr-auto md:hidden" href="/">
           <Image
-            src="/logo/logo-light.png"
+            src={logo}
             alt="MyBDmart"
             width={180}
             height={80}
@@ -57,8 +62,8 @@ export function Navbar({ links, isCollapsed }: NavProps) {
                         size: "icon",
                       }),
                       "h-9 w-9",
-                      link.variant === "default" &&
-                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+                      // link.variant === "default" &&
+                      //   "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
                     )}
                   >
                     <link.icon className="h-4 w-4" />
@@ -86,8 +91,8 @@ export function Navbar({ links, isCollapsed }: NavProps) {
                     variant: link.href === pathName ? "default" : "ghost",
                     size: "sm",
                   }),
-                  link.variant === "default" &&
-                    "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                  // link.variant === "default" &&
+                  //   "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                   "justify-start",
                 )}
               >

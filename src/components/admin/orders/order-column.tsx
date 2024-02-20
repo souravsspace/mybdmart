@@ -10,23 +10,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { cn, copyText, formatPrice } from "@/lib/utils";
+import { cn, copyText, formatDate, formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { type ORDER_STATUS } from "@prisma/client";
 
-export enum OrderStatus {
-  PENDING = "pending",
-  PROCESSING = "processing",
-  CANCELLED = "cancelled",
-  DELIVERED = "delivered",
-  REFUNDED = "refunded",
-}
+export type OrderedItems = {
+  productName: string;
+  price: number;
+  quantity: number;
+};
 
 export type OrderType = {
   id: string;
-  productName: string;
-  price: number;
-  status: OrderStatus;
-  date: string;
+  totalItems: number;
+  totalPrice: number;
+  status: ORDER_STATUS;
+  orderedItems: OrderedItems[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export const OrderColumn: ColumnDef<OrderType>[] = [
@@ -53,26 +54,73 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "productName",
-    header: "ProductName",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productName")}</div>
-    ),
-  },
-  {
-    accessorKey: "price",
+    accessorKey: "orderedItems",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Ordered Items
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const orderedItems: OrderedItems = row.getValue("orderedItems");
+      return (
+        <ul className="gap gap-y-0.5 capitalize">
+          <li className="text-sm font-medium">{orderedItems.productName}</li>
+          <li className="text-xs text-gray-500">
+            {formatPrice(orderedItems.price)} x {orderedItems.quantity}
+          </li>
+        </ul>
+      );
+    },
+  },
+  {
+    accessorKey: "totalItems",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total Items
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("price")}</div>,
+  },
+  {
+    accessorKey: "totalPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total Price
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => <div>{formatPrice(row.getValue("price"))}</div>,
+  },
+  {
+    accessorKey: "createdAt",
+    header: "CreatedAt",
+    cell: ({ row }) => (
+      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    header: "UpdatedAt",
+    cell: ({ row }) => (
+      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+    ),
   },
   {
     accessorKey: "status",
@@ -81,14 +129,16 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
-            "bg-orange-200":
-              row.getValue("status") === "pending" ||
-              row.getValue("status") === "processing",
-            "bg-green-200":
-              row.getValue("status") === "completed" ||
-              row.getValue("status") === "delivered",
-            "bg-red-200": row.getValue("status") === "cancelled",
-            "bg-amber-200": row.getValue("status") === "refunded",
+            "bg-orange-200 dark:bg-orange-600":
+              row.getValue("status") === "PENDING" ||
+              row.getValue("status") === "PROCESSING",
+            "bg-green-200 dark:bg-green-600":
+              row.getValue("status") === "COMPLETED" ||
+              row.getValue("status") === "DELIVERED",
+            "bg-red-200 dark:bg-primary":
+              row.getValue("status") === "CANCELLED",
+            "bg-amber-200 dark:bg-amber-200":
+              row.getValue("status") === "REFUNDED",
           })}
         >
           {row.getValue("status")}
@@ -113,7 +163,6 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              // onClick={() => navigator.clipboard.writeText(payment.id)}
               onClick={async () => {
                 await copyText(payment.id);
                 toast.success("Payment ID copied to clipboard");
@@ -122,6 +171,7 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <DropdownMenuItem>Update Status</DropdownMenuItem>
             <DropdownMenuItem>Cancel Order</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

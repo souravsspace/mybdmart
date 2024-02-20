@@ -117,8 +117,8 @@ export const UserColumn: ColumnDef<UserType>[] = [
         className={cn(
           "w-fit rounded-lg px-4 py-2 font-medium capitalize",
           row.getValue("verified") == null || undefined
-            ? "bg-red-200"
-            : "bg-green-200",
+            ? "bg-red-200 dark:bg-primary"
+            : "bg-green-200 dark:bg-green-600",
         )}
       >
         {row.getValue("verified") ? "Yes" : "No"}

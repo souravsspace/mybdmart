@@ -26,7 +26,7 @@ const ordersList = [
 ];
 
 export default function OrdersPage() {
-  const OrderedData: OrderType[] = ordersList.map((item) => ({
+  const OrderedData = ordersList.map((item) => ({
     id: item.id,
     price: item.price,
     date: item.createdAt,

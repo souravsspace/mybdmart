@@ -20,7 +20,7 @@ enum ROLE {
   MOD
 }
 
-enum OrderStatus {
+enum ORDER_STATUS {
   PENDING
   PROCESSING
   CANCELLED
@@ -39,8 +39,8 @@ model Category {
 model Product {
   id           String    @id @default(cuid())
   name         String    @db.VarChar(255)
-  price        Decimal   @db.Decimal()
-  newPrice     Decimal?  @db.Decimal()
+  price        Int       @db.Integer
+  newPrice     Int?      @db.Integer
   description  String    @db.Text
   isFeatured   Boolean   @default(false)
   isArchived   Boolean   @default(false)
@@ -90,9 +90,9 @@ model Color {
 
 model Order {
   id           String        @id @default(cuid())
-  totalPrice   Decimal       @db.Decimal()
+  totalPrice   Int           @db.Integer
   totalItems   Int
-  status       OrderStatus   @default(PENDING)
+  status       ORDER_STATUS  @default(PENDING)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   user         User?         @relation(fields: [userId], references: [id])
@@ -102,7 +102,7 @@ model Order {
 
 model OrderedItem {
   id          String   @id @default(cuid())
-  price       Decimal  @db.Decimal()
+  price       Int      @db.Integer
   quantity    Int
   productId   String
   productName String   @db.VarChar(255)

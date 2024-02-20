@@ -76,11 +76,16 @@ export default function CategoryForm({ initialData }: Props) {
             />
 
             <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
-              <Button disabled={isFormLoading || isLoading} type="submit">
+              <Button
+                size="sm"
+                disabled={isFormLoading || isLoading}
+                type="submit"
+              >
                 {actionButton}
               </Button>
               <Button
                 variant="secondary"
+                size="sm"
                 onClick={() => {
                   if (initialData) {
                     if (!categoryId) return;

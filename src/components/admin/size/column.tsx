@@ -10,26 +10,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { cn, copyText, formatPrice } from "@/lib/utils";
+import { copyText, formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
-export enum OrderStatus {
-  PENDING = "pending",
-  PROCESSING = "processing",
-  CANCELLED = "cancelled",
-  DELIVERED = "delivered",
-  REFUNDED = "refunded",
-}
-
-export type OrderType = {
+export type sizeType = {
   id: string;
-  productName: string;
-  price: number;
-  status: OrderStatus;
-  date: string;
+  name: string;
+  value: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export const OrderColumn: ColumnDef<OrderType>[] = [
+export const sizeColumn: ColumnDef<sizeType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -53,55 +46,56 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "productName",
-    header: "ProductName",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productName")}</div>
-    ),
-  },
-  {
-    accessorKey: "price",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{formatPrice(row.getValue("price"))}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
+    accessorKey: "value",
+    header: ({ column }) => {
       return (
-        <div
-          className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
-            "bg-orange-200":
-              row.getValue("status") === "pending" ||
-              row.getValue("status") === "processing",
-            "bg-green-200":
-              row.getValue("status") === "completed" ||
-              row.getValue("status") === "delivered",
-            "bg-red-200": row.getValue("status") === "cancelled",
-            "bg-amber-200": row.getValue("status") === "refunded",
-          })}
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {row.getValue("status")}
-        </div>
+          Value
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       );
     },
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("value")}</div>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "CreatedAt",
+    cell: ({ row }) => (
+      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    header: "UpdatedAt",
+    cell: ({ row }) => (
+      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+    ),
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
+      const size = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -113,16 +107,17 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              // onClick={() => navigator.clipboard.writeText(payment.id)}
               onClick={async () => {
-                await copyText(payment.id);
-                toast.success("Payment ID copied to clipboard");
+                await copyText(size.id);
+                toast.success("size ID copied to clipboard");
               }}
             >
-              Copy payment ID
+              Copy size ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/admin/settings/sizes/${size.id}`}>View size</Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

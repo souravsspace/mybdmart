@@ -12,67 +12,54 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import {
-  type TbillboardValidator,
-  billboardValidator,
-} from "@/types/billboard-validator";
+import { type TColorValidator, ColorValidator } from "@/types/color-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Billboard } from "@prisma/client";
+import { type Color } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import SubHeading from "@/components/admin/ui/sub-heading";
-import toast from "react-hot-toast";
-import useImageToBase64 from "@/hooks/use-image-to-base64";
-import useBillboard from "@/hooks/use-billboard";
-import DragAndDropImage from "@/components/admin/ui/drag-and-drop-image";
+import useColor from "@/hooks/use-color";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  initialData: Billboard | null;
+  initialData: Color | null;
 };
 
-export default function BillboardForm({ initialData }: Props) {
+export default function ColorForm({ initialData }: Props) {
   const router = useRouter();
 
-  const billboardId = initialData?.id;
-  const { covertToBase64, theImage } = useImageToBase64();
+  const colorId = initialData?.id;
   const {
-    isBillboardLoading,
-    createBillboardMutate,
-    deleteBillboardMutate,
-    updateBillboardMutate,
-  } = useBillboard();
+    isColorLoading,
+    createColorMutate,
+    deleteColorMutate,
+    updateColorMutate,
+  } = useColor();
 
-  const form = useForm<TbillboardValidator>({
-    resolver: zodResolver(billboardValidator),
+  const form = useForm<TColorValidator>({
+    resolver: zodResolver(ColorValidator),
     defaultValues: {
       name: initialData?.name || "",
+      value: initialData?.value || "",
     },
   });
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-  const imageUrl = theImage ? (theImage as string) : initialData?.imageUrl;
   const isFormLoading =
     form.formState.isLoading ||
     form.formState.isValidating ||
     form.formState.isSubmitting;
 
-  const isLoading = isFormLoading || isBillboardLoading;
+  const isLoading = isFormLoading || isColorLoading;
 
-  const onSubmit = ({ name }: TbillboardValidator) => {
-    if (!billboardId || !initialData) {
-      if (!theImage) {
-        toast.error("Image is required");
-        return;
-      }
-      createBillboardMutate({ name, imageUrl: theImage as string });
+  const onSubmit = ({ name, value }: TColorValidator) => {
+    if (!initialData || !colorId) {
+      createColorMutate({ name, value });
       return;
     }
-
-    updateBillboardMutate({
-      id: billboardId,
+    updateColorMutate({
+      id: colorId,
       name,
-      imageUrl,
     });
   };
 
@@ -82,15 +69,15 @@ export default function BillboardForm({ initialData }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex flex-col items-start justify-between gap-1.5 sm:flex-row md:items-center">
             <SubHeading
-              title="Billboards"
-              subtitle="Manage billboard for your store."
+              title="Colors"
+              subtitle="Manage color for your store."
             />
 
             <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
               <Button
+                size="sm"
                 disabled={isFormLoading || isLoading}
                 type="submit"
-                size="sm"
               >
                 {actionButton}
               </Button>
@@ -99,11 +86,11 @@ export default function BillboardForm({ initialData }: Props) {
                 size="sm"
                 onClick={() => {
                   if (initialData) {
-                    if (!billboardId) return;
-                    deleteBillboardMutate({ id: billboardId });
+                    if (!colorId) return;
+                    deleteColorMutate({ id: colorId });
                     return;
                   } else {
-                    router.push("/admin/settings/billboards");
+                    router.push("/admin/settings/colors");
                   }
                 }}
               >
@@ -124,22 +111,38 @@ export default function BillboardForm({ initialData }: Props) {
                   <FormControl>
                     <Input
                       className="max-w-96"
-                      placeholder="Billboard name"
+                      placeholder="Color name"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    This is Billboard name. It will be displayed on your admin
+                    This is Color name. It will be displayed on your admin
                     dashboard.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <DragAndDropImage
-              imageUrl={imageUrl}
-              covertToBase64={covertToBase64}
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Value</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="max-w-96"
+                      placeholder="Color value"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    This is Color value. Must Be a valid color value with hex.
+                    e.g #000000
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
         </form>

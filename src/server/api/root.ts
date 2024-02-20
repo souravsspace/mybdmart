@@ -7,6 +7,9 @@ import { deliveryAddress } from "@/server/api/routers/delivery-address";
 import { usersData } from "@/server/api/routers/users";
 import { Billboard } from "@/server/api/routers/billboard";
 import { Category } from "@/server/api/routers/category";
+import { Size } from "@/server/api/routers/size";
+import { Color } from "@/server/api/routers/color";
+import { Order } from "@/server/api/routers/order";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +25,9 @@ export const appRouter = createTRPCRouter({
   usersData: usersData,
   billboard: Billboard,
   category: Category,
+  size: Size,
+  color: Color,
+  order: Order,
 });
 
 // export type definition of API

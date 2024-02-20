@@ -1,31 +1,35 @@
-// import OrdersDataTable from "@/components/admin/orders/data-table";
+import OrderClient from "@/components/admin/orders/order-client";
 import PageTitle from "@/components/admin/page-title";
-// import { api } from "@/trpc/server";
+import { api } from "@/trpc/server";
 
 export const revalidate = 0;
 
 export default async function OrdersPage() {
-  // const data = await api.orderdata.getOrders.query();
+  const order = await api.order.getAllOrders.query();
 
-  // const filteredData = data.map((order) => {
-  //   return {
-  //     ...order,
-  //     productData: order.orderedItems.map((item) => {
-  //       return {
-  //         productName: item.name,
-  //         productId: item.productId,
-  //         quantity: item.quantity,
-  //         price: item.price,
-  //       };
-  //     }),
-  //   };
-  // });
+  const filteredOrder = order.map((order) => {
+    return {
+      id: order.id,
+      totalItems: order.totalItems,
+      totalPrice: order.totalPrice,
+      status: order.status,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      orderedItems: order.orderedItems.map((item) => {
+        return {
+          productName: item.productName,
+          price: item.price,
+          quantity: item.quantity,
+        };
+      }),
+    };
+  });
 
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Orders" />
 
-      {/* <OrdersDataTable data={filteredData} searchInput="productName" /> */}
+      <OrderClient data={filteredOrder} />
     </div>
   );
 }

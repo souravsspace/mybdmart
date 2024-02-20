@@ -38,22 +38,20 @@ export default function Navbar() {
   const pathName = usePathname();
 
   return (
-    <nav className="w-ful flex flex-wrap items-center md:justify-end">
+    <nav className="flex w-full flex-wrap items-center justify-start gap-y-1.5 md:justify-end">
       {settingSubPages.map((link, index) => (
-        <div
-          key={index + link.href}
-          className="flex items-center gap-1 sm:gap-2"
-        >
+        <div key={index + link.href} className="flex items-center">
           <Link
             href={link.href}
             className={cn(
               buttonVariants({
                 variant: link.href === pathName ? "default" : "ghost",
                 size: "sm",
+                className: "justify-start dark:border",
               }),
-              link.variant === "default" &&
-                "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-              "justify-start",
+              // link.variant === "default" &&
+              //   "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+              // "justify-start",
             )}
           >
             {link.label}
