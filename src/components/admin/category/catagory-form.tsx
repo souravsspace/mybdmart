@@ -13,37 +13,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
-  type TbillboardValidator,
-  billboardValidator,
-} from "@/types/billboard-validator";
+  type TCategoryValidator,
+  CategoryValidator,
+} from "@/types/category-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Billboard } from "@prisma/client";
+import { type Category } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import SubHeading from "@/components/admin/ui/sub-heading";
-import toast from "react-hot-toast";
-import useImageToBase64 from "@/hooks/use-image-to-base64";
-import useBillboard from "@/hooks/use-billboard";
-import DragAndDropImage from "@/components/admin/ui/drag-and-drop-image";
+import useCategory from "@/hooks/use-category";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  initialData: Billboard | null;
+  initialData: Category | null;
 };
 
-export default function BillboardForm({ initialData }: Props) {
+export default function CategoryForm({ initialData }: Props) {
   const router = useRouter();
 
-  const billboardId = initialData?.id;
-  const { covertToBase64, theImage } = useImageToBase64();
+  const categoryId = initialData?.id;
   const {
-    isBillboardLoading,
-    createBillboardMutate,
-    deleteBillboardMutate,
-    updateBillboardMutate,
-  } = useBillboard();
+    isCategoryLoading,
+    createCategoryMutate,
+    deleteCategoryMutate,
+    updateCategoryMutate,
+  } = useCategory();
 
-  const form = useForm<TbillboardValidator>({
-    resolver: zodResolver(billboardValidator),
+  const form = useForm<TCategoryValidator>({
+    resolver: zodResolver(CategoryValidator),
     defaultValues: {
       name: initialData?.name || "",
     },
@@ -51,28 +47,21 @@ export default function BillboardForm({ initialData }: Props) {
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-  const imageUrl = theImage ? (theImage as string) : initialData?.imageUrl;
   const isFormLoading =
     form.formState.isLoading ||
     form.formState.isValidating ||
     form.formState.isSubmitting;
 
-  const isLoading = isFormLoading || isBillboardLoading;
+  const isLoading = isFormLoading || isCategoryLoading;
 
-  const onSubmit = ({ name }: TbillboardValidator) => {
-    if (!billboardId || !initialData) {
-      if (!theImage) {
-        toast.error("Image is required");
-        return;
-      }
-      createBillboardMutate({ name, imageUrl: theImage as string });
+  const onSubmit = ({ name }: TCategoryValidator) => {
+    if (!initialData || !categoryId) {
+      createCategoryMutate({ name });
       return;
     }
-
-    updateBillboardMutate({
-      id: billboardId,
+    updateCategoryMutate({
+      id: categoryId,
       name,
-      imageUrl,
     });
   };
 
@@ -82,8 +71,8 @@ export default function BillboardForm({ initialData }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex flex-col items-start justify-between gap-1.5 sm:flex-row md:items-center">
             <SubHeading
-              title="Billboards"
-              subtitle="Manage billboard for your store."
+              title="Categories"
+              subtitle="Manage category for your store."
             />
 
             <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
@@ -94,11 +83,11 @@ export default function BillboardForm({ initialData }: Props) {
                 variant="secondary"
                 onClick={() => {
                   if (initialData) {
-                    if (!billboardId) return;
-                    deleteBillboardMutate({ id: billboardId });
+                    if (!categoryId) return;
+                    deleteCategoryMutate({ id: categoryId });
                     return;
                   } else {
-                    router.push("/admin/settings/billboards");
+                    router.push("/admin/settings/categories");
                   }
                 }}
               >
@@ -119,22 +108,17 @@ export default function BillboardForm({ initialData }: Props) {
                   <FormControl>
                     <Input
                       className="max-w-96"
-                      placeholder="Billboard name"
+                      placeholder="Category name"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    This is Billboard name. It will be displayed on your admin
+                    This is Category name. It will be displayed on your admin
                     dashboard.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
-            <DragAndDropImage
-              imageUrl={imageUrl}
-              covertToBase64={covertToBase64}
             />
           </div>
         </form>

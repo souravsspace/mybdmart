@@ -14,7 +14,7 @@ export default function SubHeading({
   subtitleClassName,
 }: Props) {
   return (
-    <div className="grid gap-y-1.5">
+    <div className="flex flex-col gap-y-1.5">
       <h1 className={cn("text-lg font-medium", titleClassName)}>{title}</h1>
       <h4 className={cn("text-base text-muted-foreground", subtitleClassName)}>
         {subtitle}

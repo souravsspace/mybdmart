@@ -38,7 +38,7 @@ export default function Navbar() {
   const pathName = usePathname();
 
   return (
-    <nav className="flex w-full flex-wrap items-center justify-start md:justify-end">
+    <nav className="w-ful flex flex-wrap items-center md:justify-end">
       {settingSubPages.map((link, index) => (
         <div
           key={index + link.href}

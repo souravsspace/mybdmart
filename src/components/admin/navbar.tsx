@@ -8,10 +8,11 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 interface NavProps {
   isCollapsed: boolean;
@@ -26,16 +27,27 @@ interface NavProps {
 
 export function Navbar({ links, isCollapsed }: NavProps) {
   const pathName = usePathname();
+
   return (
     <TooltipProvider>
       <div
         data-collapsed={isCollapsed}
-        className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
+        className="group flex items-center justify-between gap-4 py-2 data-[collapsed=true]:py-2 md:items-start md:justify-start"
       >
-        <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+        <Link className="-ml-3.5 mr-auto md:hidden" href="/">
+          <Image
+            src="/logo/logo-light.png"
+            alt="MyBDmart"
+            width={180}
+            height={80}
+            className="object-contain"
+          />
+        </Link>
+
+        <nav className="flex gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 md:flex-col">
           {links.map((link, index) =>
             isCollapsed ? (
-              <Tooltip key={index} delayDuration={0}>
+              <Tooltip key={link.href + index} delayDuration={0}>
                 <TooltipTrigger asChild>
                   <Link
                     href={link.href}
@@ -55,7 +67,7 @@ export function Navbar({ links, isCollapsed }: NavProps) {
                 </TooltipTrigger>
                 <TooltipContent
                   side="right"
-                  className="flex items-center gap-4"
+                  className="hidden items-center gap-4 md:flex"
                 >
                   {link.title}
                   {link.label && (

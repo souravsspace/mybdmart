@@ -13,7 +13,7 @@ export default async function BillboardsPage() {
 
   return (
     <main>
-      <div className="flex flex-col items-center justify-between gap-1.5 sm:flex-row">
+      <div className="flex flex-col items-start justify-between gap-1.5 sm:flex-row md:items-center">
         <SubHeading
           title="Billboards"
           subtitle="Manage billboard for your store."
