@@ -24,8 +24,11 @@ export type productType = {
   // sizes: SizeAndColor[];
   // colors: SizeAndColor[];
   category: string | undefined;
+  categoryId: string | undefined;
   size: string | undefined;
+  sizeId: string | undefined;
   color: string | undefined;
+  colorId: string | undefined;
   images: Image[];
   updatedAt: Date;
 };

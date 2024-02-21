@@ -3,7 +3,6 @@ import SubHeading from "@/components/admin/ui/sub-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/trpc/server";
-import { type productType } from "@/types/admin-product";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +11,7 @@ export const revalidate = 0;
 export default async function ProductsPage() {
   const products = await api.product.getAllProducts.query();
 
-  const filteredProduct: productType[] = products.map((product) => {
+  const filteredProduct = products.map((product) => {
     return {
       id: product.id,
       name: product.name,
@@ -23,8 +22,11 @@ export default async function ProductsPage() {
       isArchived: product.isArchived,
       updatedAt: product.updatedAt,
       category: product.category?.name,
-      size: product.size?.value,
-      color: product.color?.value,
+      categoryId: product.category?.id,
+      size: product.size?.name,
+      sizeId: product.size?.id,
+      color: product.color?.name,
+      colorId: product.color?.id,
       images: product.images.map((image) => {
         return {
           imageUrl: image.imageUrl,

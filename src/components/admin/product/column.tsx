@@ -18,10 +18,28 @@ import {
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
-import { type productType } from "@/types/admin-product";
+import type { Image as Images } from "@/types/admin-product";
 import Image from "next/image";
 
-export const productColumn: ColumnDef<productType>[] = [
+export type Product = {
+  id: string;
+  name: string;
+  price: number;
+  newPrice: number | null;
+  category: string | undefined;
+  categoryId: string | undefined;
+  description: string;
+  isArchived: boolean;
+  isFeatured: boolean;
+  sizeId: string | undefined;
+  colorId: string | undefined;
+  images: Images[];
+  updatedAt: Date;
+  size: string | undefined;
+  color: string | undefined;
+};
+
+export const productColumn: ColumnDef<Product>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -109,7 +127,7 @@ export const productColumn: ColumnDef<productType>[] = [
   {
     accessorKey: "size",
     header: "Size",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("size")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.original.size}</div>,
   },
   {
     accessorKey: "color",
@@ -119,21 +137,27 @@ export const productColumn: ColumnDef<productType>[] = [
   {
     accessorKey: "images",
     header: "Images",
-    cell: ({ row }) => (
-      <div className="grid gap-1">
-        {row.original.images.map((img) => {
-          return (
-            <Image
-              key={img.imageUrl}
-              src={img.imageUrl}
-              alt="product image"
-              width={80}
-              height={80}
-            />
-          );
-        })}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const images = row.original.images;
+
+      // if (!images) return <h4 className="uppercase">No</h4>;
+      return (
+        <div className="grid gap-1">
+          {images.map((img) => {
+            if (!img.imageUrl) return <h4 className="uppercase">No</h4>;
+            return (
+              <Image
+                key={img.imageUrl}
+                src={img.imageUrl}
+                alt="product image"
+                width={80}
+                height={80}
+              />
+            );
+          })}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "isFeatured",

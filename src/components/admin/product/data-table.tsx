@@ -31,11 +31,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { productColumn as columns } from "./column";
-import { type productType } from "@/types/admin-product";
+import { type Product, productColumn as columns } from "./column";
 
 type Props = {
-  data: productType[];
+  data: Product[];
   searchInput: string;
 };
 

@@ -51,8 +51,11 @@ export default async function Product({ params: { productId } }: Props) {
     isArchived: product.isArchived,
     updatedAt: product.updatedAt,
     category: product.category?.name,
+    categoryId: product.category?.id,
     size: product.size?.value,
+    sizeId: product.size?.id,
     color: product.color?.value,
+    colorId: product.color?.id,
     images: product.images.map((image) => {
       return {
         imageUrl: image.imageUrl,
