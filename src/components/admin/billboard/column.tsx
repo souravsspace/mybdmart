@@ -59,15 +59,15 @@ export const billboardColumn: ColumnDef<billboardType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.original.name}</div>,
   },
   {
     accessorKey: "imageUrl",
     header: "Image",
     cell: ({ row }) => (
       <Image
-        src={row.getValue("imageUrl")}
-        alt={row.getValue("name")}
+        src={row.original.imageUrl}
+        alt={row.original.name}
         width={100}
         height={100}
         className="rounded-md"
@@ -78,14 +78,14 @@ export const billboardColumn: ColumnDef<billboardType>[] = [
     accessorKey: "createdAt",
     header: "CreatedAt",
     cell: ({ row }) => (
-      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+      <div className="capitalize"> {formatDate(row.original.createdAt)}</div>
     ),
   },
   {
     accessorKey: "updatedAt",
     header: "UpdatedAt",
     cell: ({ row }) => (
-      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+      <div className="capitalize">{formatDate(row.original.updatedAt)}</div>
     ),
   },
   {

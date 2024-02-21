@@ -33,26 +33,31 @@ model Category {
   name      String    @db.VarChar(255)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  products  Product[]
+  product   Product[]
+  // product   Product? @relation(fields: [productId], references: [id])
+  // productId String?
 }
 
 model Product {
-  id           String    @id @default(cuid())
-  name         String    @db.VarChar(255)
-  price        Int       @db.Integer
-  newPrice     Int?      @db.Integer
-  description  String    @db.Text
-  isFeatured   Boolean   @default(false)
-  isArchived   Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  categories   Category? @relation(fields: [categoriesId], references: [id])
-  categoriesId String?
-  size         Size?     @relation(fields: [sizeId], references: [id])
-  sizeId       String?
-  color        Color?    @relation(fields: [colorId], references: [id])
-  colorId      String?
-  images       Image[]
+  id          String    @id @default(cuid())
+  name        String    @db.VarChar(255)
+  price       Int       @db.Integer
+  newPrice    Int?      @db.Integer
+  description String    @db.Text
+  isFeatured  Boolean   @default(false)
+  isArchived  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  images      Image[]
+  size        Size?     @relation(fields: [sizeId], references: [id])
+  sizeId      String?
+  color       Color?    @relation(fields: [colorId], references: [id])
+  colorId     String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  // sizes       Size[]
+  // categories  Category[]
+  // colors      Color[]
 }
 
 model Billboard {
@@ -66,7 +71,7 @@ model Billboard {
 model Image {
   id        String   @id @default(cuid())
   imageUrl  String   @db.Text
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String?
 }
 
@@ -76,7 +81,9 @@ model Size {
   value     String    @db.VarChar(255)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  products  Product[]
+  product   Product[]
+  // product   Product? @relation(fields: [productId], references: [id])
+  // productId String?
 }
 
 model Color {
@@ -85,7 +92,9 @@ model Color {
   value     String    @db.VarChar(255)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  products  Product[]
+  product   Product[]
+  // product   Product? @relation(fields: [productId], references: [id])
+  // productId String?
 }
 
 model Order {

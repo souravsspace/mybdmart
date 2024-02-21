@@ -10,6 +10,8 @@ import { Category } from "@/server/api/routers/category";
 import { Size } from "@/server/api/routers/size";
 import { Color } from "@/server/api/routers/color";
 import { Order } from "@/server/api/routers/order";
+import { Product } from "@/server/api/routers/product";
+import { GetMixedValues } from "@/server/api/routers/get-mixed-values";
 
 /**
  * This is the primary router for your server.
@@ -28,6 +30,8 @@ export const appRouter = createTRPCRouter({
   size: Size,
   color: Color,
   order: Order,
+  product: Product,
+  getMixedValues: GetMixedValues,
 });
 
 // export type definition of API

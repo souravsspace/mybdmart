@@ -58,7 +58,7 @@ export const sizeColumn: ColumnDef<sizeType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.original.name}</div>,
   },
   {
     accessorKey: "value",
@@ -73,22 +73,20 @@ export const sizeColumn: ColumnDef<sizeType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("value")}</div>
-    ),
+    cell: ({ row }) => <div className="capitalize">{row.original.value}</div>,
   },
   {
     accessorKey: "createdAt",
     header: "CreatedAt",
     cell: ({ row }) => (
-      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+      <div className="capitalize"> {formatDate(row.original.createdAt)}</div>
     ),
   },
   {
     accessorKey: "updatedAt",
     header: "UpdatedAt",
     cell: ({ row }) => (
-      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+      <div className="capitalize">{formatDate(row.original.updatedAt)}</div>
     ),
   },
   {

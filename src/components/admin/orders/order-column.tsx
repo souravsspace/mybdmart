@@ -67,13 +67,17 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
       );
     },
     cell: ({ row }) => {
-      const orderedItems: OrderedItems = row.getValue("orderedItems");
+      const orderedItems = row.original.orderedItems;
       return (
         <ul className="gap gap-y-0.5 capitalize">
-          <li className="text-sm font-medium">{orderedItems.productName}</li>
-          <li className="text-xs text-gray-500">
-            {formatPrice(orderedItems.price)} x {orderedItems.quantity}
-          </li>
+          {orderedItems.map((item, i) => (
+            <div key={item.productName + i}>
+              <li className="text-sm font-medium">{item.productName}</li>
+              <li className="text-xs text-gray-500">
+                {formatPrice(item.price)} x {item.quantity}
+              </li>
+            </div>
+          ))}
         </ul>
       );
     },
@@ -91,7 +95,7 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("price")}</div>,
+    cell: ({ row }) => <div>{row.original.totalItems}</div>,
   },
   {
     accessorKey: "totalPrice",
@@ -106,42 +110,38 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{formatPrice(row.getValue("price"))}</div>,
+    cell: ({ row }) => <div>{formatPrice(row.original.totalPrice)}</div>,
   },
   {
     accessorKey: "createdAt",
     header: "CreatedAt",
     cell: ({ row }) => (
-      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+      <div className="capitalize"> {formatDate(row.original.createdAt)}</div>
     ),
   },
   {
     accessorKey: "updatedAt",
     header: "UpdatedAt",
     cell: ({ row }) => (
-      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+      <div className="capitalize">{formatDate(row.original.updatedAt)}</div>
     ),
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
+      const rowValue = row.original.status.toUpperCase();
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
             "bg-orange-200 dark:bg-orange-600":
-              row.getValue("status") === "PENDING" ||
-              row.getValue("status") === "PROCESSING",
-            "bg-green-200 dark:bg-green-600":
-              row.getValue("status") === "COMPLETED" ||
-              row.getValue("status") === "DELIVERED",
-            "bg-red-200 dark:bg-primary":
-              row.getValue("status") === "CANCELLED",
-            "bg-amber-200 dark:bg-amber-200":
-              row.getValue("status") === "REFUNDED",
+              rowValue === "PENDING" || rowValue === "PROCESSING",
+            "bg-green-200 dark:bg-green-600": rowValue === "DELIVERED",
+            "bg-red-200 dark:bg-primary": rowValue === "CANCELLED",
+            "bg-amber-200 dark:bg-amber-200": rowValue === "REFUNDED",
           })}
         >
-          {row.getValue("status")}
+          {rowValue}
         </div>
       );
     },

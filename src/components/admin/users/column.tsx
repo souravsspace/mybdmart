@@ -12,19 +12,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { cn, copyText } from "@/lib/utils";
 import toast from "react-hot-toast";
-
-export enum Role {
-  ADMIN = "admin",
-  USER = "user",
-  MOD = "mod",
-}
+import { type ROLE } from "@prisma/client";
 
 export type UserType = {
   id: string;
   username: string;
   email: string;
   verified: Date | null;
-  role: Role;
+  role: ROLE;
 };
 
 export const UserColumn: ColumnDef<UserType>[] = [
@@ -63,9 +58,7 @@ export const UserColumn: ColumnDef<UserType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("username")}</div>
-    ),
+    cell: ({ row }) => <div className="lowercase">{row.original.username}</div>,
   },
   {
     accessorKey: "email",
@@ -80,7 +73,7 @@ export const UserColumn: ColumnDef<UserType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.original.email}</div>,
   },
   {
     accessorKey: "role",
@@ -96,15 +89,16 @@ export const UserColumn: ColumnDef<UserType>[] = [
       );
     },
     cell: ({ row }) => {
+      const userRole = row.original.role;
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
-            "bg-red-200": row.getValue("role") === "admin",
-            "bg-blue-200": row.getValue("role") === "mod",
-            "bg-green-200": row.getValue("role") === "user",
+            "bg-red-200 dark:bg-primary": userRole === "ADMIN",
+            "bg-blue-200 dark:bg-blue-600": userRole === "MOD",
+            "bg-green-200 dark:bg-green-600": userRole === "USER",
           })}
         >
-          {row.getValue("role")}
+          {userRole}
         </div>
       );
     },
@@ -116,12 +110,12 @@ export const UserColumn: ColumnDef<UserType>[] = [
       <div
         className={cn(
           "w-fit rounded-lg px-4 py-2 font-medium capitalize",
-          row.getValue("verified") == null || undefined
+          row.original.verified == null || undefined
             ? "bg-red-200 dark:bg-primary"
             : "bg-green-200 dark:bg-green-600",
         )}
       >
-        {row.getValue("verified") ? "Yes" : "No"}
+        {row.original.verified ? "Yes" : "No"}
       </div>
     ),
   },

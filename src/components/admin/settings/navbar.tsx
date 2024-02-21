@@ -8,6 +8,16 @@ import { usePathname } from "next/navigation";
 
 const settingSubPages = [
   {
+    label: "Products",
+    href: "/admin/settings",
+    variant: "ghost",
+  },
+  // {
+  //   label: "Products",
+  //   href: "/admin/settings/products",
+  //   variant: "ghost",
+  // },
+  {
     label: "Billboards",
     href: "/admin/settings/billboards",
     variant: "default",
@@ -15,11 +25,6 @@ const settingSubPages = [
   {
     label: "Categories",
     href: "/admin/settings/categories",
-    variant: "ghost",
-  },
-  {
-    label: "Products",
-    href: "/admin/settings/products",
     variant: "ghost",
   },
   {

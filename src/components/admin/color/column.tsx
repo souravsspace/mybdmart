@@ -58,7 +58,7 @@ export const colorColumn: ColumnDef<colorType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.original.name}</div>,
   },
   {
     accessorKey: "value",
@@ -73,7 +73,6 @@ export const colorColumn: ColumnDef<colorType>[] = [
         </Button>
       );
     },
-    // bg-[#50d71e]
     cell: ({ row }) => (
       <div className="flex items-center gap-x-2">
         {row.original.value}
@@ -88,14 +87,14 @@ export const colorColumn: ColumnDef<colorType>[] = [
     accessorKey: "createdAt",
     header: "CreatedAt",
     cell: ({ row }) => (
-      <div className="capitalize"> {formatDate(row.getValue("createdAt"))}</div>
+      <div className="capitalize"> {formatDate(row.original.createdAt)}</div>
     ),
   },
   {
     accessorKey: "updatedAt",
     header: "UpdatedAt",
     cell: ({ row }) => (
-      <div className="capitalize">{formatDate(row.getValue("updatedAt"))}</div>
+      <div className="capitalize">{formatDate(row.original.updatedAt)}</div>
     ),
   },
   {

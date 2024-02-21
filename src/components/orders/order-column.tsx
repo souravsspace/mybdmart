@@ -12,20 +12,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { cn, copyText, formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
-
-export enum OrderStatus {
-  PENDING = "pending",
-  PROCESSING = "processing",
-  CANCELLED = "cancelled",
-  DELIVERED = "delivered",
-  REFUNDED = "refunded",
-}
+import { type ORDER_STATUS } from "@prisma/client";
 
 export type OrderType = {
   id: string;
   productName: string;
   price: number;
-  status: OrderStatus;
+  status: ORDER_STATUS;
   date: string;
 };
 
@@ -56,7 +49,7 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     accessorKey: "productName",
     header: "ProductName",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productName")}</div>
+      <div className="capitalize">{row.original.productName}</div>
     ),
   },
   {
@@ -72,26 +65,24 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{formatPrice(row.getValue("price"))}</div>,
+    cell: ({ row }) => <div>{formatPrice(row.original.price)}</div>,
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
+      const rowValue = row.original.status.toUpperCase();
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
-            "bg-orange-200":
-              row.getValue("status") === "pending" ||
-              row.getValue("status") === "processing",
-            "bg-green-200":
-              row.getValue("status") === "completed" ||
-              row.getValue("status") === "delivered",
-            "bg-red-200": row.getValue("status") === "cancelled",
-            "bg-amber-200": row.getValue("status") === "refunded",
+            "bg-orange-200 dark:bg-orange-600":
+              rowValue === "PENDING" || rowValue === "PROCESSING",
+            "bg-green-200 dark:bg-green-600": rowValue === "DELIVERED",
+            "bg-red-200 dark:bg-primary": rowValue === "CANCELLED",
+            "bg-amber-200 dark:bg-amber-200": rowValue === "REFUNDED",
           })}
         >
-          {row.getValue("status")}
+          {rowValue}
         </div>
       );
     },

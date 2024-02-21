@@ -1,7 +1,7 @@
 import PageTitle from "@/components/admin/page-title";
-import { type Role } from "@/components/admin/users/column";
 import UsersDataTable from "@/components/admin/users/data-table";
 import { api } from "@/trpc/server";
+import { type ROLE } from "@prisma/client";
 
 export const revalidate = 0;
 
@@ -13,7 +13,7 @@ export default async function UsersPage() {
     email: user.email,
     username: user.username,
     verified: user.emailVerified,
-    role: user.role as Role,
+    role: user.role as ROLE,
   }));
 
   return (

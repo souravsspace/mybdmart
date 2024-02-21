@@ -4,7 +4,7 @@ import { type PropsWithChildren } from "react";
 
 export default async function SettingsLayout({ children }: PropsWithChildren) {
   return (
-    <main className="flex w-full flex-col  gap-5">
+    <main className="flex w-full flex-col gap-5">
       <PageTitle title="Settings" />
       <Navbar />
 
