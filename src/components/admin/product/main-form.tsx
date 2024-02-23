@@ -36,6 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 
 type Props = {
   form: any;
@@ -43,6 +44,10 @@ type Props = {
   categories: Categories[];
   sizes: SizeAndColor[];
   colors: SizeAndColor[];
+  isSizes: SizeAndColor[];
+  isColors: SizeAndColor[];
+  setSizeValue: Dispatch<SetStateAction<SizeAndColor[]>>;
+  setColorValue: Dispatch<SetStateAction<SizeAndColor[]>>;
 };
 
 export default function MainForm({
@@ -51,6 +56,10 @@ export default function MainForm({
   categories,
   sizes,
   colors,
+  isColors,
+  isSizes,
+  setSizeValue,
+  setColorValue,
 }: Props) {
   const { covertToBase64, theImage } = useImageToBase64();
   const { selectedSize, isSizeOptions, onSizeValueChange, onSizeRemoveValue } =
@@ -61,6 +70,17 @@ export default function MainForm({
     onColorValueChange,
     onColorRemoveValue,
   } = useProductColor({ options: colors });
+
+  useEffect(() => {
+    setSizeValue(selectedSize);
+    setColorValue(selectedColor);
+  }, [selectedSize, selectedColor, setSizeValue, setColorValue]);
+
+  const notEmptyIsSizes = isSizes.length > 0;
+  const notEmptyIsColors = isColors.length > 0;
+
+  const arrayOfSize = notEmptyIsSizes ? isSizes : selectedSize;
+  const arrayOfColor = notEmptyIsColors ? isColors : selectedColor;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 md:gap-8">
@@ -171,35 +191,26 @@ export default function MainForm({
             <FormLabel>Size</FormLabel>
             <div className="space-y-3">
               <ul className="flex flex-wrap gap-1 rounded-md border-[1px] border-muted px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                {selectedSize.length === 0 && (
+                {arrayOfSize.length === 0 && (
                   <li className="px-1.5 py-0.5">Nothing in here</li>
                 )}
-                {selectedSize.map((item) => (
+                {arrayOfSize.map((item) => (
                   <li
-                    key={item}
+                    key={item.id}
                     className="cursor-pointer rounded-md bg-primary px-1.5 py-0.5"
-                    onClick={() => onSizeRemoveValue(item)}
+                    onClick={() => onSizeRemoveValue(item.id)}
                   >
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>{item}</TooltipTrigger>
-                        <TooltipContent>Remove {item} ?</TooltipContent>
+                        <TooltipTrigger>{item.name}</TooltipTrigger>
+                        <TooltipContent>Remove {item.name} ?</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </li>
                 ))}
               </ul>
               <Select
-                // onValueChange={onSizeValueChange}
-                // onValueChange={field.onChange}
                 disabled={isLoading}
-                // onValueChange={() => {
-                //   field.onChange(() => {
-                //     onSizeValueChange(field.value as string);
-                //     return selectedSize;
-                //   });
-                //   console.log("the field value : " + field.value);
-                // }}
                 onValueChange={(e) => {
                   field.onChange;
                   onSizeValueChange(e);
@@ -235,32 +246,26 @@ export default function MainForm({
             <FormLabel>Color</FormLabel>
             <div className="space-y-3">
               <ul className="flex flex-wrap gap-1 rounded-md border-[1px] border-muted px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                {selectedColor.length === 0 && (
+                {arrayOfColor.length === 0 && (
                   <li className="px-1.5 py-0.5">Nothing in here</li>
                 )}
-                {selectedColor.map((item) => (
+                {arrayOfColor.map((item) => (
                   <li
-                    key={item}
+                    key={item.id}
                     className="cursor-pointer rounded-md bg-primary px-1.5 py-0.5"
-                    onClick={() => onColorRemoveValue(item)}
+                    onClick={() => onColorRemoveValue(item.id)}
                   >
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>{item}</TooltipTrigger>
-                        <TooltipContent>Remove {item} ?</TooltipContent>
+                        <TooltipTrigger>{item.name}</TooltipTrigger>
+                        <TooltipContent>Remove {item.name} ?</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </li>
                 ))}
               </ul>
               <Select
-                // onValueChange={onColorValueChange}
                 disabled={isLoading}
-                // onValueChange={field.onChange}
-                // onValueChange={() => {
-                //   onColorValueChange(field.value as string);
-                //   field.onChange(selectedColor);
-                // }}
                 onValueChange={(e) => {
                   field.onChange;
                   onColorValueChange(e);
@@ -372,6 +377,7 @@ export default function MainForm({
             <FormControl>
               <Textarea
                 disabled={isLoading}
+                typeof="text"
                 placeholder="Product description"
                 {...field}
                 rows={7}

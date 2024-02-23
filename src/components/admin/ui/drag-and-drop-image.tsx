@@ -49,15 +49,17 @@ export default function DragAndDropImage({
         </div>
       </div>
 
-      {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt="BillboardImage"
-          width={250}
-          height={250}
-          className="mt-4 max-w-[400px] rounded-lg md:ml-12 md:mt-0"
-        />
-      )}
+      {multiple
+        ? null
+        : imageUrl && (
+            <Image
+              src={imageUrl}
+              alt="BillboardImage"
+              width={250}
+              height={250}
+              className="mt-4 max-w-[400px] rounded-lg md:ml-12 md:mt-0"
+            />
+          )}
     </div>
   );
 }

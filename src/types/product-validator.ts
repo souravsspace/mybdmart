@@ -26,20 +26,22 @@ export const ProductValidator = z.object({
   // sizeId: z.string().min(1, {
   //   message: "Size is required",
   // }),
-  sizeId: z
+  sizes: z
     .object({
       id: z.string(),
       name: z.string(),
       value: z.string(),
     })
-    .array(),
-  colorId: z
+    .array()
+    .optional(),
+  colors: z
     .object({
       id: z.string(),
       name: z.string(),
       value: z.string(),
     })
-    .array(),
+    .array()
+    .optional(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
