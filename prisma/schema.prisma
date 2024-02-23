@@ -38,6 +38,14 @@ model Category {
   // productId String?
 }
 
+model Billboard {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(255)
+  imageUrl  String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Product {
   id          String    @id @default(cuid())
   name        String    @db.VarChar(255)
@@ -48,24 +56,11 @@ model Product {
   isArchived  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  images      Image[]
-  size        Size?     @relation(fields: [sizeId], references: [id])
-  sizeId      String?
-  color       Color?    @relation(fields: [colorId], references: [id])
-  colorId     String?
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  String?
-  // sizes       Size[]
-  // categories  Category[]
-  // colors      Color[]
-}
-
-model Billboard {
-  id        String   @id @default(cuid())
-  name      String   @db.VarChar(255)
-  imageUrl  String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  images      Image[]
+  sizes       Size[]
+  colors      Color[]
 }
 
 model Image {
@@ -76,25 +71,23 @@ model Image {
 }
 
 model Size {
-  id        String    @id @default(cuid())
-  name      String    @db.VarChar(255)
-  value     String    @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  product   Product[]
-  // product   Product? @relation(fields: [productId], references: [id])
-  // productId String?
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(255)
+  value     String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
 }
 
 model Color {
-  id        String    @id @default(cuid())
-  name      String    @db.VarChar(255)
-  value     String    @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  product   Product[]
-  // product   Product? @relation(fields: [productId], references: [id])
-  // productId String?
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(255)
+  value     String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
 }
 
 model Order {

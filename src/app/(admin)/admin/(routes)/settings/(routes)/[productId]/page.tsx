@@ -1,6 +1,6 @@
 import ProductForm from "@/components/admin/product/product-form";
 import { api } from "@/trpc/server";
-import type { SizeAndColor, productType } from "@/types/admin-product";
+import { type productType } from "@/types/admin-product";
 
 type Props = {
   params: {
@@ -15,28 +15,12 @@ export default async function Product({ params: { productId } }: Props) {
   const { sizes, colors, categories } =
     await api.getMixedValues.mixedData.query();
 
-  const filteredSizes: SizeAndColor[] = sizes.map((size) => {
-    return {
-      id: size.id,
-      name: size.name,
-      value: size.value,
-    };
-  });
-
-  const filteredColors: SizeAndColor[] = colors.map((color) => {
-    return {
-      id: color.id,
-      name: color.name,
-      value: color.value,
-    };
-  });
-
   if (!product)
     return (
       <ProductForm
         initialData={null}
-        sizes={filteredSizes}
-        colors={filteredColors}
+        sizes={sizes}
+        colors={colors}
         categories={categories}
       />
     );
@@ -52,10 +36,24 @@ export default async function Product({ params: { productId } }: Props) {
     updatedAt: product.updatedAt,
     category: product.category?.name,
     categoryId: product.category?.id,
-    size: product.size?.value,
-    sizeId: product.size?.id,
-    color: product.color?.value,
-    colorId: product.color?.id,
+    // size: product.size?.value,
+    // sizeId: product.size?.id,
+    // color: product.color?.value,
+    // colorId: product.color?.id,
+    sizes: product.sizes.map((size) => {
+      return {
+        id: size.id,
+        name: size.name,
+        value: size.value,
+      };
+    }),
+    colors: product.colors.map((color) => {
+      return {
+        id: color.id,
+        name: color.name,
+        value: color.value,
+      };
+    }),
     images: product.images.map((image) => {
       return {
         imageUrl: image.imageUrl,
@@ -66,8 +64,8 @@ export default async function Product({ params: { productId } }: Props) {
   return (
     <ProductForm
       initialData={filteredProduct}
-      colors={filteredColors}
-      sizes={filteredSizes}
+      colors={colors}
+      sizes={sizes}
       categories={categories}
     />
   );

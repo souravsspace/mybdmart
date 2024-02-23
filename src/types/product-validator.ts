@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const productValidator = z.object({
+export const ProductValidator = z.object({
   name: z
     .string()
     .min(2, {
@@ -20,14 +20,28 @@ export const productValidator = z.object({
   categoryId: z.string().min(1, {
     message: "Category is required",
   }),
-  colorId: z.string().min(1, {
-    message: "Color is required",
-  }),
-  sizeId: z.string().min(1, {
-    message: "Size is required",
-  }),
+  // colorId: z.string().min(1, {
+  //   message: "Color is required",
+  // }),
+  // sizeId: z.string().min(1, {
+  //   message: "Size is required",
+  // }),
+  sizeId: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      value: z.string(),
+    })
+    .array(),
+  colorId: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      value: z.string(),
+    })
+    .array(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
 
-export type TproductValidator = z.infer<typeof productValidator>;
+export type TProductValidator = z.infer<typeof ProductValidator>;

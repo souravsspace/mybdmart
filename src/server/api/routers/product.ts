@@ -16,10 +16,10 @@ export const Product = createTRPCRouter({
           id: input.id,
         },
         include: {
-          color: true,
-          size: true,
           category: true,
           images: true,
+          colors: true,
+          sizes: true,
         },
       });
 
@@ -28,10 +28,10 @@ export const Product = createTRPCRouter({
   getAllProducts: publicProcedure.query(async ({ ctx }) => {
     const data = await ctx.db.product.findMany({
       include: {
-        color: true,
-        size: true,
         category: true,
         images: true,
+        colors: true,
+        sizes: true,
       },
     });
     return data;

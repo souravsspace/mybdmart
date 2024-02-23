@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { type ChangeEvent } from "react";
 import { RiImageAddFill } from "react-icons/ri";
@@ -7,14 +8,27 @@ import { RiImageAddFill } from "react-icons/ri";
 type Props = {
   imageUrl: string | undefined;
   covertToBase64: (event: ChangeEvent<HTMLInputElement>) => void;
+  multiple?: boolean;
+  inForm?: boolean;
 };
 
-export default function DragAndDropImage({ imageUrl, covertToBase64 }: Props) {
+export default function DragAndDropImage({
+  imageUrl,
+  covertToBase64,
+  multiple = false,
+  inForm,
+}: Props) {
   return (
     <div className="flex flex-col-reverse items-center gap-2 md:flex-row">
-      <div className="relative max-w-[400px] rounded-lg border-2 border-dashed border-gray-300 p-6">
+      <div
+        className={cn(
+          "relative rounded-lg border-2 border-dashed border-gray-300 p-6",
+          inForm ? "w-full" : "max-w-[400px]",
+        )}
+      >
         <input
           type="file"
+          // multiple={multiple}
           className="absolute inset-0 z-50 h-full w-full opacity-0"
           onChange={covertToBase64}
         />

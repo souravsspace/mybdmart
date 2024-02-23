@@ -1,3 +1,4 @@
+import { type Product } from "@/components/admin/product/column";
 import ProductsDataTable from "@/components/admin/product/data-table";
 import SubHeading from "@/components/admin/ui/sub-heading";
 import { buttonVariants } from "@/components/ui/button";
@@ -11,7 +12,7 @@ export const revalidate = 0;
 export default async function ProductsPage() {
   const products = await api.product.getAllProducts.query();
 
-  const filteredProduct = products.map((product) => {
+  const filteredProduct: Product[] = products.map((product) => {
     return {
       id: product.id,
       name: product.name,
@@ -23,10 +24,24 @@ export default async function ProductsPage() {
       updatedAt: product.updatedAt,
       category: product.category?.name,
       categoryId: product.category?.id,
-      size: product.size?.name,
-      sizeId: product.size?.id,
-      color: product.color?.name,
-      colorId: product.color?.id,
+      // size: product.size?.name,
+      // sizeId: product.size?.id,
+      // color: product.color?.name,
+      // colorId: product.color?.id,
+      sizes: product.sizes.map((size) => {
+        return {
+          id: size.id,
+          name: size.name,
+          value: size.value,
+        };
+      }),
+      colors: product.colors.map((color) => {
+        return {
+          id: color.id,
+          name: color.name,
+          value: color.value,
+        };
+      }),
       images: product.images.map((image) => {
         return {
           imageUrl: image.imageUrl,

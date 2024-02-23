@@ -21,6 +21,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { Image as Images } from "@/types/admin-product";
 import Image from "next/image";
 
+type SizeAndColor = {
+  id: string;
+  name: string;
+  value: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -31,12 +37,14 @@ export type Product = {
   description: string;
   isArchived: boolean;
   isFeatured: boolean;
-  sizeId: string | undefined;
-  colorId: string | undefined;
+  // sizeId: string | undefined;
+  // colorId: string | undefined;
+  colors: SizeAndColor[] | [];
+  sizes: SizeAndColor[] | [];
   images: Images[];
   updatedAt: Date;
-  size: string | undefined;
-  color: string | undefined;
+  // size: string | undefined;
+  // color: string | undefined;
 };
 
 export const productColumn: ColumnDef<Product>[] = [
@@ -127,12 +135,16 @@ export const productColumn: ColumnDef<Product>[] = [
   {
     accessorKey: "size",
     header: "Size",
-    cell: ({ row }) => <div className="capitalize">{row.original.size}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{JSON.stringify(row.original.sizes)}</div>
+    ),
   },
   {
     accessorKey: "color",
     header: "Color",
-    cell: ({ row }) => <div className="capitalize">{row.original.color}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{JSON.stringify(row.original.colors)}</div>
+    ),
   },
   {
     accessorKey: "images",

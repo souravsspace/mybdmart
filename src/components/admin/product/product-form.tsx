@@ -1,39 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import {
-  type TproductValidator,
-  productValidator,
+  type TProductValidator,
+  ProductValidator,
 } from "@/types/product-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import SubHeading from "@/components/admin/ui/sub-heading";
 import toast from "react-hot-toast";
 import useImageToBase64 from "@/hooks/use-image-to-base64";
-import DragAndDropImage from "@/components/admin/ui/drag-and-drop-image";
 import { useRouter } from "next/navigation";
 import type { productType, SizeAndColor } from "@/types/admin-product";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import MainForm from "./main-form";
 
-type Categories = {
+export type Categories = {
   id: string;
   name: string;
 };
@@ -52,35 +35,27 @@ export default function ProductForm({
   categories,
 }: Props) {
   const router = useRouter();
-
   const productId = initialData?.id;
-  const { covertToBase64, theImage } = useImageToBase64();
+  const { theImage } = useImageToBase64();
 
-  // const {
-  //   isProductLoading,
-  //   createProductMutate,
-  //   deleteProductMutate,
-  //   updateProductMutate,
-  // } = useProduct();
-
-  const form = useForm<TproductValidator>({
-    resolver: zodResolver(productValidator),
+  const form = useForm<TProductValidator>({
+    resolver: zodResolver(ProductValidator),
     defaultValues: {
       name: initialData?.name || "",
       images: initialData?.images || [],
       price: String(initialData?.price) || "",
       newPrice: String(initialData?.newPrice) || "",
-      sizeId: initialData?.size || "",
-      colorId: initialData?.color || "",
+      sizeId: initialData?.sizes || [],
+      colorId: initialData?.colors,
       categoryId: initialData?.category || "",
       isFeatured: initialData?.isFeatured || false,
       isArchived: initialData?.isArchived || false,
+      description: initialData?.description || "",
     },
   });
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-  // const imageUrl = theImage ? (theImage as string) : initialData?.imageUrl;
   const isFormLoading =
     form.formState.isLoading ||
     form.formState.isValidating ||
@@ -90,21 +65,15 @@ export default function ProductForm({
 
   const isLoading = isFormLoading || isProductLoading;
 
-  const onSubmit = (data: TproductValidator) => {
+  const onSubmit = (data: TProductValidator) => {
+    console.log(data);
     if (!productId || !initialData) {
       if (!theImage) {
         toast.error("Image is required");
         return;
       }
-      // createProductMutate({ name, imageUrl: theImage as string });
-      console.log(data);
       return;
     }
-    // updateProductMutate({
-    //   id: productId,
-    //   name,
-    //   imageUrl,
-    // });
   };
 
   return (
@@ -145,222 +114,13 @@ export default function ProductForm({
 
           <Separator className="my-2 sm:my-4" />
 
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Product name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    This is Product name. It will be displayed on your admin
-                    dashboard.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      className="max-w-96"
-                      placeholder="Product price"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    This is Product price. It will be displayed on your admin
-                    dashboard.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="newPrice"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormLabel>New Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      className="max-w-96"
-                      placeholder="Product price"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    This is Product new price. It will be displayed on your
-                    admin dashboard.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a category"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="sizeId"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormLabel>Size</FormLabel>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a size"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {sizes.map((size) => (
-                        <SelectItem key={size.id} value={size.id}>
-                          {size.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="colorId"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormLabel>Color</FormLabel>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a color"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colors.map((color) => (
-                        <SelectItem key={color.id} value={color.id}>
-                          {color.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isFeatured"
-              render={({ field }) => (
-                <FormItem className="flex max-w-96 flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      id="isFeatured"
-                    />
-                  </FormControl>
-                  <FormLabel
-                    className="space-y-1 leading-none"
-                    htmlFor="isFeatured"
-                  >
-                    <h4>Featured</h4>
-                    <FormDescription>
-                      This product will appear on the home page
-                    </FormDescription>
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isArchived"
-              render={({ field }) => (
-                <FormItem className="flex max-w-96 flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      id="isArchived"
-                    />
-                  </FormControl>
-                  <FormLabel
-                    className="space-y-1 leading-none"
-                    htmlFor="isArchived"
-                  >
-                    <h4>Archived</h4>
-                    <FormDescription>
-                      This product will not appear anywhere in the store.
-                    </FormDescription>
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
-
-            <DragAndDropImage
-              imageUrl={theImage as string}
-              covertToBase64={covertToBase64}
-            />
-          </div>
+          <MainForm
+            form={form}
+            isLoading={isLoading}
+            categories={categories}
+            sizes={sizes}
+            colors={colors}
+          />
         </form>
       </Form>
     </main>
