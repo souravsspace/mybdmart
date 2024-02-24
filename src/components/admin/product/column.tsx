@@ -136,14 +136,28 @@ export const productColumn: ColumnDef<Product>[] = [
     accessorKey: "size",
     header: "Size",
     cell: ({ row }) => (
-      <div className="capitalize">{JSON.stringify(row.original.sizes)}</div>
+      <div className="gap-0.5 capitalize">
+        {row.original.sizes.map((size) => (
+          <h4 key={size.id}>{size.value}</h4>
+        ))}
+      </div>
     ),
   },
   {
     accessorKey: "color",
     header: "Color",
     cell: ({ row }) => (
-      <div className="capitalize">{JSON.stringify(row.original.colors)}</div>
+      <div className="space-y-0.5 capitalize">
+        {row.original.colors.map((color) => (
+          <h4
+            key={color.id}
+            className="rounded-md p-0.5 text-white"
+            style={{ backgroundColor: color.value }}
+          >
+            {color.name}
+          </h4>
+        ))}
+      </div>
     ),
   },
   {
@@ -154,7 +168,7 @@ export const productColumn: ColumnDef<Product>[] = [
 
       // if (!images) return <h4 className="uppercase">No</h4>;
       return (
-        <div className="grid gap-1">
+        <div className="flex items-center gap-1">
           {images.map((img) => {
             if (!img.imageUrl) return <h4 className="uppercase">No</h4>;
             return (
@@ -162,8 +176,8 @@ export const productColumn: ColumnDef<Product>[] = [
                 key={img.imageUrl}
                 src={img.imageUrl}
                 alt="product image"
-                width={80}
-                height={80}
+                width={30}
+                height={30}
               />
             );
           })}

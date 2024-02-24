@@ -6,17 +6,17 @@ import { type ChangeEvent } from "react";
 import { RiImageAddFill } from "react-icons/ri";
 
 type Props = {
-  imageUrl: string | undefined;
-  covertToBase64: (event: ChangeEvent<HTMLInputElement>) => void;
+  imageUrl?: string | undefined;
+  convertToBase64: (event: ChangeEvent<HTMLInputElement>) => void;
   multiple?: boolean;
   inForm?: boolean;
 };
 
 export default function DragAndDropImage({
   imageUrl,
-  covertToBase64,
+  convertToBase64,
   multiple = false,
-  inForm,
+  inForm = false,
 }: Props) {
   return (
     <div className="flex flex-col-reverse items-center gap-2 md:flex-row">
@@ -28,10 +28,25 @@ export default function DragAndDropImage({
       >
         <input
           type="file"
-          // multiple={multiple}
+          multiple={multiple}
           className="absolute inset-0 z-50 h-full w-full opacity-0"
-          onChange={covertToBase64}
+          onChange={convertToBase64}
         />
+        {/* {multiple ? (
+          <input
+            type="file"
+            multiple={multiple}
+            className="absolute inset-0 z-50 h-full w-full opacity-0"
+            onChange={convertToBase64}
+          />
+        ) : (
+          <input
+            type="file"
+            className="absolute inset-0 z-50 h-full w-full opacity-0"
+            onChange={Convert}
+          />
+        )} */}
+
         <div className="text-center">
           <RiImageAddFill className="mx-auto h-10 w-10" />
 

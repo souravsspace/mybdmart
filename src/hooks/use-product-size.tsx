@@ -47,5 +47,6 @@ export default function useProductSize({ options }: useProductSizeProps) {
     isSizeOptions,
     onSizeValueChange,
     onSizeRemoveValue,
+    setSelectedSize,
   };
 }

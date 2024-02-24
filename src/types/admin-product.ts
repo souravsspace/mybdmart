@@ -4,6 +4,11 @@ export type SizeAndColor = {
   value: string;
 };
 
+export type Categories = {
+  id: string;
+  name: string;
+};
+
 export type Image = {
   imageUrl: string;
 };

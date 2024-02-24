@@ -12,7 +12,11 @@ import { useForm } from "react-hook-form";
 import SubHeading from "@/components/admin/ui/sub-heading";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import type { productType, SizeAndColor } from "@/types/admin-product";
+import type {
+  Categories,
+  productType,
+  SizeAndColor,
+} from "@/types/admin-product";
 import {
   FormControl,
   FormDescription,
@@ -44,11 +48,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
-
-export type Categories = {
-  id: string;
-  name: string;
-};
+import { useEffect, useState } from "react";
+import { Trash } from "lucide-react";
+import useProduct from "@/hooks/use-product";
 
 type Props = {
   initialData: productType | null;
@@ -63,10 +65,17 @@ export default function ProductForm({
   colors,
   categories,
 }: Props) {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const router = useRouter();
   const productId = initialData?.id;
 
-  const { covertToBase64, theImage } = useImageToBase64();
+  const { deleteProductMutate, createProductMutate, isProductLoading } =
+    useProduct();
+  const { convertToBase64, theImages, removeImage } = useImageToBase64();
   const { selectedSize, isSizeOptions, onSizeValueChange, onSizeRemoveValue } =
     useProductSize({ options: sizes });
   const {
@@ -85,7 +94,7 @@ export default function ProductForm({
       newPrice: String(initialData?.newPrice) || "",
       sizes: initialData?.sizes || [],
       colors: initialData?.colors || [],
-      categoryId: initialData?.category || "",
+      categoryId: initialData?.categoryId || "",
       isFeatured: initialData?.isFeatured || false,
       isArchived: initialData?.isArchived || false,
       description: initialData?.description || "",
@@ -102,25 +111,38 @@ export default function ProductForm({
 
   const isSizes = initialData ? initialData.sizes : [];
   const isColors = initialData ? initialData.colors : [];
+  const isImages = initialData?.images || [];
+
+  const newImagesArray = theImages?.map((image) => {
+    return { imageUrl: image };
+  });
+
   const arrayOfSize = isSizes.length > 0 ? isSizes : selectedSize;
   const arrayOfColor = isColors.length > 0 ? isColors : selectedColor;
+  const arrayOfImage = isImages.length > 0 ? isImages : newImagesArray;
 
-  const arrayOfImage = initialData?.images || [];
-
-  const isProductLoading = false; // demo
   const isLoading = isFormLoading || isProductLoading;
+
+  if (!isMounted) return null;
 
   const onSubmit = (data: TProductValidator) => {
     if (!selectedSize.length) return toast.error("Please select colors");
     if (!selectedColor.length) return toast.error("Please select sizes");
+    if (!arrayOfImage?.length) return toast.error("Please select images");
 
-    const productData = {
+    if (initialData) {
+      toast.success("Product updated successfully");
+      return;
+    }
+
+    createProductMutate({
       ...data,
       sizes: selectedSize,
       colors: selectedColor,
-    };
-    console.log("The data is : ", productData);
-    toast.success("Product created successfully");
+      images: arrayOfImage,
+      price: String(data.price),
+      newPrice: String(data.newPrice),
+    });
   };
 
   return (
@@ -143,7 +165,7 @@ export default function ProductForm({
                 onClick={() => {
                   if (initialData) {
                     if (!productId) return;
-                    // deleteProductMutate({ id: productId });
+                    deleteProductMutate({ id: productId });
                     return;
                   } else {
                     router.push("/admin/settings");
@@ -441,20 +463,34 @@ export default function ProductForm({
             />
 
             <DragAndDropImage
-              imageUrl={theImage as string}
-              covertToBase64={covertToBase64}
               inForm
               multiple
+              convertToBase64={convertToBase64}
             />
 
-            {!arrayOfImage ? null : (
-              <Image
-                fill
-                src=""
-                alt="Product Image"
-                className="object-contain"
-              />
-            )}
+            <div className="col-span-2 flex flex-col flex-wrap items-center justify-center gap-2 md:flex-row md:justify-around md:gap-4">
+              {!arrayOfImage
+                ? null
+                : arrayOfImage.map((image, index) => (
+                    <div key={index} className="relative">
+                      <Image
+                        width={280}
+                        height={280}
+                        alt="Product Image"
+                        src={image.imageUrl}
+                        className="aspect-square max-w-[350px] rounded-md"
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        className="absolute right-1 top-1"
+                        onClick={() => removeImage(index)}
+                      >
+                        <Trash className="size-5" />
+                      </Button>
+                    </div>
+                  ))}
+            </div>
           </div>
         </form>
       </Form>

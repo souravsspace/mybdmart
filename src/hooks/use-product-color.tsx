@@ -46,5 +46,6 @@ export default function useProductColor({ options }: useProductColorProps) {
     isColorOptions,
     onColorValueChange,
     onColorRemoveValue,
+    setSelectedColor,
   };
 }

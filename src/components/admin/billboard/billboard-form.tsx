@@ -34,7 +34,7 @@ export default function BillboardForm({ initialData }: Props) {
   const router = useRouter();
 
   const billboardId = initialData?.id;
-  const { covertToBase64, theImage } = useImageToBase64();
+  const { convertToBase64, theImage } = useImageToBase64();
   const {
     isBillboardLoading,
     createBillboardMutate,
@@ -51,7 +51,7 @@ export default function BillboardForm({ initialData }: Props) {
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-  const imageUrl = theImage ? (theImage as string) : initialData?.imageUrl;
+  const imageUrl = theImage ? theImage : initialData?.imageUrl;
   const isFormLoading =
     form.formState.isLoading ||
     form.formState.isValidating ||
@@ -65,7 +65,7 @@ export default function BillboardForm({ initialData }: Props) {
         toast.error("Image is required");
         return;
       }
-      createBillboardMutate({ name, imageUrl: theImage as string });
+      createBillboardMutate({ name, imageUrl: theImage });
       return;
     }
 
@@ -139,7 +139,7 @@ export default function BillboardForm({ initialData }: Props) {
 
             <DragAndDropImage
               imageUrl={imageUrl}
-              covertToBase64={covertToBase64}
+              convertToBase64={convertToBase64}
             />
           </div>
         </form>
