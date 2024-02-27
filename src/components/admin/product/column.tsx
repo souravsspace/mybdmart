@@ -210,7 +210,7 @@ export const productColumn: ColumnDef<Product>[] = [
               : "bg-red-200 dark:bg-primary",
           )}
         >
-          {isFeatured}
+          {isFeatured ? "yes" : "no"}
         </div>
       );
     },
@@ -240,7 +240,7 @@ export const productColumn: ColumnDef<Product>[] = [
               : "bg-red-200 dark:bg-primary",
           )}
         >
-          {isArchived}
+          {isArchived ? "yes" : "no"}
         </div>
       );
     },

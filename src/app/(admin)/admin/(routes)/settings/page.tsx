@@ -68,15 +68,6 @@ export default async function ProductsPage() {
             <Plus className="mr-1.5 h-5 w-5" />
             Add New
           </Link>
-          <Link
-            className={buttonVariants({
-              variant: "secondary",
-              size: "sm",
-            })}
-            href="/admin/settings"
-          >
-            Back
-          </Link>
         </div>
       </div>
 

@@ -57,34 +57,82 @@ export const Product = createTRPCRouter({
         });
       }
 
+      // Extract input data from the input object
+      const {
+        name,
+        price,
+        description,
+        newPrice,
+        isFeatured,
+        isArchived,
+        categoryId,
+        images,
+        colors,
+        sizes,
+      } = input;
+
+      // Create an array to store new color and size ids
+      const colorIds: string[] = [];
+      const sizeIds: string[] = [];
+
+      // Create or connect colors and sizes to the product
+      await Promise.all(
+        colors.map(async (color) => {
+          const existingColor = await ctx.db.color.findUnique({
+            where: { id: color.id },
+          });
+          if (existingColor) {
+            colorIds.push(existingColor.id);
+          } else {
+            const createdColor = await ctx.db.color.create({
+              data: { name: color.name, value: color.value },
+            });
+            colorIds.push(createdColor.id);
+          }
+        }),
+      );
+
+      await Promise.all(
+        sizes.map(async (size) => {
+          const existingSize = await ctx.db.size.findUnique({
+            where: { id: size.id },
+          });
+          if (existingSize) {
+            sizeIds.push(existingSize.id);
+          } else {
+            const createdSize = await ctx.db.size.create({
+              data: { name: size.name, value: size.value },
+            });
+            sizeIds.push(createdSize.id);
+          }
+        }),
+      );
+
+      // Create the product
       await ctx.db.product.create({
         data: {
-          name: input.name,
-          price: Number(input.price),
-          description: input.description,
-          newPrice: Number(input.newPrice),
-          isFeatured: input.isFeatured,
-          isArchived: input.isArchived,
-          categoryId: input.categoryId,
-          colors: {
-            connect: input.colors.map((color) => {
-              return {
-                id: color.id,
-              };
-            }),
-          },
-          sizes: {
-            connect: input.sizes.map((size) => ({
-              id: size.id,
-            })),
-          },
+          name,
+          price: Number(price),
+          description,
+          newPrice: Number(newPrice),
+          isFeatured,
+          isArchived,
+          categoryId,
+          colors: { connect: colorIds.map((id) => ({ id })) },
+          sizes: { connect: sizeIds.map((id) => ({ id })) },
           images: {
             createMany: {
-              data: input.images.map((image) => ({
+              data: images.map((image) => ({
                 imageUrl: image.imageUrl,
               })),
             },
           },
+        },
+        include: {
+          category: true,
+          images: true,
+          colors: true,
+          sizes: true,
         },
       });
 

@@ -48,9 +48,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Trash } from "lucide-react";
 import useProduct from "@/hooks/use-product";
+import { useEffect, useState } from "react";
+import AlertModal from "@/components/modals/alert-modal";
 
 type Props = {
   initialData: productType | null;
@@ -65,25 +66,67 @@ export default function ProductForm({
   colors,
   categories,
 }: Props) {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const router = useRouter();
   const productId = initialData?.id;
 
+  const [open, setOpen] = useState(false);
+
   const { deleteProductMutate, createProductMutate, isProductLoading } =
     useProduct();
-  const { convertToBase64, theImages, removeImage } = useImageToBase64();
-  const { selectedSize, isSizeOptions, onSizeValueChange, onSizeRemoveValue } =
-    useProductSize({ options: sizes });
+
+  const { convertToBase64, theImages, removeImage, setTheImages } =
+    useImageToBase64();
+
+  const {
+    selectedSize,
+    isSizeOptions,
+    onSizeValueChange,
+    onSizeRemoveValue,
+    setSelectedSize,
+    setIsSizeOptions,
+  } = useProductSize({ options: sizes });
   const {
     selectedColor,
     isColorOptions,
     onColorValueChange,
     onColorRemoveValue,
+    setSelectedColor,
+    setIsColorOptions,
   } = useProductColor({ options: colors });
+
+  useEffect(() => {
+    if (initialData) {
+      // Filter out the initial data from sizes and colors arrays
+      const filteredSizes = sizes.filter((size) =>
+        initialData.sizes.every((selectedSize) => selectedSize.id !== size.id),
+      );
+      const filteredColors = colors.filter((color) =>
+        initialData.colors.every(
+          (selectedColor) => selectedColor.id !== color.id,
+        ),
+      );
+      // Set the selected data to setSelectedSize and setSelectedColor
+      setSelectedSize(initialData.sizes);
+      setSelectedColor(initialData.colors);
+
+      // Set the filtered data to setIsSizeOptions and setIsColorOptions
+      setIsSizeOptions(filteredSizes);
+      setIsColorOptions(filteredColors);
+
+      // // Set the images to the images state
+      // const rawImages = initialData.images.map((image) => image.imageUrl);
+      // setTheImages(rawImages);
+    }
+  }, [
+    initialData,
+    sizes,
+    colors,
+    setIsSizeOptions,
+    setIsColorOptions,
+    setSelectedColor,
+    setSelectedSize,
+    setTheImages,
+  ]);
 
   const form = useForm<TProductValidator>({
     resolver: zodResolver(ProductValidator),
@@ -108,30 +151,30 @@ export default function ProductForm({
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-
-  const isSizes = initialData ? initialData.sizes : [];
-  const isColors = initialData ? initialData.colors : [];
-  const isImages = initialData?.images || [];
-
-  const newImagesArray = theImages?.map((image) => {
-    return { imageUrl: image };
-  });
-
-  const arrayOfSize = isSizes.length > 0 ? isSizes : selectedSize;
-  const arrayOfColor = isColors.length > 0 ? isColors : selectedColor;
-  const arrayOfImage = isImages.length > 0 ? isImages : newImagesArray;
+  const imageAction = initialData && "Can't update images.";
 
   const isLoading = isFormLoading || isProductLoading;
 
-  if (!isMounted) return null;
+  const isImages = initialData?.images || [];
+  const newImagesArray = theImages?.map((image) => {
+    return { imageUrl: image };
+  });
+  const arrayOfImage = isImages.length > 0 ? isImages : newImagesArray;
 
   const onSubmit = (data: TProductValidator) => {
-    if (!selectedSize.length) return toast.error("Please select colors");
-    if (!selectedColor.length) return toast.error("Please select sizes");
-    if (!arrayOfImage?.length) return toast.error("Please select images");
+    if (!selectedSize) return toast.error("Please select colors");
+    if (!selectedColor) return toast.error("Please select sizes");
+    if (!arrayOfImage) return toast.error("Please select images");
 
     if (initialData) {
-      toast.success("Product updated successfully");
+      // updateProductMutate({
+      //   ...data,
+      //   sizes: selectedSize,
+      //   colors: selectedColor,
+      //   images: arrayOfImage,
+      //   price: String(data.price),
+      //   newPrice: String(data.newPrice),
+      // });
       return;
     }
 
@@ -147,14 +190,26 @@ export default function ProductForm({
 
   return (
     <main>
+      <AlertModal
+        loading={isLoading}
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={() => {
+          if (!productId) return;
+          deleteProductMutate({ id: productId });
+          setOpen(false);
+        }}
+      />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-8"
+        >
           <div className="flex flex-col items-start justify-between gap-1.5 sm:flex-row md:items-center">
             <SubHeading
               title="Products"
               subtitle="Manage product for your store."
             />
-
             <div className="flex w-full items-center justify-end gap-1.5 sm:w-fit sm:gap-2">
               <Button disabled={isLoading} type="submit" size="sm">
                 {actionButton}
@@ -164,11 +219,9 @@ export default function ProductForm({
                 size="sm"
                 onClick={() => {
                   if (initialData) {
-                    if (!productId) return;
-                    deleteProductMutate({ id: productId });
-                    return;
+                    setOpen(true);
                   } else {
-                    router.push("/admin/settings");
+                    router.back();
                   }
                 }}
               >
@@ -179,7 +232,7 @@ export default function ProductForm({
 
           <Separator className="my-2 sm:my-4" />
 
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 md:gap-8">
+          <div className="flex flex-col gap-4 sm:gap-6 md:grid md:grid-cols-2  md:gap-8">
             <FormField
               control={form.control}
               name="name"
@@ -286,10 +339,10 @@ export default function ProductForm({
                   <FormLabel>Size</FormLabel>
                   <div className="space-y-3">
                     <ul className="flex flex-wrap gap-1 rounded-md border-[1px] border-muted px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                      {arrayOfSize.length === 0 && (
+                      {selectedSize.length === 0 && (
                         <li className="px-1.5 py-0.5">Nothing in here</li>
                       )}
-                      {arrayOfSize.map((item) => (
+                      {selectedSize.map((item) => (
                         <li
                           key={item.id}
                           className="cursor-pointer rounded-md bg-primary px-1.5 py-0.5"
@@ -312,8 +365,6 @@ export default function ProductForm({
                         field.onChange;
                         onSizeValueChange(e);
                       }}
-                      // value={field.value}
-                      // defaultValue={field.value}
                     >
                       <SelectTrigger>
                         <h4>Select Any</h4>
@@ -342,10 +393,10 @@ export default function ProductForm({
                   <FormLabel>Color</FormLabel>
                   <div className="space-y-3">
                     <ul className="flex flex-wrap gap-1 rounded-md border-[1px] border-muted px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                      {arrayOfColor.length === 0 && (
+                      {selectedColor.length === 0 && (
                         <li className="px-1.5 py-0.5">Nothing in here</li>
                       )}
-                      {arrayOfColor.map((item) => (
+                      {selectedColor.map((item) => (
                         <li
                           key={item.id}
                           className="cursor-pointer rounded-md bg-primary px-1.5 py-0.5"
@@ -368,8 +419,6 @@ export default function ProductForm({
                         field.onChange;
                         onColorValueChange(e);
                       }}
-                      // value={field.value}
-                      // defaultValue={field.value}
                     >
                       <SelectTrigger>
                         <h4>Select Any</h4>
@@ -462,23 +511,29 @@ export default function ProductForm({
               )}
             />
 
-            <DragAndDropImage
-              inForm
-              multiple
-              convertToBase64={convertToBase64}
-            />
+            {imageAction ? (
+              <div className="relative my-8 flex w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6">
+                <h4>{imageAction}</h4>
+              </div>
+            ) : (
+              <DragAndDropImage
+                inForm
+                multiple
+                convertToBase64={convertToBase64}
+              />
+            )}
 
-            <div className="col-span-2 flex flex-col flex-wrap items-center justify-center gap-2 md:flex-row md:justify-around md:gap-4">
+            <div className="col-span-2 mt-4 flex flex-col flex-wrap items-center justify-center gap-2 md:mt-8 md:flex-row md:justify-around md:gap-4">
               {!arrayOfImage
                 ? null
                 : arrayOfImage.map((image, index) => (
                     <div key={index} className="relative">
                       <Image
-                        width={280}
-                        height={280}
+                        width={260}
+                        height={260}
                         alt="Product Image"
                         src={image.imageUrl}
-                        className="aspect-square max-w-[350px] rounded-md"
+                        className="mx-auto aspect-square max-w-[350px] rounded-md"
                       />
                       <Button
                         type="button"

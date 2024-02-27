@@ -63,6 +63,7 @@ export default function useImageToBase64() {
     theImages,
     removeImage,
     convertToBase64,
+    setTheImages,
   };
 }
 

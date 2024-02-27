@@ -41,7 +41,7 @@ export default function useProduct() {
       },
       onSuccess: () => {
         toast.success("Product deleted successfully!");
-        router.push("/admin/settings");
+        router.push("/admin/settings?tab=products");
       },
     });
 

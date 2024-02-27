@@ -1,7 +1,7 @@
 "use client";
 
-import { type SizeAndColor } from "@/types/admin-product";
 import { useState } from "react";
+import { type SizeAndColor } from "@/types/admin-product";
 
 type useProductSizeProps = {
   options: SizeAndColor[];
@@ -48,5 +48,6 @@ export default function useProductSize({ options }: useProductSizeProps) {
     onSizeValueChange,
     onSizeRemoveValue,
     setSelectedSize,
+    setIsSizeOptions,
   };
 }

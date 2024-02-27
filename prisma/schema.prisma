@@ -58,35 +58,33 @@ model Product {
   updatedAt   DateTime  @updatedAt
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  String?
-  images      Image[]
-  sizes       Size[]
-  colors      Color[]
+  images      Image[]   @relation("ProductToImage")
+  sizes       Size[]    @relation("ProductToSize")
+  colors      Color[]   @relation("ProductToColor")
+}
+
+model Size {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  value     String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[] @relation("ProductToSize")
+}
+
+model Color {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  value     String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[] @relation("ProductToColor")
 }
 
 model Image {
   id        String   @id @default(cuid())
   imageUrl  String   @db.Text
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String?
-}
-
-model Size {
-  id        String   @id @default(cuid())
-  name      String   @db.VarChar(255)
-  value     String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  product   Product? @relation(fields: [productId], references: [id])
-  productId String?
-}
-
-model Color {
-  id        String   @id @default(cuid())
-  name      String   @db.VarChar(255)
-  value     String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation("ProductToImage", fields: [productId], references: [id], onDelete: Cascade)
   productId String?
 }
 
