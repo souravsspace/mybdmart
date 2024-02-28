@@ -52,6 +52,7 @@ import { Trash } from "lucide-react";
 import useProduct from "@/hooks/use-product";
 import { useEffect, useState } from "react";
 import AlertModal from "@/components/modals/alert-modal";
+import { cn } from "@/lib/utils";
 
 type Props = {
   initialData: productType | null;
@@ -71,8 +72,12 @@ export default function ProductForm({
 
   const [open, setOpen] = useState(false);
 
-  const { deleteProductMutate, createProductMutate, isProductLoading } =
-    useProduct();
+  const {
+    deleteProductMutate,
+    createProductMutate,
+    isProductLoading,
+    updateProductMutate,
+  } = useProduct();
 
   const { convertToBase64, theImages, removeImage, setTheImages } =
     useImageToBase64();
@@ -151,7 +156,7 @@ export default function ProductForm({
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";
-  const imageAction = initialData && "Can't update images.";
+  const imageAction = initialData && "Can't update images or delete images!";
 
   const isLoading = isFormLoading || isProductLoading;
 
@@ -167,14 +172,15 @@ export default function ProductForm({
     if (!arrayOfImage) return toast.error("Please select images");
 
     if (initialData) {
-      // updateProductMutate({
-      //   ...data,
-      //   sizes: selectedSize,
-      //   colors: selectedColor,
-      //   images: arrayOfImage,
-      //   price: String(data.price),
-      //   newPrice: String(data.newPrice),
-      // });
+      updateProductMutate({
+        ...data,
+        id: initialData.id,
+        sizes: selectedSize,
+        colors: selectedColor,
+        images: arrayOfImage,
+        price: String(data.price),
+        newPrice: String(data.newPrice),
+      });
       return;
     }
 
@@ -538,7 +544,11 @@ export default function ProductForm({
                       <Button
                         type="button"
                         size="icon"
-                        className="absolute right-1 top-1"
+                        className={cn(
+                          "absolute right-1 top-1",
+                          initialData && "hidden",
+                        )}
+                        disabled={isLoading}
                         onClick={() => removeImage(index)}
                       >
                         <Trash className="size-5" />

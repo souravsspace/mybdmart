@@ -140,59 +140,112 @@ export const Product = createTRPCRouter({
         success: true,
       };
     }),
-  // updateProduct: publicProcedure
-  //   .input(
-  //     z.object({
-  //       id: z.string(),
-  //       name: z.string().optional(),
-  //       imageUrl: z.string().optional(),
-  //     }),
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     const userId = ctx.session?.user.id;
-  //     const role = ctx.session?.user.role;
+  updateProduct: publicProcedure
+    .input(TRPCProductValidator.extend({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      const role = ctx.session?.user.role;
 
-  //     if (!userId || !role) {
-  //       throw new TRPCError({
-  //         code: "UNAUTHORIZED",
-  //         message: "You are not authorized to create a product",
-  //       });
-  //     }
+      if (!userId || !role) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to create a product",
+        });
+      }
 
-  //     if (!userId || role !== ROLE.ADMIN) {
-  //       throw new TRPCError({
-  //         code: "FORBIDDEN",
-  //         message: "You are not allowed to create a product",
-  //       });
-  //     }
+      if (!userId || role !== ROLE.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to create a product",
+        });
+      }
 
-  //     const product = await ctx.db.product.findUnique({
-  //       where: {
-  //         id: input.id,
-  //       },
-  //     });
+      // Extract input data from the input object
+      const {
+        name,
+        price,
+        description,
+        newPrice,
+        isFeatured,
+        isArchived,
+        categoryId,
+        images,
+        colors,
+        sizes,
+      } = input;
 
-  //     if (!product) {
-  //       throw new TRPCError({
-  //         code: "NOT_FOUND",
-  //         message: "Product not found",
-  //       });
-  //     }
+      // Create an array to store new color and size ids
+      const colorIds: string[] = [];
+      const sizeIds: string[] = [];
 
-  //     await ctx.db.product.update({
-  //       where: {
-  //         id: input.id,
-  //       },
-  //       data: {
-  //         name: input.name as string,
-  //         imageUrl: input.imageUrl as string,
-  //       },
-  //     });
+      // Create or connect colors and sizes to the product
+      await Promise.all(
+        colors.map(async (color) => {
+          const existingColor = await ctx.db.color.findUnique({
+            where: { id: color.id },
+          });
+          if (existingColor) {
+            colorIds.push(existingColor.id);
+          } else {
+            const createdColor = await ctx.db.color.create({
+              data: { name: color.name, value: color.value },
+            });
+            colorIds.push(createdColor.id);
+          }
+        }),
+      );
 
-  //     return {
-  //       success: true,
-  //     };
-  //   }),
+      await Promise.all(
+        sizes.map(async (size) => {
+          const existingSize = await ctx.db.size.findUnique({
+            where: { id: size.id },
+          });
+          if (existingSize) {
+            sizeIds.push(existingSize.id);
+          } else {
+            const createdSize = await ctx.db.size.create({
+              data: { name: size.name, value: size.value },
+            });
+            sizeIds.push(createdSize.id);
+          }
+        }),
+      );
+
+      // update the product
+      await ctx.db.product.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name,
+          price: Number(price),
+          description,
+          newPrice: Number(newPrice),
+          isFeatured,
+          isArchived,
+          categoryId,
+          colors: { connect: colorIds.map((id) => ({ id })) },
+          sizes: { connect: sizeIds.map((id) => ({ id })) },
+          images: {
+            createMany: {
+              data: images.map((image) => ({
+                imageUrl: image.imageUrl,
+              })),
+            },
+          },
+        },
+        include: {
+          category: true,
+          images: true,
+          colors: true,
+          sizes: true,
+        },
+      });
+
+      return {
+        success: true,
+      };
+    }),
   deleteProduct: publicProcedure
     .input(
       z.object({

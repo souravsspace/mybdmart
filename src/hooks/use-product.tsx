@@ -45,33 +45,33 @@ export default function useProduct() {
       },
     });
 
-  // const { mutate: updateProductMutate, isLoading: updateIsLoading } =
-  //   api.product.updateProduct.useMutation({
-  //     onError: (error) => {
-  //       if (error.data?.code === "UNAUTHORIZED") {
-  //         toast.error("login to update product");
-  //         return;
-  //       }
-  //       if (error.data?.code === "FORBIDDEN") {
-  //         toast.error("You are not allowed to update product!");
-  //         return;
-  //       }
+  const { mutate: updateProductMutate, isLoading: updateIsLoading } =
+    api.product.updateProduct.useMutation({
+      onError: (error) => {
+        if (error.data?.code === "UNAUTHORIZED") {
+          toast.error("login to update product");
+          return;
+        }
+        if (error.data?.code === "FORBIDDEN") {
+          toast.error("You are not allowed to update product!");
+          return;
+        }
 
-  //       toast.error("Failed to update product");
-  //     },
-  //     onSuccess: () => {
-  //       toast.success("Product updated successfully!");
-  //       router.push("/admin/settings");
-  //     },
-  //   });
+        toast.error("Failed to update product");
+      },
+      onSuccess: () => {
+        toast.success("Product updated successfully!");
+        router.push("/admin/settings?tab=products");
+      },
+    });
 
-  const isProductLoading = createIsLoading || deleteIsLoading;
-  // || updateIsLoading;
+  const isProductLoading =
+    createIsLoading || deleteIsLoading || updateIsLoading;
 
   return {
     createProductMutate,
     deleteProductMutate,
-    // updateProductMutate,
+    updateProductMutate,
     isProductLoading,
   };
 }
