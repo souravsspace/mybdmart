@@ -169,7 +169,7 @@ export const Product = createTRPCRouter({
         isFeatured,
         isArchived,
         categoryId,
-        images,
+        // images,
         colors,
         sizes,
       } = input;
@@ -226,13 +226,13 @@ export const Product = createTRPCRouter({
           categoryId,
           colors: { connect: colorIds.map((id) => ({ id })) },
           sizes: { connect: sizeIds.map((id) => ({ id })) },
-          images: {
-            createMany: {
-              data: images.map((image) => ({
-                imageUrl: image.imageUrl,
-              })),
-            },
-          },
+          // images: {
+          //   createMany: {
+          //     data: images.map((image) => ({
+          //       imageUrl: image.imageUrl,
+          //     })),
+          //   },
+          // },
         },
         include: {
           category: true,

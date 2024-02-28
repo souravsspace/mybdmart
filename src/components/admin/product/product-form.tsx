@@ -223,6 +223,7 @@ export default function ProductForm({
               <Button
                 variant="secondary"
                 size="sm"
+                type="button"
                 onClick={() => {
                   if (initialData) {
                     setOpen(true);
