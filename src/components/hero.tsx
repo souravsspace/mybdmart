@@ -18,7 +18,7 @@ export default function Hero() {
             team to ensure our highest quality standards.
           </p>
           <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row">
-            <Link href="#trending-product" className={buttonVariants()}>
+            <Link href="#trending-products" className={buttonVariants()}>
               Browse Trending
             </Link>
             <Link

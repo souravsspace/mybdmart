@@ -1,18 +1,3 @@
-export const categories = [
-  {
-    name: "Electronics",
-  },
-  {
-    name: "Fashion",
-  },
-  {
-    name: "Home & Kitchen",
-  },
-  {
-    name: "Beauty & Health",
-  },
-] as const;
-
 export const navLinks = [
   {
     name: "Home",
@@ -20,19 +5,19 @@ export const navLinks = [
   },
   {
     name: "Hot Deals",
-    path: "#hot-deals",
+    path: "/products?sort=hot-deals",
   },
   {
-    name: "Accessories",
-    path: "#accessories",
+    name: "Trending",
+    path: "/products?sort=trending-products",
   },
   {
-    name: "Featured Products",
-    path: "#featured-products",
+    name: "Featured",
+    path: "/products?sort=featured-products",
   },
   {
     name: "Contact Us",
-    path: "/contact",
+    path: "/contact-us",
   },
 ] as const;
 

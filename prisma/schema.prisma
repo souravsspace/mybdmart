@@ -20,6 +20,12 @@ enum ROLE {
   MOD
 }
 
+enum STOCK {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
 enum ORDER_STATUS {
   PENDING
   PROCESSING
@@ -54,6 +60,8 @@ model Product {
   description String    @db.Text
   isFeatured  Boolean   @default(false)
   isArchived  Boolean   @default(false)
+  stock       STOCK     @default(IN_STOCK)
+  sell        Int       @default(0) @db.Integer
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   category    Category? @relation(fields: [categoryId], references: [id])
