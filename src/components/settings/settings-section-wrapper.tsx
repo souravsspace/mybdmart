@@ -13,7 +13,7 @@ export default function SettingsSectionWrapper({
   subtitle,
 }: Props) {
   return (
-    <section className="px-2 sm:px-6">
+    <section className="mb-4 px-2 sm:px-6">
       <div className="hidden sm:block">
         <Heading title={title} subtitle={subtitle} isSettingsPage={true} />
         <Separator className="my-4 sm:my-6" />

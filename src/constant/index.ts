@@ -1,3 +1,30 @@
+export const supportEmail = "info@mybdmart.com";
+export const supportPhone = "+880 123 456 7890";
+export const supportAddress = "Dhaka, Bangladesh";
+
+export const contactFormTopic = [
+  {
+    value: "general-inquiry",
+    label: "General Inquiry",
+  },
+  {
+    value: "order-inquiry",
+    label: "Order Inquiry",
+  },
+  {
+    value: "return-inquiry",
+    label: "Return Inquiry",
+  },
+  {
+    value: "bug-report",
+    label: "Bug Report",
+  },
+  {
+    value: "others",
+    label: "Others",
+  },
+] as const;
+
 export const navLinks = [
   {
     name: "Home",

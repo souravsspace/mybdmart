@@ -34,5 +34,9 @@ export default function OrdersPage() {
     status: item.status.toLowerCase() as OrderType["status"],
   }));
 
-  return <OrderClient data={OrderedData} />;
+  return (
+    <div className="mb-4 px-2 sm:px-6">
+      <OrderClient data={OrderedData} />
+    </div>
+  );
 }
