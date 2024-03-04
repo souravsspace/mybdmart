@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     // sticky left-0 right-0 top-0 z-50
     // <nav className="bg-secondary-foreground text-white">
-    <nav className="mb-6 border-b">
+    <nav className="border-b">
       <Wrapper className="flex items-center justify-center p-2 sm:py-3.5">
         {/* Mobile */}
         <MobileNav />

@@ -21,3 +21,15 @@ export async function copyText(value: string) {
 export function formatDate(date: Date) {
   return format(date, "hh:mm a, dd MMMM yyyy");
 }
+
+export const thirtyDaysAge = new Date();
+thirtyDaysAge.setDate(thirtyDaysAge.getDate() - 7);
+
+export function calculateDiscountPercentage(
+  originalPrice: number,
+  discountedPrice: number,
+) {
+  const priceDifference = originalPrice - discountedPrice;
+  const discountPercentage = (priceDifference / originalPrice) * 100;
+  return Number(discountPercentage.toFixed(2));
+}

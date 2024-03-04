@@ -12,9 +12,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Props = {
   urls: string[];
+  discount?: number;
+  isNew?: boolean;
 };
 
-export default function ImageSlider({ urls }: Props) {
+export default function ImageSlider({
+  urls,
+  discount = 0,
+  isNew = false,
+}: Props) {
   const [swiper, setSwiper] = useState<null | SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -83,7 +89,10 @@ export default function ImageSlider({ urls }: Props) {
         className="h-full w-full"
       >
         {urls.map((url, i) => (
-          <SwiperSlide key={i} className="relative -z-10 h-full w-full">
+          <SwiperSlide
+            key={i}
+            className="relative -z-10 h-full w-full overflow-hidden"
+          >
             <Image
               fill
               loading="eager"
@@ -91,6 +100,14 @@ export default function ImageSlider({ urls }: Props) {
               src={url}
               alt="Product image"
             />
+            <span
+              className={cn(
+                "absolute left-0 top-0 rounded-sm rounded-e-3xl bg-primary px-2 py-0.5 text-center text-sm font-medium uppercase text-white",
+                !isNew && discount == 0 && "hidden",
+              )}
+            >
+              {isNew ? "New" : discount != 0 && <>{discount}% OFF</>}
+            </span>
           </SwiperSlide>
         ))}
       </Swiper>

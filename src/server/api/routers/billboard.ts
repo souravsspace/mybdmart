@@ -159,4 +159,72 @@ export const Billboard = createTRPCRouter({
         success: true,
       };
     }),
+  updateBillboardActive: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        active: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      const role = ctx.session?.user.role;
+
+      if (!userId || !role) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to create a billboard",
+        });
+      }
+
+      if (!userId || role !== ROLE.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to create a billboard",
+        });
+      }
+
+      const billboard = await ctx.db.billboard.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!billboard) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Billboard not found",
+        });
+      }
+
+      await ctx.db.billboard.updateMany({
+        where: {
+          active: true,
+        },
+        data: {
+          active: false,
+        },
+      });
+
+      await ctx.db.billboard.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          active: input.active,
+        },
+      });
+
+      return {
+        success: true,
+      };
+    }),
+  getBilloardByActive: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.billboard.findMany({
+      where: {
+        active: true,
+      },
+    });
+    return data[0];
+  }),
 });

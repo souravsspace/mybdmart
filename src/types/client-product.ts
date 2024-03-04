@@ -21,4 +21,5 @@ export type ClientProductType = {
   images: Images[];
   stock: STOCK;
   sell: number;
+  createdAt?: Date;
 };

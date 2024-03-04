@@ -14,10 +14,14 @@ import { copyText, formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { api } from "@/trpc/react";
 
 export type billboardType = {
   id: string;
   name: string;
+  active: boolean;
   imageUrl: string;
   createdAt: Date;
   updatedAt: Date;
@@ -93,6 +97,19 @@ export const billboardColumn: ColumnDef<billboardType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const billboard = row.original;
+      const { mutate } = api.billboard.updateBillboardActive.useMutation({
+        onSuccess: () => {
+          toast.success("Billboard updated");
+        },
+        onError: () => {
+          toast.error("Something went wrong, please try again later.");
+        },
+      });
+
+      const updateBilloardActive = (id: string, active: boolean) => {
+        mutate({ id, active });
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -116,6 +133,21 @@ export const billboardColumn: ColumnDef<billboardType>[] = [
               <Link href={`/admin/settings/billboards/${billboard.id}`}>
                 View billboard
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              {" "}
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="billboardSwither"
+                  checked={billboard.active}
+                  onCheckedChange={(e) => {
+                    updateBilloardActive(billboard.id, e);
+                  }}
+                />
+                <Label htmlFor="billboardSwither">
+                  {billboard.active ? "Active" : "Set Billboard"}
+                </Label>
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -17,7 +17,7 @@ export default function ProductReel({
   products,
 }: Props) {
   return (
-    <section className="px-2 py-12">
+    <section className="px-2 py-4 sm:py-8 md:py-12">
       <div className="mb-4 md:flex md:items-center md:justify-between">
         <Heading title={title} subtitle={subtitle} />
 

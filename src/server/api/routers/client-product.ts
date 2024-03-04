@@ -1,10 +1,39 @@
+import { z } from "zod";
+import { thirtyDaysAge } from "@/lib/utils";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const ClientProduct = createTRPCRouter({
-  brandNewProducts: publicProcedure.query(async ({ ctx }) => {
-    const thirtyDaysAge = new Date();
-    thirtyDaysAge.setDate(thirtyDaysAge.getDate() - 30);
+  allProducts: publicProcedure
+    .input(
+      z.object({
+        page: z.number().default(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const pageNumber = input.page;
 
+      const products = await ctx.db.product.findMany({
+        where: {
+          isArchived: false,
+        },
+        take: 20,
+        skip: (pageNumber - 1) * 20,
+        include: {
+          category: true,
+          colors: true,
+          sizes: true,
+          images: true,
+        },
+      });
+
+      if (products.length === 0) {
+        throw new Error("No products found");
+      }
+
+      return products;
+    }),
+
+  brandNewProducts: publicProcedure.query(async ({ ctx }) => {
     const products = await ctx.db.product.findMany({
       where: {
         isArchived: false,

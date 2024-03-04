@@ -20,6 +20,7 @@ export const useProductsClient = async () => {
         })),
         stock: product.stock,
         sell: product.sell,
+        createdAt: product.createdAt,
       };
     },
   );

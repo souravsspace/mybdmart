@@ -2,7 +2,6 @@ import Hero from "@/components/hero";
 import ProductReel from "@/components/products/product-reel";
 import Wrapper from "@/components/ui/wrapper";
 import { useProductsClient } from "@/hooks/use-products-client";
-
 import { unstable_noStore as noStore } from "next/cache";
 
 export default async function Home() {
