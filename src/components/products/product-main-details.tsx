@@ -1,25 +1,31 @@
 import { formatPrice } from "@/lib/utils";
+import { type ClientProductType } from "@/types/client-product";
 import { Check } from "lucide-react";
 
 type Props = {
-  brand: string;
-  name: string;
-  description: string;
-  price: number;
+  product: ClientProductType;
 };
 
-export default function ProductMainDetails({
-  brand,
-  price,
-  description,
-}: Props) {
+export default function ProductMainDetails({ product }: Props) {
+  const { price, description, newPrice, name, categoryName, sell, stock, id } =
+    product;
+
   return (
     <section className="mt-4">
       <div className="flex items-center">
-        <p className="font-medium text-gray-900">{formatPrice(price)}</p>
+        <p className="text-base font-medium text-primary">
+          {newPrice && formatPrice(newPrice)}
+          {newPrice ? (
+            <span className="ml-2 text-xs text-gray-500 line-through">
+              {formatPrice(price)}
+            </span>
+          ) : (
+            <span>{formatPrice(price)}</span>
+          )}
+        </p>
 
         <div className="ml-4 border-l border-gray-300 pl-4 text-muted-foreground">
-          {brand}
+          {categoryName}
         </div>
       </div>
 

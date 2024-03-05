@@ -12,6 +12,7 @@ export type Images = {
 export type ClientProductType = {
   id: string;
   name: string;
+  description?: string;
   price: number;
   newPrice: number | null;
   categoryName: string;

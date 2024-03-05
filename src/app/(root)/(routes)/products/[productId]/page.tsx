@@ -4,6 +4,8 @@ import ProductReel from "@/components/products/product-reel";
 import ProductBreadcrumb from "@/components/products/product-breadcrumb";
 import ProductMainDetails from "@/components/products/product-main-details";
 import ProductAddToCart from "@/components/products/product-add-to-cart";
+import { api } from "@/trpc/server";
+import { type ClientProductType } from "@/types/client-product";
 
 type Props = {
   params: {
@@ -11,24 +13,57 @@ type Props = {
   };
 };
 
-export default function ProductPage({ params: { productId } }: Props) {
-  const product = {
-    id: productId,
-    brand: "Nike",
-    name: "Steven Jordan",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    price: 120,
-    images: ["/shoes/shoes_1.jpg", "/shoes/shoes_2.jpg", "/shoes/shoes_3.jpg"],
-  } as const;
+export default async function ProductPage({ params: { productId } }: Props) {
+  const getProduct = await api.soloClientProduct.soloProduct.query({
+    productId,
+  });
+  const getSimilarProducts =
+    await api.soloClientProduct.getSimilarProducts.query({
+      categoryName: getProduct.category?.name || "",
+    });
 
-  const validUrls = product.images.filter((url) => url);
+  const product: ClientProductType = {
+    ...getProduct,
+    id: getProduct.id,
+    name: getProduct.name,
+    description: getProduct.description,
+    price: getProduct.price,
+    newPrice: getProduct.newPrice,
+    categoryName: getProduct.category?.name || "",
+    categoryId: getProduct.category?.id || "",
+    sizes: getProduct.sizes,
+    colors: getProduct.colors,
+    images: getProduct.images,
+    stock: getProduct.stock,
+    sell: getProduct.sell,
+    createdAt: getProduct.createdAt,
+  };
+  const similarProducts: ClientProductType[] = getSimilarProducts.map(
+    (product) => ({
+      ...product,
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      newPrice: product.newPrice,
+      categoryName: product.category?.name || "",
+      categoryId: product.category?.id || "",
+      sizes: product.sizes,
+      colors: product.colors,
+      images: product.images,
+      stock: product.stock,
+      sell: product.sell,
+      createdAt: product.createdAt,
+    }),
+  );
+
+  const validUrls = product.images.map((image) => image.imageUrl);
 
   return (
     <Wrapper>
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         <div className="lg:max-w-lg lg:self-end">
-          <ProductBreadcrumb />
+          <ProductBreadcrumb categoryName={product.categoryName} />
 
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -36,7 +71,7 @@ export default function ProductPage({ params: { productId } }: Props) {
             </h1>
           </div>
 
-          <ProductMainDetails {...product} />
+          <ProductMainDetails product={product} />
         </div>
 
         {/* Product images */}
@@ -46,13 +81,14 @@ export default function ProductPage({ params: { productId } }: Props) {
           </div>
         </div>
 
-        <ProductAddToCart {...product} />
+        <ProductAddToCart {...product} stock={product.stock} />
       </div>
 
       <ProductReel
         href="/products"
         title={`Similar Products`}
         subtitle={`Browse similar high-quality product just like '${product.name}'`}
+        products={similarProducts}
       />
     </Wrapper>
   );

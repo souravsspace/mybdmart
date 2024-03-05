@@ -14,6 +14,7 @@ import { Product } from "@/server/api/routers/product";
 import { GetMixedValues } from "@/server/api/routers/get-mixed-values";
 import { ClientProduct } from "@/server/api/routers/client-product";
 import { ContactForm } from "@/server/api/routers/contact-form";
+import { soloClientProduct } from "@/server/api/routers/solo-client-product";
 
 /**
  * This is the primary router for your server.
@@ -36,6 +37,7 @@ export const appRouter = createTRPCRouter({
   getMixedValues: GetMixedValues,
   clientProduct: ClientProduct,
   contactForm: ContactForm,
+  soloClientProduct: soloClientProduct,
 });
 
 // export type definition of API

@@ -1,15 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { STOCK } from "@prisma/client";
 import { Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
   id: string;
   price: number;
+  stock: STOCK;
 };
 
-export default function ProductAddToCart({ id, price }: Props) {
+export default function ProductAddToCart({ id, price, stock }: Props) {
   console.log(id, price, " - ProductAddToCart");
 
   // const { addItem } = useCart()
@@ -27,16 +29,22 @@ export default function ProductAddToCart({ id, price }: Props) {
     <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
       <div>
         <div className="mt-10">
-          <Button
-            onClick={() => {
-              // addItem(product);
-              setIsSuccess(true);
-            }}
-            size="lg"
-            className="w-full"
-          >
-            {isSuccess ? "Added!" : "Add to cart"}
-          </Button>
+          {stock === STOCK.IN_STOCK ? (
+            <Button
+              onClick={() => {
+                // addItem(product);
+                setIsSuccess(true);
+              }}
+              size="lg"
+              className="w-full"
+            >
+              {isSuccess ? "Added!" : "Add to cart"}
+            </Button>
+          ) : (
+            <Button size="lg" className="w-full" disabled>
+              Out of stock
+            </Button>
+          )}
         </div>
         <div className="mt-6 text-center">
           <div className="text-medium group inline-flex text-sm">

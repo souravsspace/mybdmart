@@ -1,24 +1,28 @@
 import Link from "next/link";
 
-const BREADCRUMBS = [
-  {
-    id: 1,
-    name: "Home",
-    href: "/",
-  },
-  {
-    id: 2,
-    name: "Products",
-    href: "/products",
-  },
-  {
-    id: 3,
-    name: "Shoes",
-    href: "/products/shoes",
-  },
-] as const;
+type Props = {
+  categoryName: string;
+};
 
-export default function ProductBreadcrumb() {
+export default function ProductBreadcrumb({ categoryName }: Props) {
+  const BREADCRUMBS = [
+    {
+      id: 1,
+      name: "Home",
+      href: "/",
+    },
+    {
+      id: 2,
+      name: "Products",
+      href: "/products",
+    },
+    {
+      id: 3,
+      name: `${categoryName}`,
+      href: `/products?sort=${categoryName.toLowerCase()}`,
+    },
+  ] as const;
+
   return (
     <ol className="flex items-center space-x-2">
       {BREADCRUMBS.map((breadcrumb, index) => (

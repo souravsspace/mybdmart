@@ -12,6 +12,7 @@ import ImageSlider from "@/components/ui/image-slider";
 import { useEffect, useState } from "react";
 import { type ClientProductType } from "@/types/client-product";
 import { Button } from "../ui/button";
+import { STOCK } from "@prisma/client";
 
 type Props = {
   id: string;
@@ -69,6 +70,7 @@ export default function ProductCard({ product, id, index }: Props) {
               <span>{formatPrice(product.price)}</span>
             )}
           </p>
+
           <Button className="mt-1 w-full uppercase" size="sm">
             order
           </Button>
