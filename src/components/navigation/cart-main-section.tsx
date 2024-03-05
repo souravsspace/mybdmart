@@ -22,7 +22,7 @@ export default function CartMainSection({
     <>
       <div className="flex flex-col gap-3">
         {/* array of items */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-x-3">
             <Image
               src="/shoes/shoes_1.jpg"
@@ -41,7 +41,7 @@ export default function CartMainSection({
 
       <hr className="my-2.5 sm:my-3.5" />
 
-      <ul className="flex flex-col gap-y-2.5 text-sm text-gray-600">
+      <ul className="flex flex-col gap-y-2.5 text-sm text-muted-foreground">
         <li className="flex items-center justify-between">
           <span>Delivery Charge</span>
           <span>{formatPrice(deliveryCharge)}</span>

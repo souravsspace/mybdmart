@@ -58,7 +58,7 @@ export default function DragAndDropImage({
               <input name="file-upload" type="file" className="sr-only" />
             </label>
           </h3>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-muted-foreground">
             PNG, JPG, JPEG up to 10MB
           </p>
         </div>

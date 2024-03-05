@@ -10,15 +10,6 @@ type Props = {
 
 export const revalidate = 0;
 
-export const getServerSideProps = async ({ params }: Props) => {
-  const productId = params?.productId;
-  return {
-    props: {
-      productId,
-    },
-  };
-};
-
 export default async function Product({ params: { productId } }: Props) {
   const product = await api.product.getProduct.query({ id: productId });
   const { sizes, colors, categories } =

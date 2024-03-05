@@ -9,15 +9,6 @@ type Props = {
 
 export const revalidate = 0;
 
-export const getServerSideProps = async ({ params }: Props) => {
-  const colorId = params?.colorId;
-  return {
-    props: {
-      colorId,
-    },
-  };
-};
-
 export default async function Color({ params: { colorId } }: Props) {
   const color = await api.color.getColor.query({ id: colorId });
 

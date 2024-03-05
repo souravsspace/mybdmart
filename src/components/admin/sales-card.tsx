@@ -15,7 +15,7 @@ export default function SalesCard(props: SalesProps) {
         </div>
         <div className="text-sm">
           <p>{props.name}</p>
-          <div className="w-[120px] overflow-hidden text-ellipsis whitespace-nowrap  text-gray-400  sm:w-auto">
+          <div className="w-[120px] overflow-hidden text-ellipsis whitespace-nowrap  text-muted-foreground  sm:w-auto">
             {props.email}
           </div>
         </div>

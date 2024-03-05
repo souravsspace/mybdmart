@@ -28,6 +28,7 @@ export default function SideNavbar() {
       {!mobileWidth && (
         <div className="absolute right-[-20px] top-7">
           <Button
+            // disabled
             onClick={toggleSidebar}
             variant="secondary"
             className=" rounded-full p-2"
@@ -37,7 +38,8 @@ export default function SideNavbar() {
         </div>
       )}
       <Navbar
-        isCollapsed={mobileWidth ? true : isCollapsed}
+        // isCollapsed={mobileWidth ? true : isCollapsed}
+        isCollapsed={true}
         links={[
           {
             title: "Dashboard",

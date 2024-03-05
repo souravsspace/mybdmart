@@ -56,46 +56,28 @@ export const deliveryAddress = createTRPCRouter({
         });
       }
 
-      const user = await ctx.db.user.findUnique({
-        where: {
-          email,
-        },
-      });
+      const user = ctx.session?.user;
 
-      if (!user)
+      if (!user || user == null)
         throw new TRPCError({
           code: "NOT_FOUND",
         });
 
-      if (!user?.name || user?.name == null) {
-        await ctx.db.user.update({
-          where: {
-            email,
-          },
-          data: {
-            name,
-          },
-        });
-      }
-
-      const userDeliveryAddress = await ctx.db.deliveryAddress.findFirst({
+      const previousAddress = await ctx.db.deliveryAddress.findUnique({
         where: {
-          userId: user.id,
+          email: user.email as string,
         },
       });
 
-      if (userDeliveryAddress) {
-        await ctx.db.deliveryAddress.update({
-          where: {
-            id: userDeliveryAddress.id,
-          },
+      if (!previousAddress) {
+        await ctx.db.deliveryAddress.create({
           data: {
             name,
             email,
             address,
             city,
             zip,
-            insideDhaka: insideDhaka || false,
+            insideDhaka: insideDhaka ? true : false,
             phoneNumber,
             googleMapLink,
             additionalInfo,
@@ -108,14 +90,17 @@ export const deliveryAddress = createTRPCRouter({
         });
       }
 
-      await ctx.db.deliveryAddress.create({
+      await ctx.db.deliveryAddress.update({
+        where: {
+          id: previousAddress?.id,
+        },
         data: {
           name,
           email,
           address,
           city,
           zip,
-          insideDhaka: insideDhaka || false,
+          insideDhaka: insideDhaka,
           phoneNumber,
           googleMapLink,
           additionalInfo,

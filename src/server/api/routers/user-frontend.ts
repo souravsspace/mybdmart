@@ -8,6 +8,23 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 
 export const userFrontend = createTRPCRouter({
+  getProfileData: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+
+    if (!userId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
+
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return user;
+  }),
   updateProfile: publicProcedure
     .input(
       ProfileValidation.extend({

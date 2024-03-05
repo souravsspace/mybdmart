@@ -43,7 +43,7 @@ export default function MobileNav() {
                     <Link
                       key={path + name}
                       href={path}
-                      className="text-left text-base font-medium uppercase text-gray-500 transition-all hover:text-gray-950"
+                      className="text-left text-base font-medium uppercase text-muted-foreground transition-all hover:text-gray-950"
                     >
                       <SheetClose>{name}</SheetClose>
                     </Link>

@@ -16,7 +16,7 @@ export default function ProductMainDetails({ product }: Props) {
         <p className="text-base font-medium text-primary">
           {newPrice && formatPrice(newPrice)}
           {newPrice ? (
-            <span className="ml-2 text-xs text-gray-500 line-through">
+            <span className="ml-2 text-xs text-muted-foreground line-through">
               {formatPrice(price)}
             </span>
           ) : (

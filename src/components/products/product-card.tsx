@@ -46,7 +46,7 @@ export default function ProductCard({ product, id, index }: Props) {
   return (
     <Link
       className={cn(
-        "group invisible h-full w-full cursor-pointer rounded-sm bg-white p-1 pb-2 shadow-md",
+        "group invisible h-full w-full cursor-pointer rounded-lg border p-1.5 pb-2 shadow-md dark:bg-muted/30",
         {
           "visible animate-in fade-in-5": isVisible,
         },
@@ -54,16 +54,16 @@ export default function ProductCard({ product, id, index }: Props) {
       href={`/products/${id}`}
     >
       <div className="flex w-full flex-col">
-        <section className="transition-all ease-linear group-hover:scale-[1.03]">
-          <ImageSlider urls={validUrls} discount={discount} isNew={isNew} />
-        </section>
+        <ImageSlider urls={validUrls} discount={discount} isNew={isNew} />
 
         <section className="px-1.5">
-          <h2 className={cn("mt-4 text-base text-gray-700")}>{product.name}</h2>
+          <h2 className={cn("mt-4 text-base text-muted-foreground")}>
+            {product.name}
+          </h2>
           <p className="mt-1 flex w-full items-center justify-between text-lg font-semibold text-primary">
             {product.newPrice && formatPrice(product.newPrice)}
             {product.newPrice ? (
-              <span className="text-xs text-gray-500 line-through">
+              <span className="text-xs text-muted-foreground line-through">
                 {formatPrice(product.price)}
               </span>
             ) : (

@@ -73,7 +73,7 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           {orderedItems.map((item, i) => (
             <div key={item.productName + i}>
               <li className="text-sm font-medium">{item.productName}</li>
-              <li className="text-xs text-gray-500">
+              <li className="text-xs text-muted-foreground">
                 {formatPrice(item.price)} x {item.quantity}
               </li>
             </div>

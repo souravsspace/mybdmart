@@ -50,7 +50,7 @@ export default function ProductAddToCart({ id, price, stock }: Props) {
           <div className="text-medium group inline-flex text-sm">
             <Shield
               aria-hidden="true"
-              className="mr-2 h-5 w-5 flex-shrink-0 text-gray-400"
+              className="mr-2 h-5 w-5 flex-shrink-0 text-muted-foreground"
             />
             <span className="text-muted-foreground hover:text-gray-700">
               7 Day Return Guarante

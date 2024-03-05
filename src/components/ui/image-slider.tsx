@@ -41,10 +41,10 @@ export default function ImageSlider({
 
   const activeStyles =
     "active:scale-[0.97] grid opacity-100 hover:scale-105 absolute top-1/2 -translate-y-1/2 aspect-square h-8 w-8 z-50 place-items-center rounded-full border-2 bg-white border-zinc-300";
-  const inactiveStyles = "hidden text-gray-400";
+  const inactiveStyles = "hidden text-muted-foreground";
 
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
+    <div className="group/main relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
       <div className="absolute inset-0 z-10 opacity-0 transition group-hover:opacity-100">
         <button
           onClick={(e) => {

@@ -16,7 +16,7 @@ export default function Heading({
       {title ? (
         <h1
           className={cn(
-            "text-gray-900",
+            "text-gray-900 dark:text-gray-100",
             isSettingsPage
               ? "text-xl font-medium"
               : "px-0 text-2xl font-bold sm:px-4 sm:text-3xl lg:px-0",

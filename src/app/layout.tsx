@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-gray-50 font-sans ${inter.variable}`}>
+      <body className={`bg-hero-0 font-sans ${inter.variable}`}>
         <NextAuthProvider>
           <ToastProvider />
           <TRPCReactProvider>

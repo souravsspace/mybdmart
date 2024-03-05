@@ -39,7 +39,7 @@ export default function ContactPage() {
           </Link>
         </div>
 
-        <div className="flex-1 rounded-2xl border-[1px] bg-slate-50 p-3 shadow sm:px-4 sm:py-6 md:p-8">
+        <div className="flex-1 rounded-2xl border-[1px] bg-muted p-3 shadow dark:bg-muted/30 sm:px-4 sm:py-6 md:p-8">
           <ContactForm />
         </div>
       </section>

@@ -22,14 +22,19 @@ import useUserAuth from "@/hooks/use-user-auth";
 import { api } from "@/trpc/react";
 import toast from "react-hot-toast";
 
-export function SettingsProfileForm() {
+type Props = {
+  name: string | undefined | null;
+  username: string | undefined;
+};
+
+export function SettingsProfileForm({ name, username }: Props) {
   const { userAuthData } = useUserAuth();
 
   const form = useForm<TProfileValidation>({
     resolver: zodResolver(ProfileValidation),
     defaultValues: {
-      name: "",
-      username: "",
+      name: name ? name : "",
+      username: username ? username : "",
     },
   });
 

@@ -37,7 +37,7 @@ export default function SettingsSidebar() {
           className={cn(
             "w-full rounded-md px-3 py-1.5 text-center text-[15px] md:text-left",
             {
-              "bg-gray-200/40": activeIndex === index,
+              "bg-gray-200/40 dark:bg-gray-700/40": activeIndex === index,
               "transition hover:underline": activeIndex !== index,
             },
           )}

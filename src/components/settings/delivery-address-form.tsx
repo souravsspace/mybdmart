@@ -23,23 +23,37 @@ import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 
-export function DeliveryAddressForm() {
-  const { userAuthData } = useUserAuth();
+type Props = {
+  id?: string;
+  name?: string;
+  address?: string;
+  city?: string;
+  zip?: string;
+  googleMapLink?: string | null;
+  insideDhaka?: boolean;
+  phoneNumber?: string;
+  email?: string;
+  additionalInfo?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+  userId?: string | null;
+};
 
-  const { data } = api.deliveryAddress.getDeliveryAddress.useQuery();
+export function DeliveryAddressForm(data: Props) {
+  const { userAuthData } = useUserAuth();
 
   const form = useForm<TDeliveryAddressFormValidation>({
     resolver: zodResolver(DeliveryAddressFormValidation),
     defaultValues: {
-      name: data?.userDeliveryAddress?.address || userAuthData?.name || "",
-      address: data?.userDeliveryAddress?.address || "",
-      city: data?.userDeliveryAddress?.city || "",
-      zip: data?.userDeliveryAddress?.zip || "",
-      googleMapLink: data?.userDeliveryAddress?.googleMapLink || "",
-      insideDhaka: data?.userDeliveryAddress?.insideDhaka || false,
-      phoneNumber: data?.userDeliveryAddress?.phoneNumber || "",
-      email: data?.userDeliveryAddress?.email || userAuthData?.email || "",
-      additionalInfo: data?.userDeliveryAddress?.additionalInfo || "",
+      name: data?.name || userAuthData?.name || "",
+      address: data?.address || "",
+      city: data?.city || "",
+      zip: data?.zip || "",
+      googleMapLink: data?.googleMapLink || "",
+      insideDhaka: data?.insideDhaka || false,
+      phoneNumber: data?.phoneNumber || "",
+      email: data?.email || userAuthData?.email || "",
+      additionalInfo: data?.additionalInfo || "",
     },
   });
 
@@ -62,8 +76,12 @@ export function DeliveryAddressForm() {
           return;
         }
 
+        if (error.data?.code === "UNPROCESSABLE_CONTENT") {
+          toast.error("No id provided. Please try again.");
+          return;
+        }
+
         toast.error("Failed update delivery address");
-        form.reset();
       },
       onSuccess: () => {
         toast.success("Delivery address updated successfully.");
@@ -71,17 +89,17 @@ export function DeliveryAddressForm() {
       },
     });
 
-  function onSubmit(data: TDeliveryAddressFormValidation) {
+  function onSubmit(updateData: TDeliveryAddressFormValidation) {
     mutate({
-      name: data.name,
-      city: data.city,
-      zip: data.zip,
-      address: data.address,
-      googleMapLink: data.googleMapLink,
-      insideDhaka: data.insideDhaka,
-      phoneNumber: data.phoneNumber,
-      email: data.email,
-      additionalInfo: data.additionalInfo,
+      name: updateData.name,
+      city: updateData.city,
+      zip: updateData.zip,
+      address: updateData.address,
+      googleMapLink: updateData.googleMapLink,
+      insideDhaka: updateData.insideDhaka,
+      phoneNumber: updateData.phoneNumber,
+      email: updateData.email,
+      additionalInfo: updateData.additionalInfo,
     });
   }
 
@@ -156,7 +174,6 @@ export function DeliveryAddressForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="address"
@@ -254,7 +271,11 @@ export function DeliveryAddressForm() {
             <FormItem>
               <FormControl>
                 <div className="flex items-center gap-x-2">
-                  <Checkbox id="insideDhaka" />
+                  <Checkbox
+                    id="insideDhaka"
+                    defaultChecked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                   <FormLabel
                     htmlFor="insideDhaka"
                     disabled={isLoading}

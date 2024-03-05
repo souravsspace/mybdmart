@@ -85,7 +85,7 @@ export default function AdminPage() {
         <CardContent className="flex justify-between gap-4">
           <section>
             <p>Recent Sales</p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground">
               You made 265 sales this month.
             </p>
           </section>

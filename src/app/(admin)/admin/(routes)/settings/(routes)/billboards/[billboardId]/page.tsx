@@ -9,15 +9,6 @@ type Props = {
 
 export const revalidate = 0;
 
-export const getServerSideProps = async ({ params }: Props) => {
-  const billboardId = params?.billboardId;
-  return {
-    props: {
-      billboardId,
-    },
-  };
-};
-
 export default async function Billboard({ params: { billboardId } }: Props) {
   const billboard = await api.billboard.getBillboard.query({ id: billboardId });
 

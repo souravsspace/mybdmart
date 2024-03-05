@@ -30,7 +30,7 @@ export default function ProductBreadcrumb({ categoryName }: Props) {
           <div className="flex items-center text-sm">
             <Link
               href={breadcrumb.href}
-              className="text-sm font-medium text-muted-foreground hover:text-gray-900"
+              className="text-sm font-medium text-muted-foreground"
             >
               {breadcrumb.name}
             </Link>
@@ -40,7 +40,7 @@ export default function ProductBreadcrumb({ categoryName }: Props) {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 aria-hidden="true"
-                className="ml-2 h-5 w-5 flex-shrink-0 text-gray-300"
+                className="ml-2 h-5 w-5 flex-shrink-0 text-muted-foreground"
               >
                 <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
               </svg>

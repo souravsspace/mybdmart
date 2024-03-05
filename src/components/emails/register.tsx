@@ -46,7 +46,7 @@ export default function RegisterEmail({ token }: Props) {
               The MyBDmart team.
             </Text>
             <Hr className="mx-0 my-5" />
-            <Text className="text-xs text-gray-400">
+            <Text className="text-xs text-muted-foreground">
               If you did not request this email, you can safely ignore it.
             </Text>
           </Container>

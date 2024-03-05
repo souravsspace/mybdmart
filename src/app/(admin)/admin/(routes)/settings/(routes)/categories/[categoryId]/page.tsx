@@ -9,15 +9,6 @@ type Props = {
 
 export const revalidate = 0;
 
-export const getServerSideProps = async ({ params }: Props) => {
-  const categoryId = params?.categoryId;
-  return {
-    props: {
-      categoryId,
-    },
-  };
-};
-
 export default async function Category({ params: { categoryId } }: Props) {
   const category = await api.category.getCategory.query({ id: categoryId });
 
