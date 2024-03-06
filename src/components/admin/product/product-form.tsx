@@ -77,6 +77,7 @@ export default function ProductForm({
     createProductMutate,
     isProductLoading,
     updateProductMutate,
+    createIsLoading,
   } = useProduct();
 
   const { convertToBase64, theImages, removeImage, setTheImages } =
@@ -193,6 +194,10 @@ export default function ProductForm({
       newPrice: String(data.newPrice),
     });
   };
+
+  if (createIsLoading) {
+    return <div>Creating..</div>;
+  }
 
   return (
     <main>

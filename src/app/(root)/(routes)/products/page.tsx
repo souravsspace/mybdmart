@@ -9,18 +9,27 @@ type Props = {
   searchParams: {
     page: string | undefined;
     sort: string | undefined;
-    id: string | undefined;
+    categoryId: string | undefined;
+    productId: string | undefined;
   };
 };
 
 export default async function ProductsPage({ searchParams }: Props) {
   const pageNumber = searchParams.page;
   const sort = searchParams.sort;
-  const id = searchParams.id;
+  const categoryId = searchParams.categoryId;
+  const productId = searchParams.productId;
 
   const product = await api.clientProduct.allProducts.query({
     page: pageNumber ? parseInt(pageNumber) : 1,
+    sort: sort,
+    categoryId: categoryId,
+    productId: productId,
   });
+
+  if (!product) {
+    return null;
+  }
 
   const products: ClientProductType[] = product.map((product) => {
     return {

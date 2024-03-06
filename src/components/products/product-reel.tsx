@@ -47,6 +47,17 @@ export default function ProductReel({
           </div>
         </div>
       </div>
+
+      {href ? (
+        <div className="mt-6 flex items-end justify-end">
+          <Link
+            href={href}
+            className="text-sm font-medium text-gray-600 hover:text-gray-500"
+          >
+            View More
+          </Link>
+        </div>
+      ) : null}
     </section>
   );
 }

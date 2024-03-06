@@ -4,10 +4,10 @@ import Footer from "@/components/footer";
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <>
+    <main className="flex min-h-screen flex-col">
       <Navbar />
-      {children}
+      <main className="flex-grow">{children}</main>
       <Footer />
-    </>
+    </main>
   );
 }

@@ -7,8 +7,14 @@ type Props = {
 };
 
 export default function ProductMainDetails({ product }: Props) {
-  const { price, description, newPrice, name, categoryName, sell, stock, id } =
-    product;
+  const {
+    price,
+    description,
+    newPrice,
+    // name,
+    categoryName,
+    // sell, stock, id
+  } = product;
 
   return (
     <section className="mt-4">

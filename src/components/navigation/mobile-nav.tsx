@@ -24,12 +24,12 @@ export default function MobileNav() {
 
   return (
     <div className="block md:hidden">
-      <Sheet>
+      <Sheet key="left">
         <SheetTrigger>
           {/* <MdMenuOpen className="mr-3.5 h-7 w-7" /> */}
           <CgMenuLeft className="mr-3.5 h-7 w-7" />
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent side="left">
           <SheetHeader>
             <SheetTitle className="text-left text-xl">
               {isLoggedIn

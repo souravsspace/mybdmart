@@ -147,11 +147,11 @@ export const productColumn: ColumnDef<Product>[] = [
     accessorKey: "color",
     header: "Color",
     cell: ({ row }) => (
-      <div className="space-y-0.5 capitalize">
+      <div className="flex w-fit flex-col items-start space-y-0.5 capitalize">
         {row.original.colors.map((color) => (
           <h4
             key={color.id}
-            className="rounded-md p-0.5 text-white"
+            className="rounded-md p-0.5 text-white sm:px-1"
             style={{ backgroundColor: color.value }}
           >
             {color.name}

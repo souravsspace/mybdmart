@@ -73,5 +73,6 @@ export default function useProduct() {
     deleteProductMutate,
     updateProductMutate,
     isProductLoading,
+    createIsLoading,
   };
 }

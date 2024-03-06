@@ -38,6 +38,7 @@ export default async function ProductPage({ params: { productId } }: Props) {
     sell: getProduct.sell,
     createdAt: getProduct.createdAt,
   };
+
   const similarProducts: ClientProductType[] = getSimilarProducts.map(
     (product) => ({
       ...product,
@@ -56,6 +57,9 @@ export default async function ProductPage({ params: { productId } }: Props) {
       createdAt: product.createdAt,
     }),
   );
+  const FilterdSimilarProducts = similarProducts.filter(
+    (product) => product.id !== productId,
+  );
 
   const validUrls = product.images.map((image) => image.imageUrl);
 
@@ -66,7 +70,7 @@ export default async function ProductPage({ params: { productId } }: Props) {
           <ProductBreadcrumb categoryName={product.categoryName} />
 
           <div className="mt-4">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">
               {product.name}
             </h1>
           </div>
@@ -81,15 +85,16 @@ export default async function ProductPage({ params: { productId } }: Props) {
           </div>
         </div>
 
-        <ProductAddToCart {...product} stock={product.stock} />
+        <ProductAddToCart product={product} stock={product.stock} />
+        <div className="col-span-2 w-full">
+          <ProductReel
+            href={`/products?sort=category&categoryId=${product.categoryId}&productId=${product.id}`}
+            title={`Similar Products`}
+            subtitle={`Browse similar high-quality product just like '${product.name}'`}
+            products={FilterdSimilarProducts}
+          />
+        </div>
       </div>
-
-      <ProductReel
-        href="/products"
-        title={`Similar Products`}
-        subtitle={`Browse similar high-quality product just like '${product.name}'`}
-        products={similarProducts}
-      />
     </Wrapper>
   );
 }

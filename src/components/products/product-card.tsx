@@ -12,7 +12,6 @@ import ImageSlider from "@/components/ui/image-slider";
 import { useEffect, useState } from "react";
 import { type ClientProductType } from "@/types/client-product";
 import { Button } from "../ui/button";
-import { STOCK } from "@prisma/client";
 
 type Props = {
   id: string;
@@ -53,28 +52,30 @@ export default function ProductCard({ product, id, index }: Props) {
       )}
       href={`/products/${id}`}
     >
-      <div className="flex w-full flex-col">
+      <div className="flex h-full flex-col">
         <ImageSlider urls={validUrls} discount={discount} isNew={isNew} />
 
-        <section className="px-1.5">
-          <h2 className={cn("mt-4 text-base text-muted-foreground")}>
-            {product.name}
-          </h2>
-          <p className="mt-1 flex w-full items-center justify-between text-lg font-semibold text-primary">
-            {product.newPrice && formatPrice(product.newPrice)}
-            {product.newPrice ? (
-              <span className="text-xs text-muted-foreground line-through">
-                {formatPrice(product.price)}
-              </span>
-            ) : (
-              <span>{formatPrice(product.price)}</span>
-            )}
-          </p>
+        <div className="flex flex-grow flex-col justify-between px-1.5">
+          <div>
+            <h2 className={cn("mt-4 text-base text-muted-foreground")}>
+              {product.name}
+            </h2>
+            <p className="mt-1 flex w-full items-center justify-between text-lg font-semibold text-primary">
+              {product.newPrice && formatPrice(product.newPrice)}
+              {product.newPrice ? (
+                <span className="text-xs text-muted-foreground line-through">
+                  {formatPrice(product.price)}
+                </span>
+              ) : (
+                <span>{formatPrice(product.price)}</span>
+              )}
+            </p>
+          </div>
 
-          <Button className="mt-1 w-full uppercase" size="sm">
+          <Button className="mt-auto w-full uppercase" size="sm">
             order
           </Button>
-        </section>
+        </div>
       </div>
     </Link>
   );

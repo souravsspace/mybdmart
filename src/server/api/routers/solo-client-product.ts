@@ -54,4 +54,16 @@ export const soloClientProduct = createTRPCRouter({
 
       return products;
     }),
+  getAllProducts: publicProcedure.query(async ({ ctx }) => {
+    const products = await ctx.db.product.findMany({
+      include: {
+        images: true,
+        colors: true,
+        sizes: true,
+        category: true,
+      },
+    });
+
+    return products;
+  }),
 });

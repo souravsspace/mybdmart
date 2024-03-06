@@ -7,30 +7,111 @@ export const ClientProduct = createTRPCRouter({
     .input(
       z.object({
         page: z.number().default(1),
+        sort: z.string().optional(),
+        categoryId: z.string().optional(),
+        productId: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const pageNumber = input.page;
+      const { page: pageNumber, sort: sortBy, productId } = input;
 
-      const products = await ctx.db.product.findMany({
-        where: {
-          isArchived: false,
-        },
-        take: 20,
-        skip: (pageNumber - 1) * 20,
-        include: {
-          category: true,
-          colors: true,
-          sizes: true,
-          images: true,
-        },
-      });
-
-      if (products.length === 0) {
-        throw new Error("No products found");
+      if (sortBy === undefined) {
+        return await ctx.db.product.findMany({
+          where: {
+            isArchived: false,
+          },
+          take: 20,
+          skip: (pageNumber - 1) * 20,
+          include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            images: true,
+          },
+        });
       }
 
-      return products;
+      if (sortBy === "hot-deals") {
+        return await ctx.db.product.findMany({
+          where: {
+            isArchived: false,
+            newPrice: {
+              not: null,
+            },
+          },
+          take: 20,
+          skip: (pageNumber - 1) * 20,
+          include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            images: true,
+          },
+        });
+      }
+
+      if (sortBy === "trending-products") {
+        return await ctx.db.product.findMany({
+          where: {
+            isArchived: false,
+          },
+          orderBy: {
+            sell: "desc",
+          },
+          take: 20,
+          skip: (pageNumber - 1) * 20,
+          include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            images: true,
+          },
+        });
+      }
+
+      if (sortBy === "featured-products") {
+        return await ctx.db.product.findMany({
+          where: {
+            isFeatured: true,
+            isArchived: false,
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+          take: 20,
+          skip: (pageNumber - 1) * 20,
+          include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            images: true,
+          },
+        });
+      }
+
+      if (sortBy === "category") {
+        const products = await ctx.db.product.findMany({
+          where: {
+            category: {
+              id: input.categoryId,
+            },
+          },
+          include: {
+            images: true,
+            colors: true,
+            sizes: true,
+            category: true,
+          },
+        });
+
+        if (productId) {
+          const filteredProducts = products.filter((product) => {
+            return product.id !== productId;
+          });
+          return filteredProducts;
+        }
+        return products;
+      }
     }),
 
   brandNewProducts: publicProcedure.query(async ({ ctx }) => {

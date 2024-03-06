@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 type Props = {
@@ -29,8 +30,11 @@ export default function ProductBreadcrumb({ categoryName }: Props) {
         <li key={breadcrumb.href + breadcrumb.id}>
           <div className="flex items-center text-sm">
             <Link
-              href={breadcrumb.href}
-              className="text-sm font-medium text-muted-foreground"
+              href={breadcrumb.id === 3 ? "" : breadcrumb.href}
+              className={cn(
+                "text-sm font-medium text-muted-foreground",
+                breadcrumb.id === 3 ? "cursor-not-allowed" : "cursor-pointer",
+              )}
             >
               {breadcrumb.name}
             </Link>

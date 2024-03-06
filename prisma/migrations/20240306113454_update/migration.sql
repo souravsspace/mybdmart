@@ -2,6 +2,9 @@
 CREATE TYPE "ROLE" AS ENUM ('USER', 'ADMIN', 'MOD');
 
 -- CreateEnum
+CREATE TYPE "STOCK" AS ENUM ('IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK');
+
+-- CreateEnum
 CREATE TYPE "ORDER_STATUS" AS ENUM ('PENDING', 'PROCESSING', 'CANCELLED', 'DELIVERED', 'REFUNDED');
 
 -- CreateTable
@@ -15,6 +18,18 @@ CREATE TABLE "Category" (
 );
 
 -- CreateTable
+CREATE TABLE "Billboard" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Billboard_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
@@ -23,33 +38,13 @@ CREATE TABLE "Product" (
     "description" TEXT NOT NULL,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "isArchived" BOOLEAN NOT NULL DEFAULT false,
+    "stock" "STOCK" NOT NULL DEFAULT 'IN_STOCK',
+    "sell" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "sizeId" TEXT,
-    "colorId" TEXT,
     "categoryId" TEXT,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Billboard" (
-    "id" TEXT NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "imageUrl" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Billboard_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Image" (
-    "id" TEXT NOT NULL,
-    "imageUrl" TEXT NOT NULL,
-    "productId" TEXT,
-
-    CONSTRAINT "Image_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -72,6 +67,15 @@ CREATE TABLE "Color" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Color_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Image" (
+    "id" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "productId" TEXT,
+
+    CONSTRAINT "Image_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -142,8 +146,35 @@ CREATE TABLE "VerificationToken" (
     "userId" TEXT
 );
 
+-- CreateTable
+CREATE TABLE "Contact" (
+    "id" TEXT NOT NULL,
+    "firstName" VARCHAR(50) NOT NULL,
+    "lastName" VARCHAR(50) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "phoneNumber" INTEGER NOT NULL,
+    "topic" VARCHAR(255) NOT NULL,
+    "message" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_ProductToSize" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_ProductToColor" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
-CREATE UNIQUE INDEX "DeliveryAddress_userId_phoneNumber_key" ON "DeliveryAddress"("userId", "phoneNumber");
+CREATE UNIQUE INDEX "DeliveryAddress_email_key" ON "DeliveryAddress"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
@@ -157,11 +188,17 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
--- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_sizeId_fkey" FOREIGN KEY ("sizeId") REFERENCES "Size"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "_ProductToSize_AB_unique" ON "_ProductToSize"("A", "B");
 
--- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_colorId_fkey" FOREIGN KEY ("colorId") REFERENCES "Color"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+-- CreateIndex
+CREATE INDEX "_ProductToSize_B_index" ON "_ProductToSize"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_ProductToColor_AB_unique" ON "_ProductToColor"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_ProductToColor_B_index" ON "_ProductToColor"("B");
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -180,3 +217,15 @@ ALTER TABLE "DeliveryAddress" ADD CONSTRAINT "DeliveryAddress_userId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "VerificationToken" ADD CONSTRAINT "VerificationToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ProductToSize" ADD CONSTRAINT "_ProductToSize_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ProductToSize" ADD CONSTRAINT "_ProductToSize_B_fkey" FOREIGN KEY ("B") REFERENCES "Size"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ProductToColor" ADD CONSTRAINT "_ProductToColor_A_fkey" FOREIGN KEY ("A") REFERENCES "Color"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ProductToColor" ADD CONSTRAINT "_ProductToColor_B_fkey" FOREIGN KEY ("B") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
