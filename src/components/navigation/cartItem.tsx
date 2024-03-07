@@ -1,14 +1,16 @@
 "use client";
 
 import { useCart } from "@/hooks/use-cart";
-import { formatPrice } from "@/lib/utils";
+import { englishToBanglaNumber, formatPrice } from "@/lib/utils";
 import { type ClientProductType as Product } from "@/types/client-product";
 import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 
 export default function CartItem({ product }: { product: Product }) {
+  const { removeItem, items } = useCart();
   const image = product.images[0]?.imageUrl;
-  const { removeItem } = useCart();
+
+  const findProduct = items.find((item) => item.product.id === product.id);
 
   return (
     <div className="space-y-3 py-2">
@@ -45,10 +47,11 @@ export default function CartItem({ product }: { product: Product }) {
 
         <div className="flex flex-col space-y-1 font-medium">
           <span className="ml-auto line-clamp-1 text-sm">
+            {englishToBanglaNumber(findProduct?.quantity)} x{" "}
             {formatPrice(product.newPrice ? product.newPrice : product.price)}
           </span>
           <button
-            onClick={() => removeItem(product.id)}
+            onClick={() => removeItem(findProduct!.product)}
             className="flex items-center gap-0.5 text-xs text-primary"
           >
             <X className="size-4" />

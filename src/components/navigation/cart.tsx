@@ -71,10 +71,10 @@ export default function Cart() {
                 </li>
               </ul>
 
-              <Button className="mt-1 w-full" variant="secondary">
+              {/* <Button className="mt-1 w-full" variant="secondary">
                 View Cart
-              </Button>
-              <Button className="mt-2.5 w-full">Continue to Checkout</Button>
+              </Button> */}
+              <Button className="mt-2 w-full">Continue to Checkout</Button>
             </ScrollArea>
           </main>
         ) : (

@@ -6,6 +6,8 @@ import { Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { type ClientProductType as Product } from "@/types/client-product";
+import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 type Props = {
   stock: STOCK;
@@ -16,6 +18,11 @@ export default function ProductAddToCart({ stock, product }: Props) {
   const { addItem } = useCart();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
+  const searchParams = useSearchParams();
+
+  const colorId = searchParams.get("color") || "";
+  const sizeId = searchParams.get("size") || "";
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsSuccess(false);
@@ -24,15 +31,26 @@ export default function ProductAddToCart({ stock, product }: Props) {
     return () => clearTimeout(timeout);
   }, [isSuccess]);
 
+  const addToCart = () => {
+    if (!colorId || colorId === "" || colorId === null) {
+      toast.error("Please select a color");
+      return;
+    }
+    if (!sizeId || sizeId === "" || sizeId === null) {
+      toast.error("Please select a size");
+      return;
+    }
+
+    addItem({ ...product, colorId, sizeId });
+    setIsSuccess(true);
+  };
+
   return (
     <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
       <div>
         <div className="mt-10">
           <Button
-            onClick={() => {
-              addItem(product);
-              setIsSuccess(true);
-            }}
+            onClick={addToCart}
             size="lg"
             className="w-full"
             disabled={stock === STOCK.OUT_OF_STOCK}

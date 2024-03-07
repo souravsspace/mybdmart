@@ -10,7 +10,7 @@ export type Images = {
   imageUrl: string;
 };
 
-export type ClientProductType = {
+export interface ClientProductType {
   id: string;
   name: string;
   description?: string;
@@ -24,4 +24,4 @@ export type ClientProductType = {
   stock: STOCK;
   sell: number;
   createdAt?: Date;
-};
+}

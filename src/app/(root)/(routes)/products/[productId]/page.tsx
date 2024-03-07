@@ -86,6 +86,7 @@ export default async function ProductPage({ params: { productId } }: Props) {
         </div>
 
         <ProductAddToCart product={product} stock={product.stock} />
+
         <div className="col-span-2 w-full">
           <ProductReel
             href={`/products?sort=category&categoryId=${product.categoryId}&productId=${product.id}`}

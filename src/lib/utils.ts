@@ -33,3 +33,34 @@ export function calculateDiscountPercentage(
   const discountPercentage = (priceDifference / originalPrice) * 100;
   return Number(discountPercentage.toFixed(2));
 }
+
+type BanglaDigit = { [key: number]: string };
+
+export function englishToBanglaNumber(number: number | undefined): string {
+  if (!number) return "Input must be a number";
+  if (isNaN(number)) return "Input must be a number";
+
+  const banglaDigits: BanglaDigit = {
+    0: "০",
+    1: "১",
+    2: "২",
+    3: "৩",
+    4: "৪",
+    5: "৫",
+    6: "৬",
+    7: "৭",
+    8: "৮",
+    9: "৯",
+  };
+
+  // Convert number to string and split into digits
+  const numberString = number.toString().split("");
+
+  // Convert each digit to Bangla
+  const banglaNumber = numberString.map(
+    (digit: string) => banglaDigits[Number(digit)] || digit,
+  );
+
+  // Join the Bangla digits
+  return banglaNumber.join("");
+}

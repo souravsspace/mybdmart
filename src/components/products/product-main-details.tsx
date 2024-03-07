@@ -29,8 +29,15 @@ export default function ProductMainDetails({ product }: Props) {
   const selectedColorParams = searchParams.get("color");
   const selectedSizeParams = searchParams.get("size");
 
-  const [selectedColor, setSelectedColor] = useState(selectedColorParams);
-  const [selectedSize, setSelectedSize] = useState(selectedSizeParams);
+  const productColorId = colors?.[0]?.id;
+  const productSizeId = sizes?.[0]?.id;
+
+  const [selectedColor, setSelectedColor] = useState(
+    productColorId ? productColorId : selectedColorParams,
+  );
+  const [selectedSize, setSelectedSize] = useState(
+    productSizeId ? productSizeId : selectedSizeParams,
+  );
 
   useEffect(() => {
     router.push(`?color=${selectedColor}&size=${selectedSize}`, {
@@ -86,20 +93,6 @@ export default function ProductMainDetails({ product }: Props) {
                   )}
                   style={{ backgroundColor: color.value }}
                 />
-                // <Link
-                //   key={color.id}
-                //   href={`?color=${color.id}&size=${selectedSize}`}
-                //   className={buttonVariants({
-                //     size: "sm",
-                //     className: cn(
-                //       "size-6 rounded-full bg-gray-200",
-                //       selectedColor === color.id
-                //         ? "outline outline-primary-foreground"
-                //         : "",
-                //     ),
-                //   })}
-                //   style={{ backgroundColor: color.value }}
-                // />
               ))
             : null}
         </div>
@@ -121,22 +114,6 @@ export default function ProductMainDetails({ product }: Props) {
                 >
                   {size.value}
                 </Button>
-                // <Link
-                //   href={`?color=${selectedColor}&size=${size.id}`}
-                //   className={buttonVariants({
-                //     size: "sm",
-                //     variant: "outline",
-                //     className: cn(
-                //       "size-8 rounded-full",
-                //       selectedSize === size.id
-                //         ? "outline outline-primary-foreground"
-                //         : "",
-                //     ),
-                //   })}
-                //   key={size.id}
-                // >
-                //   {size.value}
-                // </Link>
               ))
             : null}
         </div>
