@@ -45,7 +45,7 @@ export default function CartItem({ product }: { product: Product }) {
 
         <div className="flex flex-col space-y-1 font-medium">
           <span className="ml-auto line-clamp-1 text-sm">
-            {formatPrice(product.price)}
+            {formatPrice(product.newPrice ? product.newPrice : product.price)}
           </span>
           <button
             onClick={() => removeItem(product.id)}

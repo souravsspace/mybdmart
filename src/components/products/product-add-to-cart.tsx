@@ -28,22 +28,21 @@ export default function ProductAddToCart({ stock, product }: Props) {
     <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
       <div>
         <div className="mt-10">
-          {stock === STOCK.IN_STOCK ? (
-            <Button
-              onClick={() => {
-                addItem(product);
-                setIsSuccess(true);
-              }}
-              size="lg"
-              className="w-full"
-            >
-              {isSuccess ? "Added!" : "Add to cart"}
-            </Button>
-          ) : (
-            <Button size="lg" className="w-full" disabled>
-              Out of stock
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              addItem(product);
+              setIsSuccess(true);
+            }}
+            size="lg"
+            className="w-full"
+            disabled={stock === STOCK.OUT_OF_STOCK}
+          >
+            {stock === STOCK.OUT_OF_STOCK ? (
+              " Out of stock"
+            ) : (
+              <>{isSuccess ? "Added!" : "Add to cart"}</>
+            )}
+          </Button>
         </div>
         <div className="mt-6 text-center">
           <div className="text-medium group inline-flex text-sm">

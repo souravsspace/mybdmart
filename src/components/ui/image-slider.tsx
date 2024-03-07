@@ -44,7 +44,7 @@ export default function ImageSlider({
   const inactiveStyles = "hidden text-muted-foreground";
 
   return (
-    <div className="group/main relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
+    <div className="group relative aspect-square overflow-hidden rounded-xl bg-zinc-100">
       <div className="absolute inset-0 z-10 opacity-0 transition group-hover:opacity-100">
         <button
           onClick={(e) => {
@@ -79,7 +79,7 @@ export default function ImageSlider({
       <Swiper
         pagination={{
           renderBullet: (_, className) => {
-            return `<span class="rounded-full transition ${className}"></span>`;
+            return `<span class="rounded-full bg-primary text-primary transition ${className}"></span>`;
           },
         }}
         onSwiper={(swiper) => setSwiper(swiper)}

@@ -3,6 +3,7 @@ import { type STOCK } from "@prisma/client";
 export type SizeColorType = {
   id: string;
   name: string;
+  value?: string;
 };
 
 export type Images = {

@@ -20,7 +20,8 @@ export default function Cart() {
 
   const itemCount = items.length;
   const cartTotal = items.reduce((total, { product }) => {
-    return total + product.price;
+    const price = product.newPrice ? product.newPrice : product.price;
+    return total + price;
   }, 0);
 
   const deliveryCharge = 120;
@@ -64,7 +65,7 @@ export default function Cart() {
                   <span>Delivery Charge</span>
                   <span>{formatPrice(deliveryCharge)}</span>
                 </li>
-                <li className="flex items-center justify-between text-base font-medium text-gray-950">
+                <li className="flex items-center justify-between text-base font-medium">
                   <span>Total</span>
                   <span>{formatPrice(cartTotal + deliveryCharge)}</span>
                 </li>
@@ -76,7 +77,14 @@ export default function Cart() {
               <Button className="mt-2.5 w-full">Continue to Checkout</Button>
             </ScrollArea>
           </main>
-        ) : null}
+        ) : (
+          <div className="text-center">
+            <hr className="my-2.5 sm:my-3.5" />
+            <h4 className=" mt-10 text-muted-foreground">
+              Your cart is empty.
+            </h4>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );
