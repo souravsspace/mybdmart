@@ -2,9 +2,10 @@
 
 import { Resend } from "resend";
 import { db } from "@/server/db";
-import { randomUUID } from "crypto";
 import RegisterEmail from "@/components/emails/register";
 import { deleteToken } from "@/actions/deleteToken";
+import bcrypt from "bcrypt";
+import toast from "react-hot-toast";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
@@ -12,9 +13,16 @@ type Props = {
   email: string;
 };
 
+function generateRandomNumber(): number {
+  return Math.floor(Math.random() * 9000) + 1000;
+}
+
 export default async function sendMail({ email }: Props) {
-  const tokenIdentifier = randomUUID();
-  const tokenValue = randomUUID();
+  const tokenIdentifier = generateRandomNumber().toString();
+  const tokenValue = generateRandomNumber().toString();
+
+  const hashedToken = await bcrypt.hash(tokenValue, 10);
+  const hashedIdentifier = await bcrypt.hash(tokenIdentifier, 10);
 
   const expirationMinuteTime = 10;
 
@@ -31,8 +39,8 @@ export default async function sendMail({ email }: Props) {
 
   const createToken = await db.verificationToken.create({
     data: {
-      identifier: tokenIdentifier,
-      token: tokenValue,
+      identifier: hashedIdentifier,
+      token: hashedToken,
       expires: expirationTime,
       userId: user.id,
     },
@@ -60,7 +68,10 @@ export default async function sendMail({ email }: Props) {
       react: <RegisterEmail token={createToken.token} />,
     });
 
-    if (error) return error;
+    if (error) {
+      return error;
+    }
+
     return data;
   } catch (error) {
     return error;

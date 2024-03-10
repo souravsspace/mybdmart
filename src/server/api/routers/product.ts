@@ -69,6 +69,7 @@ export const Product = createTRPCRouter({
         images,
         colors,
         sizes,
+        stock,
       } = input;
 
       // Create an array to store new color and size ids
@@ -127,6 +128,7 @@ export const Product = createTRPCRouter({
               })),
             },
           },
+          stock,
         },
         include: {
           category: true,
@@ -172,6 +174,7 @@ export const Product = createTRPCRouter({
         // images,
         colors,
         sizes,
+        stock,
       } = input;
 
       // Create an array to store new color and size ids
@@ -226,6 +229,7 @@ export const Product = createTRPCRouter({
           categoryId,
           colors: { connect: colorIds.map((id) => ({ id })) },
           sizes: { connect: sizeIds.map((id) => ({ id })) },
+          stock,
           // images: {
           //   createMany: {
           //     data: images.map((image) => ({

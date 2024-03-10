@@ -145,6 +145,23 @@ export const Size = createTRPCRouter({
         });
       }
 
+      const isUsingSize = await ctx.db.product.findMany({
+        where: {
+          sizes: {
+            some: {
+              id: input.id,
+            },
+          },
+        },
+      });
+
+      if (isUsingSize.length > 0) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Size is being used by a product",
+        });
+      }
+
       await ctx.db.size.delete({
         where: {
           id: input.id,

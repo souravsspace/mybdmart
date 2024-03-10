@@ -49,21 +49,44 @@ export const authRouter = createTRPCRouter({
 
       if (isUser == null) throw new TRPCError({ code: "NOT_FOUND" });
 
-      const user = ctx.db.user.findUnique({
+      // const user = ctx.db.user.findUnique({
+      //   where: {
+      //     email,
+      //   },
+      //   select: {
+      //     verificationTokens: {
+      //       where: {
+      //         token: code,
+      //       },
+      //     },
+      //   },
+      // });
+      // const user = ctx.db.user.findUnique({
+      //   where: {
+      //     email,
+      //   },
+      //   include: {
+      //     verificationTokens: true,
+      //   },
+      // });
+
+      const userVarificationToken = await ctx.db.verificationToken.findMany({
         where: {
-          email,
-        },
-        select: {
-          verificationTokens: {
-            where: {
-              token: code,
-            },
+          user: {
+            email,
           },
         },
       });
 
-      if (user.verificationTokens.length === 0)
-        throw new TRPCError({ code: "CONFLICT" });
+      const data = userVarificationToken.find((token) => {
+        return bcrypt.compare(code, token.token);
+      });
+
+      if (data == null || !data) throw new TRPCError({ code: "CONFLICT" });
+
+      const varifiedToken = await bcrypt.compare(code, data.token);
+
+      if (!varifiedToken) throw new TRPCError({ code: "CONFLICT" });
 
       await ctx.db.user.update({
         where: {

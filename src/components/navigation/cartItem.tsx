@@ -5,6 +5,7 @@ import { englishToBanglaNumber, formatPrice } from "@/lib/utils";
 import { type ClientProductType as Product } from "@/types/client-product";
 import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CartItem({ product }: { product: Product }) {
   const { removeItem, items } = useCart();
@@ -15,7 +16,7 @@ export default function CartItem({ product }: { product: Product }) {
   return (
     <div className="space-y-3 py-2">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-1 items-center space-x-4">
           <div className="relative aspect-square h-16 w-16 min-w-fit overflow-hidden rounded">
             {image ? (
               <Image
@@ -35,21 +36,25 @@ export default function CartItem({ product }: { product: Product }) {
           </div>
 
           <div className="flex flex-col self-start">
-            <span className="mb-1 line-clamp-1 text-sm font-medium">
+            <Link
+              href={`/products/${product.id}`}
+              className="mb-1 line-clamp-1 text-wrap text-sm font-medium hover:underline"
+            >
               {product.name}
-            </span>
+            </Link>
 
             <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
               {product.categoryName}
             </span>
+
+            <span className="ml-auto line-clamp-1 text-sm">
+              {englishToBanglaNumber(findProduct?.quantity)} x{" "}
+              {formatPrice(product.newPrice ? product.newPrice : product.price)}
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-col space-y-1 font-medium">
-          <span className="ml-auto line-clamp-1 text-sm">
-            {englishToBanglaNumber(findProduct?.quantity)} x{" "}
-            {formatPrice(product.newPrice ? product.newPrice : product.price)}
-          </span>
+        <div className="my-auto flex flex-col space-y-1 font-medium">
           <button
             onClick={() => removeItem(findProduct!.product)}
             className="flex items-center gap-0.5 text-xs text-primary"

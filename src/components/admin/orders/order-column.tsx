@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -10,24 +11,36 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { cn, copyText, formatDate, formatPrice } from "@/lib/utils";
-import toast from "react-hot-toast";
-import { type ORDER_STATUS } from "@prisma/client";
+import {
+  cn,
+  copyText,
+  englishToBanglaNumber,
+  formatDate,
+  formatPrice,
+} from "@/lib/utils";
+import { type DeliveryAddress, ORDER_STATUS } from "@prisma/client";
 
-export type OrderedItems = {
-  productName: string;
-  price: number;
-  quantity: number;
+type SizeAndColor = {
+  name: string;
+  value: string;
 };
 
 export type OrderType = {
   id: string;
+  productName: string[];
   totalItems: number;
-  totalPrice: number;
+  TotalPrice: number;
   status: ORDER_STATUS;
-  orderedItems: OrderedItems[];
+  productPrice: number[];
+  productQuantity: number[] | string[];
+  date: Date;
+  sizes: SizeAndColor[];
+  colors: SizeAndColor[];
   createdAt: Date;
   updatedAt: Date;
+  userEmail: string;
+  userDeliveryAddress?: DeliveryAddress;
+  productId: string[];
 };
 
 export const OrderColumn: ColumnDef<OrderType>[] = [
@@ -54,33 +67,27 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "orderedItems",
+    accessorKey: "productName",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Ordered Items
+          Product Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const orderedItems = row.original.orderedItems;
-      return (
-        <ul className="gap gap-y-0.5 capitalize">
-          {orderedItems.map((item, i) => (
-            <div key={item.productName + i}>
-              <li className="text-sm font-medium">{item.productName}</li>
-              <li className="text-xs text-muted-foreground">
-                {formatPrice(item.price)} x {item.quantity}
-              </li>
-            </div>
-          ))}
-        </ul>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5 capitalize">
+        {row.original.productName.map((name, i) => (
+          <h4 key={name + i}>
+            {i + 1}. {name}
+          </h4>
+        ))}
+      </div>
+    ),
   },
   {
     accessorKey: "totalItems",
@@ -90,15 +97,17 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Total Items
+          Total Products
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.original.totalItems}</div>,
+    cell: ({ row }) => (
+      <div>{englishToBanglaNumber(row.original.totalItems)}</div>
+    ),
   },
   {
-    accessorKey: "totalPrice",
+    accessorKey: "TotalPrice",
     header: ({ column }) => {
       return (
         <Button
@@ -110,7 +119,64 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{formatPrice(row.original.totalPrice)}</div>,
+    cell: ({ row }) => <div>{formatPrice(row.original.TotalPrice)}</div>,
+  },
+  {
+    accessorKey: "productPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Products
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5">
+        {row.original.productQuantity.map((value, i) => (
+          <h4 key={i}>
+            {englishToBanglaNumber(value as number)} x{" "}
+            {formatPrice(row.original.productPrice[i] as number)}
+          </h4>
+        ))}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "colors",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Size & Color
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5 uppercase">
+          {row.original.sizes.map((size, i) => (
+            <h4 key={size.value + i} className="size-4">
+              {size.value}
+            </h4>
+          ))}
+        </div>
+        <div className="flex flex-col gap-0.5">
+          {row.original.colors.map((color, i) => (
+            <span
+              className={`size-4 bg-[${color.value}]`}
+              key={color.value + i}
+            />
+          ))}
+        </div>
+      </div>
+    ),
   },
   {
     accessorKey: "createdAt",
@@ -120,28 +186,24 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     ),
   },
   {
-    accessorKey: "updatedAt",
-    header: "UpdatedAt",
-    cell: ({ row }) => (
-      <div className="capitalize">{formatDate(row.original.updatedAt)}</div>
-    ),
-  },
-  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const rowValue = row.original.status.toUpperCase();
+      const rowValue = row.original.status;
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
             "bg-orange-200 dark:bg-orange-600":
-              rowValue === "PENDING" || rowValue === "PROCESSING",
-            "bg-green-200 dark:bg-green-600": rowValue === "DELIVERED",
-            "bg-red-200 dark:bg-primary": rowValue === "CANCELLED",
-            "bg-amber-200 dark:bg-amber-200": rowValue === "REFUNDED",
+              rowValue === ORDER_STATUS.PENDING ||
+              rowValue === ORDER_STATUS.PROCESSING,
+            "bg-green-200 dark:bg-green-600":
+              rowValue === ORDER_STATUS.DELIVERED,
+            "bg-red-200 dark:bg-primary": rowValue === ORDER_STATUS.CANCELLED,
+            "bg-amber-200 dark:bg-amber-200":
+              rowValue === ORDER_STATUS.REFUNDED,
           })}
         >
-          {rowValue}
+          {rowValue.toUpperCase()}
         </div>
       );
     },
@@ -150,7 +212,12 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const order = row.original;
+
+      const over24Hours =
+        order.date > new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const canCancel = order.status === ORDER_STATUS.PENDING && !over24Hours;
+      const alreadyCancelled = order.status === ORDER_STATUS.CANCELLED;
 
       return (
         <DropdownMenu>
@@ -163,16 +230,24 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
+              className="cursor-pointer"
               onClick={async () => {
-                await copyText(payment.id);
-                toast.success("Payment ID copied to clipboard");
+                await copyText(order.id);
+                toast.success("Order ID copied to clipboard");
               }}
             >
-              Copy payment ID
+              Copy order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Update Status</DropdownMenuItem>
-            <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              View Order
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={canCancel || alreadyCancelled}
+              className="cursor-pointer"
+            >
+              {alreadyCancelled ? "Cancel Order" : null}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

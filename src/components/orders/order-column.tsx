@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -10,16 +11,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { cn, copyText, formatPrice } from "@/lib/utils";
-import toast from "react-hot-toast";
-import { type ORDER_STATUS } from "@prisma/client";
+import { cn, copyText, englishToBanglaNumber, formatPrice } from "@/lib/utils";
+import { ORDER_STATUS } from "@prisma/client";
+
+type SizeAndColor = {
+  name: string;
+  value: string;
+};
 
 export type OrderType = {
   id: string;
-  productName: string;
-  price: number;
+  productName: string[];
+  totalItems: number;
+  TotalPrice: number;
   status: ORDER_STATUS;
-  date: string;
+  productPrice: number[];
+  productQuantity: number[] | string[];
+  date: Date;
+  sizes: SizeAndColor[];
+  colors: SizeAndColor[];
 };
 
 export const OrderColumn: ColumnDef<OrderType>[] = [
@@ -47,25 +57,115 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
   },
   {
     accessorKey: "productName",
-    header: "ProductName",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.productName}</div>
-    ),
-  },
-  {
-    accessorKey: "price",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Product Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>{formatPrice(row.original.price)}</div>,
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5 capitalize">
+        {row.original.productName.map((name, i) => (
+          <h4 key={name + i}>
+            {i + 1}: {name}
+          </h4>
+        ))}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "totalItems",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total Products
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div>{englishToBanglaNumber(row.original.totalItems)}</div>
+    ),
+  },
+  {
+    accessorKey: "TotalPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div>{formatPrice(row.original.TotalPrice)}</div>,
+  },
+  {
+    accessorKey: "productPrice",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Products
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-0.5 capitalize">
+        {row.original.productQuantity.map((value, i) => (
+          <h4 key={i}>
+            {englishToBanglaNumber(value as number)} x{" "}
+            {formatPrice(row.original.productPrice[i] as number)}
+          </h4>
+        ))}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "colors",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Size & Color
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5 uppercase">
+          {row.original.sizes.map((size, i) => (
+            <h4 key={size.value + i} className="size-4">
+              {size.value}
+            </h4>
+          ))}
+        </div>
+        <div className="flex flex-col gap-0.5">
+          {row.original.colors.map((color, i) => (
+            <span
+              className={`size-4 bg-[${color.value}]`}
+              key={color.value + i}
+            />
+          ))}
+        </div>
+      </div>
+    ),
   },
   {
     accessorKey: "status",
@@ -91,7 +191,11 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const order = row.original;
+
+      const over24Hours =
+        order.date > new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const canCancel = order.status === ORDER_STATUS.PENDING && !over24Hours;
 
       return (
         <DropdownMenu>
@@ -104,16 +208,18 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              // onClick={() => navigator.clipboard.writeText(payment.id)}
+              className="cursor-pointer"
               onClick={async () => {
-                await copyText(payment.id);
-                toast.success("Payment ID copied to clipboard");
+                await copyText(order.id);
+                toast.success("Order ID copied to clipboard");
               }}
             >
-              Copy payment ID
+              Copy order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+            <DropdownMenuItem disabled={canCancel} className="cursor-pointer">
+              Cancel Order
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

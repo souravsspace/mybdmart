@@ -145,6 +145,21 @@ export const Category = createTRPCRouter({
         });
       }
 
+      const isUsingCategory = await ctx.db.product.findMany({
+        where: {
+          category: {
+            id: input.id,
+          },
+        },
+      });
+
+      if (isUsingCategory.length > 0 || !isUsingCategory) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Category is being used by a product",
+        });
+      }
+
       await ctx.db.category.delete({
         where: {
           id: input.id,

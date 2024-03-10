@@ -1,3 +1,5 @@
+import { STOCK } from "@prisma/client";
+
 export const supportEmail = "info@mybdmart.com";
 export const supportPhone = "+880 123 456 7890";
 export const supportAddress = "Dhaka, Bangladesh";
@@ -48,60 +50,17 @@ export const navLinks = [
   },
 ] as const;
 
-export const shoes = [
+export const productStockStatus = [
   {
-    brand: "Nike",
-    name: "Air Max 270",
-    price: 150,
-    image: "/shoes/shoes_1.jpg",
-    color: "black",
+    value: STOCK.IN_STOCK,
+    label: "In Stock",
   },
   {
-    brand: "Adidas",
-    name: "Ultra Boost",
-    price: 180,
-    image: "/shoes/shoes_2.jpg",
-    color: "red",
+    value: STOCK.OUT_OF_STOCK,
+    label: "Out of Stock",
   },
   {
-    brand: "Nike",
-    name: "Air Max 570",
-    price: 250,
-    image: "/shoes/shoes_3.jpg",
-    color: "white",
-  },
-  {
-    brand: "Adidas",
-    name: "Ultra Boost X2",
-    price: 280,
-    image: "/shoes/shoes_4.jpg",
-    color: "blue",
-  },
-] as const;
-
-export const tshirt = [
-  {
-    name: "Dylan Morales",
-    price: 120,
-    image: "/tshirt/tshirt_1.jpg",
-    color: "black",
-  },
-  {
-    name: "Cecilia Schmidt",
-    price: 120,
-    image: "/tshirt/tshirt_1.jpg",
-    color: "white",
-  },
-  {
-    name: "Lottie Foster",
-    price: 120,
-    image: "/tshirt/tshirt_1.jpg",
-    color: "white",
-  },
-  {
-    name: "Mark Guzman",
-    price: 120,
-    image: "/tshirt/tshirt_1.jpg",
-    color: "blue",
+    value: STOCK.LOW_STOCK,
+    label: "Low Stock",
   },
 ] as const;

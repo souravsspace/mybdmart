@@ -36,6 +36,10 @@ export default function useSize() {
           toast.error("You are not allowed to delete size!");
           return;
         }
+        if (error.data?.code === "PRECONDITION_FAILED") {
+          toast.error("The size is being used by a product!");
+          return;
+        }
 
         toast.error("Failed to delete size");
       },

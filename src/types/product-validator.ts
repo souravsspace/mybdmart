@@ -1,3 +1,4 @@
+import { STOCK } from "@prisma/client";
 import { z } from "zod";
 
 export const ProductValidator = z.object({
@@ -44,6 +45,10 @@ export const ProductValidator = z.object({
     .optional(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
+  stock: z
+    .enum([STOCK.IN_STOCK, STOCK.OUT_OF_STOCK, STOCK.LOW_STOCK])
+    .optional()
+    .default(STOCK.IN_STOCK),
 });
 
 export type TProductValidator = z.infer<typeof ProductValidator>;
@@ -79,6 +84,10 @@ export const TRPCProductValidator = z.object({
     .array(),
   isFeatured: z.boolean().default(false),
   isArchived: z.boolean().default(false),
+  stock: z
+    .enum([STOCK.IN_STOCK, STOCK.OUT_OF_STOCK, STOCK.LOW_STOCK])
+    .optional()
+    .default(STOCK.IN_STOCK),
 });
 
 export type TTRPCProductValidator = z.infer<typeof TRPCProductValidator>;

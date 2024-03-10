@@ -36,6 +36,10 @@ export default function useColor() {
           toast.error("You are not allowed to delete color!");
           return;
         }
+        if (error.data?.code === "PRECONDITION_FAILED") {
+          toast.error("The color is being used by a product!");
+          return;
+        }
 
         toast.error("Failed to delete color");
       },

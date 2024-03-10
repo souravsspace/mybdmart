@@ -36,6 +36,10 @@ export default function useCategory() {
           toast.error("You are not allowed to delete category!");
           return;
         }
+        if (error.data?.code === "PRECONDITION_FAILED") {
+          toast.error("The category is being used by a product!");
+          return;
+        }
 
         toast.error("Failed to delete category");
       },

@@ -21,7 +21,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -35,10 +34,9 @@ import { OrderColumn as columns, type OrderType } from "./order-column";
 
 type Props = {
   data: OrderType[];
-  searchInput: string;
 };
 
-export default function OrdersDataTable({ data, searchInput }: Props) {
+export default function OrdersDataTable({ data }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -66,20 +64,10 @@ export default function OrdersDataTable({ data, searchInput }: Props) {
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Search"
-          value={
-            (table.getColumn(searchInput)?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn(searchInput)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+              Filter <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -24,9 +24,9 @@ export const deliveryAddress = createTRPCRouter({
       });
     }
 
-    const userDeliveryAddress = await ctx.db.deliveryAddress.findFirst({
+    const userDeliveryAddress = await ctx.db.deliveryAddress.findUnique({
       where: {
-        userId: user.id,
+        email,
       },
     });
 
@@ -69,7 +69,7 @@ export const deliveryAddress = createTRPCRouter({
         },
       });
 
-      if (!previousAddress) {
+      if (!previousAddress || previousAddress == null) {
         await ctx.db.deliveryAddress.create({
           data: {
             name,
@@ -88,6 +88,10 @@ export const deliveryAddress = createTRPCRouter({
             },
           },
         });
+
+        return {
+          success: true,
+        };
       }
 
       await ctx.db.deliveryAddress.update({
@@ -116,4 +120,47 @@ export const deliveryAddress = createTRPCRouter({
         success: true,
       };
     }),
+
+  deliveryCharge: publicProcedure.query(async ({ ctx }) => {
+    const email = ctx.session?.user.email;
+
+    if (!email || email == null) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
+
+    const user = await ctx.db.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user || user == null) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+      });
+    }
+
+    const userDeliveryAddress = await ctx.db.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        deliveryAddress: true,
+      },
+    });
+
+    const deliveryAddress = userDeliveryAddress?.deliveryAddress;
+
+    if (!deliveryAddress?.insideDhaka) {
+      return {
+        deliveryCharge: 120,
+      };
+    }
+
+    return {
+      deliveryCharge: 70,
+    };
+  }),
 });

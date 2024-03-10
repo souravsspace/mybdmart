@@ -132,6 +132,23 @@ export const Color = createTRPCRouter({
         });
       }
 
+      const isUsingColor = await ctx.db.product.findMany({
+        where: {
+          colors: {
+            some: {
+              id: input.id,
+            },
+          },
+        },
+      });
+
+      if (isUsingColor.length > 0) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "Color is being used by a product",
+        });
+      }
+
       const color = await ctx.db.color.findUnique({
         where: {
           id: input.id,

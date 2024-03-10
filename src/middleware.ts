@@ -1,5 +1,5 @@
 export const middleware = (request: Request) => {
-  // console.log("Middleware", request.url);
+  console.log("Middleware", request.url);
 };
 
 export const config = {

@@ -60,6 +60,7 @@ export default function ColorForm({ initialData }: Props) {
     updateColorMutate({
       id: colorId,
       name,
+      value,
     });
   };
 

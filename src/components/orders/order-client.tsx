@@ -15,7 +15,7 @@ export default function OrderClient({ data }: Props) {
 
       <Separator className="my-4 sm:my-6" />
 
-      <OrdersDataTable data={data} searchInput="productName" />
+      <OrdersDataTable data={data} />
     </Wrapper>
   );
 }

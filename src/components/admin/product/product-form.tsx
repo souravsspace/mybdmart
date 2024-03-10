@@ -53,6 +53,9 @@ import useProduct from "@/hooks/use-product";
 import { useEffect, useState } from "react";
 import AlertModal from "@/components/modals/alert-modal";
 import { cn } from "@/lib/utils";
+import { Loader } from "@/components/ui/loader";
+import { STOCK } from "@prisma/client";
+import { productStockStatus } from "@/constant";
 
 type Props = {
   initialData: productType | null;
@@ -147,6 +150,7 @@ export default function ProductForm({
       isFeatured: initialData?.isFeatured || false,
       isArchived: initialData?.isArchived || false,
       description: initialData?.description || "",
+      stock: initialData?.stock || STOCK.IN_STOCK,
     },
   });
 
@@ -172,6 +176,8 @@ export default function ProductForm({
     if (!selectedColor) return toast.error("Please select sizes");
     if (!arrayOfImage) return toast.error("Please select images");
 
+    console.log(data.stock);
+
     if (initialData) {
       updateProductMutate({
         ...data,
@@ -181,6 +187,7 @@ export default function ProductForm({
         images: arrayOfImage,
         price: String(data.price),
         newPrice: String(data.newPrice),
+        stock: data.stock,
       });
       return;
     }
@@ -195,9 +202,17 @@ export default function ProductForm({
     });
   };
 
-  if (createIsLoading) {
-    return <div>Creating..</div>;
-  }
+  if (createIsLoading)
+    return (
+      <div className="flex flex-col items-center justify-center gap-2">
+        <div className="my-4">
+          <h4 className="text-muted-foreground">
+            Uploading product to the server...
+          </h4>
+        </div>
+        <Loader />
+      </div>
+    );
 
   return (
     <main>
@@ -523,17 +538,58 @@ export default function ProductForm({
               )}
             />
 
-            {imageAction ? (
-              <div className="relative my-8 flex w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6">
-                <h4>{imageAction}</h4>
-              </div>
-            ) : (
-              <DragAndDropImage
-                inForm
-                multiple
-                convertToBase64={convertToBase64}
+            <div>
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Stock</FormLabel>
+                    <FormControl>
+                      <Select
+                        disabled={isLoading}
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a stock" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Select Stock</SelectLabel>
+                            {productStockStatus.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormDescription>
+                      This is Product available stock. It will be displayed on
+                      your admin dashboard.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            )}
+
+              {imageAction ? (
+                <div className="relative my-8 flex w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6">
+                  <h4 className="text-center">{imageAction}</h4>
+                </div>
+              ) : (
+                <DragAndDropImage
+                  inForm
+                  multiple
+                  convertToBase64={convertToBase64}
+                />
+              )}
+            </div>
 
             <div className="col-span-2 mt-4 flex flex-col flex-wrap items-center justify-center gap-2 md:mt-8 md:flex-row md:justify-around md:gap-4">
               {!arrayOfImage

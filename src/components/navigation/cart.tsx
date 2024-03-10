@@ -14,9 +14,13 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CartItem from "./cartItem";
+import { api } from "@/trpc/react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
-  const { items } = useCart();
+  const { items, clearCart } = useCart();
+  const router = useRouter();
 
   const itemCount = items.length;
   const cartTotal = items.reduce((total, { product }) => {
@@ -24,7 +28,58 @@ export default function Cart() {
     return total + price;
   }, 0);
 
-  const deliveryCharge = 120;
+  const deliveryChargeQuery = api.deliveryAddress.deliveryCharge.useQuery();
+  const { data: deliveryAddress } =
+    api.deliveryAddress.getDeliveryAddress.useQuery();
+
+  const deliveryCharge = deliveryChargeQuery.data?.deliveryCharge
+    ? deliveryChargeQuery.data?.deliveryCharge
+    : 120;
+
+  const isAddedDeliveryAddress = deliveryAddress?.userDeliveryAddress;
+
+  const { mutateAsync, isLoading } = api.clientOrder.createOrder.useMutation({
+    onError: (error) => {
+      if (error.data?.code === "UNAUTHORIZED") {
+        toast.error("You are not authorized to create a order!");
+        return;
+      }
+      if (error.data?.code === "FORBIDDEN") {
+        toast.error("Verify your email to place a order!");
+        return;
+      }
+
+      toast.error("Failed to place order!");
+    },
+    onSuccess: () => {
+      toast.success("Checkout successful!");
+      router.push("/orders");
+    },
+  });
+
+  const handleCheckout = async () => {
+    if (!isAddedDeliveryAddress) {
+      toast.error("Please add delivery address!");
+      router.push("/settings/delivery-address");
+      return;
+    }
+
+    await mutateAsync({
+      deliveryCharge,
+      totalItems: itemCount,
+      totalPrice: cartTotal + deliveryCharge,
+      price: items.map((product) =>
+        product.product.newPrice
+          ? product.product.newPrice
+          : product.product.price,
+      ),
+      ProductQuantity: items.map((product) => product.quantity),
+      productId: items.map((product) => product.product.id),
+      sizeId: items.map((product) => product.product.sizeId),
+      colorId: items.map((product) => product.product.colorId),
+    });
+    clearCart();
+  };
 
   return (
     <Sheet>
@@ -71,10 +126,13 @@ export default function Cart() {
                 </li>
               </ul>
 
-              {/* <Button className="mt-1 w-full" variant="secondary">
-                View Cart
-              </Button> */}
-              <Button className="mt-2 w-full">Continue to Checkout</Button>
+              <Button
+                disabled={isLoading}
+                className="mt-2 w-full"
+                onClick={handleCheckout}
+              >
+                Continue to Checkout
+              </Button>
             </ScrollArea>
           </main>
         ) : (

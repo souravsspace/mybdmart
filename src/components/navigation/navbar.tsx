@@ -1,24 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { navLinks } from "@/constant";
 import Wrapper from "@/components/ui/wrapper";
 import NavIcons from "@/components/navigation/nav-icons";
 import MobileNav from "@/components/navigation/mobile-nav";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import NavLogo from "@/components/ui/nav-logo";
 
 export default function Navbar() {
-  const { theme } = useTheme();
-  const [logoUrl, setLogoUrl] = useState("/logo/logo-light.png");
-
-  useEffect(() => {
-    setLogoUrl(
-      theme === "dark" ? "/logo/logo-dark.png" : "/logo/logo-light.png",
-    );
-  }, [theme]);
-
   return (
     // sticky left-0 right-0 top-0 z-50
     // <nav className="bg-secondary-foreground text-white">
@@ -28,13 +17,7 @@ export default function Navbar() {
         <MobileNav />
 
         <Link className="-ml-3.5 mr-auto" href="/">
-          <Image
-            src={logoUrl}
-            alt="MyBDmart"
-            width={180}
-            height={80}
-            className="object-contain"
-          />
+          <NavLogo />
         </Link>
         {/* Desktop */}
         <div className="hidden md:flex md:items-center md:gap-x-2.5 lg:gap-x-4">

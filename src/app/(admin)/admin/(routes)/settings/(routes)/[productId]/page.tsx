@@ -36,6 +36,7 @@ export default async function Product({ params: { productId } }: Props) {
     updatedAt: product.updatedAt,
     category: product.category?.name,
     categoryId: product.category?.id,
+    stock: product.stock,
     sizes: product.sizes.map((size) => {
       return {
         id: size.id,

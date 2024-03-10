@@ -1,27 +1,43 @@
-import OrderClient from "@/components/admin/orders/order-client";
-import PageTitle from "@/components/admin/page-title";
 import { api } from "@/trpc/server";
+import PageTitle from "@/components/admin/page-title";
+import OrderClient from "@/components/admin/orders/order-client";
+import { type ORDER_STATUS } from "@prisma/client";
+import { type OrderType } from "@/components/admin/orders/order-column";
 
 export const revalidate = 0;
 
 export default async function OrdersPage() {
-  const order = await api.order.getAllOrders.query();
+  const data = await api.clientOrder.getOrders.query();
 
-  const filteredOrder = order.map((order) => {
+  const filteredData: OrderType[] = data.map((order) => {
     return {
       id: order.id,
+      TotalPrice: order.totalPrice,
       totalItems: order.totalItems,
-      totalPrice: order.totalPrice,
-      status: order.status,
+      productName: order.orderedItems.map((item) => item.product?.name || ""),
+      productPrice: order.orderedItems.map(
+        (item) => item.product?.newPrice || item.product?.price || 0,
+      ),
+      productQuantity: order.orderedItems.map((item) => item.productQuantity),
+      status: order.status as ORDER_STATUS,
+      date: order.createdAt,
+      sizes: order.orderedItems.flatMap((item) =>
+        item.size.map((size) => ({
+          name: size?.name || "",
+          value: size?.value || "",
+        })),
+      ),
+      colors: order.orderedItems.flatMap((item) =>
+        item.color.map((color) => ({
+          name: color?.name || "",
+          value: color?.value || "",
+        })),
+      ),
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      orderedItems: order.orderedItems.map((item) => {
-        return {
-          productName: item.productName,
-          price: item.price,
-          quantity: item.quantity,
-        };
-      }),
+      userEmail: order.user?.email || "",
+      userDeliveryAddress: order.user?.deliveryAddress || undefined,
+      productId: order.orderedItems.map((item) => item.product?.id || ""),
     };
   });
 
@@ -29,7 +45,7 @@ export default async function OrdersPage() {
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Orders" />
 
-      <OrderClient data={filteredOrder} />
+      <OrderClient data={filteredData} />
     </div>
   );
 }

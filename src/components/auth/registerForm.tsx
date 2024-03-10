@@ -47,7 +47,8 @@ export default function RegisterForm() {
         toast.success(`Verification email sent to ${sentToEmail}.`);
         router.push("/verify-email?to=" + sentToEmail);
       } catch (error) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Email send failed.");
+        router.push("/verify-email?to=" + sentToEmail);
       }
     },
   });

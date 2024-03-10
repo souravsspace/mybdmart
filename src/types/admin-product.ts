@@ -1,3 +1,5 @@
+import { type STOCK } from "@prisma/client";
+
 export type SizeAndColor = {
   id: string;
   name: string;
@@ -36,4 +38,5 @@ export type productType = {
   // colorId: string | undefined;
   images: Image[];
   updatedAt: Date;
+  stock?: STOCK;
 };
