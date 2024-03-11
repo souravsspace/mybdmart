@@ -1,5 +1,6 @@
 import NavLogo from "@/components/ui/nav-logo";
 import VerificationForm from "@/components/auth/verification-form";
+import Link from "next/link";
 
 type Props = {
   searchParams: {
@@ -15,7 +16,7 @@ export default function VerifyEmail({ searchParams }: Props) {
   }
 
   return (
-    <div className="container relative flex flex-col items-center justify-center lg:px-0">
+    <div className="relative flex h-full w-full flex-col items-center justify-center lg:px-0">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex h-full flex-col items-center justify-center space-y-1">
           <div className="relative flex size-52 items-center justify-center text-muted-foreground">
@@ -40,6 +41,13 @@ export default function VerifyEmail({ searchParams }: Props) {
       </div>
 
       <VerificationForm email={toEmail as string} />
+
+      <Link
+        href="/login"
+        className="mt-6 text-sm text-muted-foreground underline sm:mt-8"
+      >
+        Skip and verify later.
+      </Link>
     </div>
   );
 }

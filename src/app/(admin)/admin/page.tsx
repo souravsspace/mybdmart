@@ -3,65 +3,120 @@ import PageTitle from "@/components/admin/page-title";
 import Card, { CardContent, type CardProps } from "@/components/admin/card";
 import SalesCard, { type SalesProps } from "@/components/admin/sales-card";
 import BarChart from "@/components/admin/bar-chart";
-
-const cardData: CardProps[] = [
-  {
-    label: "Total Revenue",
-    amount: "$45,231.89",
-    discription: "+20.1% from last month",
-    icon: DollarSign,
-  },
-  {
-    label: "Subscriptions",
-    amount: "+2350",
-    discription: "+180.1% from last month",
-    icon: Users,
-  },
-  {
-    label: "Sales",
-    amount: "+12,234",
-    discription: "+19% from last month",
-    icon: CreditCard,
-  },
-  {
-    label: "Active Now",
-    amount: "+573",
-    discription: "+201 since last hour",
-    icon: Activity,
-  },
-];
-
-const uesrSalesData: SalesProps[] = [
-  {
-    name: "Olivia Martin",
-    email: "olivia.martin@email.com",
-    saleAmount: "+$1,999.00",
-  },
-  {
-    name: "Jackson Lee",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$1,999.00",
-  },
-  {
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$39.00",
-  },
-  {
-    name: "William Kim",
-    email: "will@email.com",
-    saleAmount: "+$299.00",
-  },
-  {
-    name: "Sofia Davis",
-    email: "sofia.davis@email.com",
-    saleAmount: "+$39.00",
-  },
-];
+import { englishToBanglaNumber, formatPrice } from "@/lib/utils";
+import {
+  getActiveProduct,
+  getLastHourTotalActiveProducts,
+  getLastMonthTotalRevenue,
+  getLastMonthTotalSale,
+  getLastMonthTotalUser,
+  getRecentOrdersUserData,
+  getTotalRevenue,
+  getTotalSell,
+  getTotalUser,
+} from "@/actions/get-overview";
 
 export const revalidate = 0;
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const TotalSale = await getTotalSell();
+  const TotalUser = await getTotalUser();
+  const TotalRevenue = await getTotalRevenue();
+  const TotalActiveProducts = await getActiveProduct();
+
+  const LastMonthRevenue = await getLastMonthTotalRevenue();
+  const LastMonthSale = await getLastMonthTotalSale();
+  const LastMonthUser = await getLastMonthTotalUser();
+  const LastHourTotalActiveProducts = await getLastHourTotalActiveProducts();
+
+  const userSalesData = await getRecentOrdersUserData();
+  const FiltteredUser: SalesProps[] = userSalesData.map((data) => {
+    return {
+      name: data.user?.name || data.user!.username,
+      email: data.user!.email,
+      saleAmount: data.totalPrice,
+      image: data.user?.image,
+    };
+  });
+
+  const cardData: CardProps[] = [
+    {
+      label: "Total Revenue",
+      amount: "+" + formatPrice(TotalRevenue),
+      discription: LastMonthRevenue + "% from last month",
+      icon: DollarSign,
+    },
+    {
+      label: "Sale",
+      amount: "+" + englishToBanglaNumber(TotalSale),
+      discription: LastMonthSale + "% from last month",
+      icon: CreditCard,
+    },
+    {
+      label: "Users",
+      amount: englishToBanglaNumber(TotalUser),
+      discription: LastMonthUser + "% from last month",
+      icon: Users,
+    },
+    {
+      label: "Active Products",
+      amount: "+" + englishToBanglaNumber(TotalActiveProducts),
+      discription: LastHourTotalActiveProducts + " since last hour",
+      icon: Activity,
+    },
+  ];
+
+  const data = [
+    {
+      name: "Jan",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Feb",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Mar",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Apr",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "May",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Jun",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Jul",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Aug",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Sep",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Oct",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Nov",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+    {
+      name: "Dec",
+      total: Math.floor(Math.random() * 5000) + 2000,
+    },
+  ];
+
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Dashboard" />
@@ -80,26 +135,25 @@ export default function AdminPage() {
         <CardContent>
           <p className="p-4 font-semibold">Overview</p>
 
-          <BarChart />
+          <BarChart data={data} />
         </CardContent>
         <CardContent className="flex justify-between gap-4">
           <section>
             <p>Recent Sales</p>
             <p className="text-sm text-muted-foreground">
-              You made 265 sales this month.
+              You made {TotalSale} sales this month.
             </p>
           </section>
-          {uesrSalesData.map((d, i) => (
+          {FiltteredUser.map((data, i) => (
             <SalesCard
               key={i}
-              email={d.email}
-              name={d.name}
-              saleAmount={d.saleAmount}
+              name={data.name}
+              email={data.email}
+              saleAmount={data.saleAmount}
+              image={data.image}
             />
           ))}
         </CardContent>
-
-        {/*  */}
       </section>
     </div>
   );

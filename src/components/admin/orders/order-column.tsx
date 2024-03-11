@@ -19,6 +19,7 @@ import {
   formatPrice,
 } from "@/lib/utils";
 import { type DeliveryAddress, ORDER_STATUS } from "@prisma/client";
+import { onUpdateOrderStatus } from "@/actions/update-order-status";
 
 type SizeAndColor = {
   name: string;
@@ -190,6 +191,7 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     header: "Status",
     cell: ({ row }) => {
       const rowValue = row.original.status;
+
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
@@ -199,11 +201,40 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
             "bg-green-200 dark:bg-green-600":
               rowValue === ORDER_STATUS.DELIVERED,
             "bg-red-200 dark:bg-primary": rowValue === ORDER_STATUS.CANCELLED,
-            "bg-amber-200 dark:bg-amber-200":
+            "bg-amber-200 dark:bg-amber-600":
               rowValue === ORDER_STATUS.REFUNDED,
           })}
         >
-          {rowValue.toUpperCase()}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <h4 className="cursor-pointer uppercase">{rowValue}</h4>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="center"
+              className="cursor-pointer uppercase"
+            >
+              {Object.values(ORDER_STATUS).map((status) => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={async () => {
+                    try {
+                      toast.loading("Updating order status...");
+                      await onUpdateOrderStatus(row.original.id, status);
+                      toast.remove();
+                      toast.success("Order status updated successfully");
+                    } catch (error) {
+                      toast.error("Failed to update order status");
+                    }
+                  }}
+                  className={cn(
+                    status == rowValue ? "bg-gray-300 dark:bg-gray-700" : "",
+                  )}
+                >
+                  {status}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     },
@@ -213,11 +244,6 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const order = row.original;
-
-      const over24Hours =
-        order.date > new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const canCancel = order.status === ORDER_STATUS.PENDING && !over24Hours;
-      const alreadyCancelled = order.status === ORDER_STATUS.CANCELLED;
 
       return (
         <DropdownMenu>
@@ -241,12 +267,6 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer">
               View Order
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={canCancel || alreadyCancelled}
-              className="cursor-pointer"
-            >
-              {alreadyCancelled ? "Cancel Order" : null}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

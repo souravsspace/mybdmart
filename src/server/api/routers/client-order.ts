@@ -69,14 +69,14 @@ export const ClientOrder = createTRPCRouter({
       if (!userId || !role) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You are not authorized to create a product",
+          message: "You are not authorized to update a product",
         });
       }
 
       if (!userId || role !== ROLE.ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "You are not allowed to create a product",
+          message: "You are not allowed to update a product",
         });
       }
 

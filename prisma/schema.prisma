@@ -147,6 +147,8 @@ model User {
   orders             Order[]
   deliveryAddress    DeliveryAddress?    @relation(fields: [deliveryAddressId], references: [id])
   deliveryAddressId  String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 }
 
 model VerificationToken {

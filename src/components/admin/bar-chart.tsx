@@ -1,5 +1,7 @@
 "use client";
 
+import { formatPrice } from "@/lib/utils";
+import { useTheme } from "next-themes";
 import {
   BarChart as BarGraph,
   ResponsiveContainer,
@@ -8,58 +10,18 @@ import {
   Bar,
 } from "recharts";
 
-const data = [
-  {
-    name: "Jan",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Feb",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Mar",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Apr",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "May",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jun",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jul",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Aug",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Sep",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Oct",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Nov",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Dec",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-];
+type BarChartProps = {
+  data: {
+    // name: string;
+    total: number;
+  }[];
+};
 
-export default function BarChart() {
+export default function BarChart({ data }: BarChartProps) {
+  const { theme } = useTheme();
+
+  const barColor = theme === "dark" ? "#ffffff" : "#000000";
+
   return (
     <ResponsiveContainer width={"100%"} height={350}>
       <BarGraph data={data}>
@@ -75,9 +37,9 @@ export default function BarChart() {
           axisLine={false}
           stroke="#888888"
           fontSize={12}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `${formatPrice(value as number)}`}
         />
-        <Bar dataKey={"total"} radius={[4, 4, 0, 0]} />
+        <Bar fill={barColor} dataKey={"total"} radius={[4, 4, 0, 0]} />
       </BarGraph>
     </ResponsiveContainer>
   );
