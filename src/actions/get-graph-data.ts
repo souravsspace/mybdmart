@@ -30,7 +30,7 @@ export default async function getGraphData(): Promise<TGraphData[]> {
       let revenueForOrder = 0;
 
       for (const item of order.orderedItems) {
-        revenueForOrder += item.price * item.productQuantity;
+        revenueForOrder += item.price;
       }
 
       monthlyRevenue[month] = (monthlyRevenue[month] || 0) + revenueForOrder;

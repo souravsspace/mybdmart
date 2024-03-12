@@ -2,6 +2,7 @@
 
 import { formatPrice } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import {
   BarChart as BarGraph,
   ResponsiveContainer,
@@ -12,15 +13,22 @@ import {
 
 type BarChartProps = {
   data: {
-    // name: string;
+    name: string;
     total: number;
   }[];
 };
 
 export default function BarChart({ data }: BarChartProps) {
   const { theme } = useTheme();
+  const [barColor, setBarColor] = useState<string>("");
 
-  const barColor = theme === "dark" ? "#ffffff" : "#000000";
+  useEffect(() => {
+    if (theme === "dark") {
+      setBarColor("#ffffff");
+    } else {
+      setBarColor("#000000");
+    }
+  }, [theme]);
 
   return (
     <ResponsiveContainer width={"100%"} height={350}>

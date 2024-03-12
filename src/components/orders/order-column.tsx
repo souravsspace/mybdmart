@@ -148,18 +148,19 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-col gap-0.5 uppercase">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2 uppercase">
           {row.original.sizes.map((size, i) => (
             <h4 key={size.value + i} className="size-4">
               {size.value}
             </h4>
           ))}
         </div>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-wrap gap-2">
           {row.original.colors.map((color, i) => (
             <span
-              className={`size-4 bg-[${color.value}]`}
+              className={`size-4 rounded-full`}
+              style={{ backgroundColor: color.value }}
               key={color.value + i}
             />
           ))}
@@ -217,9 +218,11 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
               Copy order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem disabled={canCancel} className="cursor-pointer">
-              Cancel Order
-            </DropdownMenuItem>
+            {row.original.status === ORDER_STATUS.PENDING && (
+              <DropdownMenuItem disabled={canCancel} className="cursor-pointer">
+                Cancel Order
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

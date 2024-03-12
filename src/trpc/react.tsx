@@ -12,14 +12,14 @@ export const api = createTRPCReact<AppRouter>();
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const [queryClient] = useState(
-    () => new QueryClient(),
-    //   {
-    //   defaultOptions: {
-    //     queries: {
-    //       refetchOnWindowFocus: true,
-    //     },
-    //   },
-    // }
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: true,
+          },
+        },
+      }),
   );
 
   const [trpcClient] = useState(() =>

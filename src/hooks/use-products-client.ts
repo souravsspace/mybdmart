@@ -1,6 +1,8 @@
 import { api } from "@/trpc/server";
 import type { ClientProductType } from "@/types/client-product";
 
+export const revalidate = 0;
+
 export const useProductsClient = async () => {
   const getBrandNewProducts = await api.clientProduct.brandNewProducts.query();
   const BrandNewProducts: ClientProductType[] = getBrandNewProducts.map(

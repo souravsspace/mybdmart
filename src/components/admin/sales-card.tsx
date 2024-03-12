@@ -1,5 +1,5 @@
-import { cn, formatPrice } from "@/lib/utils";
 import Image from "next/image";
+import { cn, formatPrice } from "@/lib/utils";
 
 export type SalesProps = {
   name: string;
@@ -21,7 +21,7 @@ export default function SalesCard(props: SalesProps) {
           {props.image ? (
             <Image width={200} height={200} src={props.image} alt="avatar" />
           ) : (
-            <div className="h-full w-full rounded-full bg-gradient-to-r from-green-400 to-blue-500 text-xs hover:from-pink-500 hover:to-yellow-500" />
+            <div className="h-full w-full rounded-full bg-gradient-to-r from-pink-500 to-yellow-500 text-xs" />
           )}
         </div>
         <div className="text-sm">

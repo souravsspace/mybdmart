@@ -29,9 +29,11 @@ export async function getTotalSell() {
     },
   });
 
-  const totalSell = order.reduce((total, order) => {
-    return total + order.totalItems;
-  }, 0);
+  // const totalSell = order.reduce((total, order) => {
+  //   return total + order.totalItems;
+  // }, 0);
+
+  const totalSell = order.length;
 
   return totalSell || 0;
 }

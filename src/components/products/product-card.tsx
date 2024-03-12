@@ -30,6 +30,14 @@ export default function ProductCard({ product, id, index }: Props) {
     return () => clearTimeout(timer);
   }, [index]);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
   if (!product || !isVisible) return <ProductSkeletonHero />;
 
   const validUrls = product.images

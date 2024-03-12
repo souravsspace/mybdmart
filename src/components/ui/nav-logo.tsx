@@ -6,14 +6,29 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function NavLogo() {
-  const { theme } = useTheme();
-  const [logoUrl, setLogoUrl] = useState("/logo/logo-light.png");
+  const { theme, systemTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("/logo/logo-dark.png");
 
   useEffect(() => {
-    setLogoUrl(
-      theme === "dark" ? "/logo/logo-dark.png" : "/logo/logo-light.png",
-    );
-  }, [theme]);
+    if (systemTheme === "dark") {
+      setLogoUrl("/logo/logo-dark.png");
+    }
+    if (systemTheme === "light") {
+      setLogoUrl("/logo/logo-light.png");
+    }
+    if (theme === "dark") {
+      setLogoUrl("/logo/logo-dark.png");
+    }
+    if (theme === "light") {
+      setLogoUrl("/logo/logo-light.png");
+    }
+
+    setIsMounted(true);
+  }, [theme, systemTheme]);
+
+  if (!isMounted) return <div className="h-[75px] w-[180px]" />;
+
   return (
     <Link href="/">
       <Image

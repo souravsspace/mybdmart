@@ -18,9 +18,18 @@ import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 import useUserAuth from "@/hooks/use-user-auth";
+import { useEffect, useState } from "react";
 
 export default function MobileNav() {
   const { isLoggedIn, userAuthData } = useUserAuth();
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   return (
     <div className="block md:hidden">

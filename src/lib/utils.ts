@@ -7,10 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number) {
-  return new Intl.NumberFormat("bn-BD", {
+  const formattedPrice = new Intl.NumberFormat("bn-BD", {
     style: "currency",
     currency: "BDT",
+    minimumFractionDigits: 0,
   }).format(price);
+
+  return formattedPrice;
 }
 
 export async function copyText(value: string) {
@@ -38,7 +41,7 @@ type BanglaDigit = { [key: number]: string };
 
 export function englishToBanglaNumber(number: number | undefined): string {
   if (!number) return "Input must be a number";
-  if (isNaN(number)) return "Input must be a number";
+  // if (isNaN(number)) return "Input must be a number";
 
   const banglaDigits: BanglaDigit = {
     0: "০",
@@ -62,5 +65,8 @@ export function englishToBanglaNumber(number: number | undefined): string {
   );
 
   // Join the Bangla digits
-  return banglaNumber.join("");
+  const formattedNumber = banglaNumber.join("");
+
+  // Remove the trailing ".০০"
+  return formattedNumber.replace(/\.০০$/, "");
 }

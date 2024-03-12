@@ -1,9 +1,10 @@
-import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
-import PageTitle from "@/components/admin/page-title";
-import Card, { CardContent, type CardProps } from "@/components/admin/card";
-import SalesCard, { type SalesProps } from "@/components/admin/sales-card";
 import BarChart from "@/components/admin/bar-chart";
+import getGraphData from "@/actions/get-graph-data";
+import PageTitle from "@/components/admin/page-title";
 import { englishToBanglaNumber, formatPrice } from "@/lib/utils";
+import SalesCard, { type SalesProps } from "@/components/admin/sales-card";
+import Card, { CardContent, type CardProps } from "@/components/admin/card";
+import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 import {
   getActiveProduct,
   getLastHourTotalActiveProducts,
@@ -15,7 +16,6 @@ import {
   getTotalSell,
   getTotalUser,
 } from "@/actions/get-overview";
-import getGraphData from "@/actions/get-graph-data";
 
 export const revalidate = 0;
 
@@ -86,7 +86,6 @@ export default async function AdminPage() {
       <section className="grid grid-cols-1  gap-4 transition-all lg:grid-cols-2">
         <CardContent>
           <p className="p-4 font-semibold">Overview</p>
-
           <BarChart data={GraphRevenue} />
         </CardContent>
         <CardContent className="flex justify-between gap-4">
