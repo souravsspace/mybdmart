@@ -15,6 +15,7 @@ import {
   getTotalSell,
   getTotalUser,
 } from "@/actions/get-overview";
+import getGraphData from "@/actions/get-graph-data";
 
 export const revalidate = 0;
 
@@ -66,56 +67,7 @@ export default async function AdminPage() {
     },
   ];
 
-  const data = [
-    {
-      name: "Jan",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Feb",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Mar",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Apr",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "May",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Jun",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Jul",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Aug",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Sep",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Oct",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Nov",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-    {
-      name: "Dec",
-      total: Math.floor(Math.random() * 5000) + 2000,
-    },
-  ];
+  const GraphRevenue = await getGraphData();
 
   return (
     <div className="flex w-full flex-col gap-5">
@@ -135,7 +87,7 @@ export default async function AdminPage() {
         <CardContent>
           <p className="p-4 font-semibold">Overview</p>
 
-          <BarChart data={data} />
+          <BarChart data={GraphRevenue} />
         </CardContent>
         <CardContent className="flex justify-between gap-4">
           <section>

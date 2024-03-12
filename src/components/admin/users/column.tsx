@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { cn, copyText } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { type ROLE } from "@prisma/client";
+import { ROLE } from "@prisma/client";
+import updateUserRole from "@/actions/update-user-role";
 
 export type UserType = {
   id: string;
@@ -89,16 +90,56 @@ export const UserColumn: ColumnDef<UserType>[] = [
       );
     },
     cell: ({ row }) => {
-      const userRole = row.original.role;
+      const USER_ROLE = row.original.role;
+
+      const onUpdateOrderRole = async (id: string, role: ROLE) => {
+        try {
+          toast.loading("Updating user role...");
+          await updateUserRole(id, role);
+          toast.remove();
+          toast.success("User role updated successfully!");
+        } catch (error) {
+          toast.error("Failed to update user role!");
+        }
+      };
       return (
         <div
           className={cn("w-fit rounded-lg px-4 py-2 font-medium capitalize", {
-            "bg-red-200 dark:bg-primary": userRole === "ADMIN",
-            "bg-blue-200 dark:bg-blue-600": userRole === "MOD",
-            "bg-green-200 dark:bg-green-600": userRole === "USER",
+            "bg-red-200 dark:bg-primary": USER_ROLE === ROLE.ADMIN,
+            "bg-blue-200 dark:bg-blue-600": USER_ROLE === ROLE.MOD,
+            "bg-green-200 dark:bg-green-600": USER_ROLE === ROLE.USER,
           })}
         >
-          {userRole}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <h4 className="cursor-pointer uppercase">{USER_ROLE}</h4>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="center"
+              className="cursor-pointer uppercase"
+            >
+              {Object.values(ROLE).map((role) => (
+                <DropdownMenuItem
+                  key={role}
+                  onClick={async () => {
+                    try {
+                      toast.loading("Updating order role...");
+                      await onUpdateOrderRole(row.original.id, role);
+                      toast.remove();
+                      toast.success("Order role updated successfully");
+                    } catch (error) {
+                      toast.error("Failed to update order role");
+                    }
+                  }}
+                  className={cn(
+                    role == USER_ROLE ? "bg-gray-300 dark:bg-gray-700" : "",
+                  )}
+                >
+                  {role}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     },

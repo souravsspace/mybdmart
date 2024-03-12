@@ -3,6 +3,8 @@ import { type ORDER_STATUS } from "@prisma/client";
 import OrderClient from "@/components/orders/order-client";
 import { type OrderType } from "@/components/orders/order-column";
 
+export const revalidate = 0;
+
 export default async function OrdersPage() {
   const data = await api.clientOrder.getOrders.query();
 

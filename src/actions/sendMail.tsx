@@ -5,7 +5,6 @@ import { db } from "@/server/db";
 import RegisterEmail from "@/components/emails/register";
 import { deleteToken } from "@/actions/deleteToken";
 import bcrypt from "bcrypt";
-import toast from "react-hot-toast";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 

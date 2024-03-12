@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { ORDER_STATUS, type Order } from "@prisma/client";
+import { ORDER_STATUS } from "@prisma/client";
 import { format, addMonths, subMonths } from "date-fns";
 
 export async function getTotalRevenue() {
@@ -190,75 +190,74 @@ export async function getRecentOrdersUserData() {
   return orders || [];
 }
 
-interface SellHistoryByMonth {
-  [monthYear: string]: {
-    orders: Order[];
-    totalSell: number;
-  };
-}
+// interface SellHistoryByMonth {
+//   [monthYear: string]: {
+//     orders: Order[];
+//     totalSell: number;
+//   };
+// }
 
-export async function getSellHistory() {
-  const orders: Order[] = await db.order.findMany({
-    where: {
-      status: ORDER_STATUS.DELIVERED,
-    },
-    include: {
-      user: true,
-    },
-  });
+// export async function getSellHistory() {
+//   const orders: Order[] = await db.order.findMany({
+//     where: {
+//       status: ORDER_STATUS.DELIVERED,
+//     },
+//     include: {
+//       user: true,
+//     },
+//   });
 
-  return orders || [];
-}
+//   return orders || [];
+// }
 
-export async function getSellHistoryByMonth(): Promise<
-  { name: string; total: number }[]
-> {
-  const allOrders: Order[] = await getSellHistory();
+// export async function getSellHistoryByMonth(): Promise<
+//   { name: string; total: number }[]
+// > {
+//   const allOrders: Order[] = await getSellHistory();
 
-  // Initialize an array to hold sell history data for each month
-  const sellHistoryByMonth: { name: string; total: number }[] = [];
+//   // Initialize an array to hold sell history data for each month
+//   const sellHistoryByMonth: { name: string; total: number }[] = [];
 
-  // Group orders by month and calculate total sale
-  const monthTotals: { [month: number]: number } = {};
-  allOrders.forEach((order) => {
-    const month: number = order.createdAt.getMonth();
-    if (!monthTotals[month]) {
-      monthTotals[month] = 0;
-    }
-    monthTotals[month] += order.totalItems;
-  });
+//   // Group orders by month and calculate total sale
+//   const monthTotals: { [month: number]: number } = {};
+//   allOrders.forEach((order) => {
+//     const month: number = order.createdAt.getMonth();
+//     if (!monthTotals[month]) {
+//       monthTotals[month] = 0;
+//     }
+//     monthTotals[month] += order.totalItems;
+//   });
 
-  // Convert month totals to array of objects
-  Object.keys(monthTotals).forEach((monthKey) => {
-    const month: number = parseInt(monthKey);
-    const monthName: string = getMonthName(month);
-    const total: number = monthTotals[month] || 0;
-    sellHistoryByMonth.push({ name: monthName, total });
-  });
+//   // Convert month totals to array of objects
+//   Object.keys(monthTotals).forEach((monthKey) => {
+//     const month: number = parseInt(monthKey);
+//     const monthName: string = getMonthName(month);
+//     const total: number = monthTotals[month] || 0;
+//     sellHistoryByMonth.push({ name: monthName, total });
+//   });
 
-  return sellHistoryByMonth;
-}
+//   return sellHistoryByMonth;
+// }
 
-function getMonthName(month: number): string {
-  const months: string[] = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+// function getMonthName(month: number): string {
+//   const months: string[] = [
+//     "Jan",
+//     "Feb",
+//     "Mar",
+//     "Apr",
+//     "May",
+//     "Jun",
+//     "Jul",
+//     "Aug",
+//     "Sep",
+//     "Oct",
+//     "Nov",
+//     "Dec",
+//   ];
 
-  // Ensure month is within valid range
-  if (month >= 0 && month < months.length) {
-    return months[month];
-  } else {
-    return "Invalid Month"; // Return a default value for invalid months
-  }
-}
+//   if (month >= 0 && month < months.length) {
+//     return months[month];
+//   } else {
+//     return "Invalid Month"; // Return a default value for invalid months
+//   }
+// }
