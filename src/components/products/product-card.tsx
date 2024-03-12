@@ -65,10 +65,12 @@ export default function ProductCard({ product, id, index }: Props) {
 
         <div className="flex flex-grow flex-col justify-between px-1.5">
           <div>
-            <h2 className={cn("mt-4 text-base text-muted-foreground")}>
+            <h2
+              className={cn("mt-4 text-sm text-muted-foreground sm:text-base")}
+            >
               {product.name}
             </h2>
-            <p className="mt-1 flex w-full items-center justify-between text-lg font-semibold text-primary">
+            <p className="mt-1 flex w-full items-center justify-between text-base font-semibold text-primary sm:text-lg">
               {product.newPrice && formatPrice(product.newPrice)}
               {product.newPrice ? (
                 <span className="text-xs text-muted-foreground line-through">

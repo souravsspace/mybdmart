@@ -1,6 +1,8 @@
 import SettingsSectionWrapper from "@/components/settings/settings-section-wrapper";
 import { SecurityForm } from "@/components/settings/security-form";
 
+export const revalidate = 0;
+
 export default function SecurityPage() {
   return (
     <SettingsSectionWrapper

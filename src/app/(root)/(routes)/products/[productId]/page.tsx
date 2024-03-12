@@ -13,6 +13,8 @@ type Props = {
   };
 };
 
+export const revalidate = 0;
+
 export default async function ProductPage({ params: { productId } }: Props) {
   const getProduct = await api.soloClientProduct.soloProduct.query({
     productId,

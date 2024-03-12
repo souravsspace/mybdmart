@@ -7,26 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ROLE {
-  USER
-  ADMIN
-  MOD
-}
-
-enum STOCK {
-  IN_STOCK
-  LOW_STOCK
-  OUT_OF_STOCK
-}
-
-enum ORDER_STATUS {
-  PENDING
-  PROCESSING
-  CANCELLED
-  DELIVERED
-  REFUNDED
-}
-
 model Category {
   id        String    @id @default(cuid())
   name      String    @db.VarChar(255)
@@ -38,7 +18,7 @@ model Category {
 model Billboard {
   id        String   @id @default(cuid())
   name      String   @db.VarChar(255)
-  imageUrl  String   @db.Text
+  imageUrl  String
   createdAt DateTime @default(now())
   active    Boolean  @default(false)
   updatedAt DateTime @updatedAt
@@ -47,21 +27,21 @@ model Billboard {
 model Product {
   id           String        @id @default(cuid())
   name         String        @db.VarChar(255)
-  price        Int           @db.Integer
-  newPrice     Int?          @db.Integer
-  description  String        @db.Text
+  price        Int
+  newPrice     Int?
+  description  String
   isFeatured   Boolean       @default(false)
   isArchived   Boolean       @default(false)
   stock        STOCK         @default(IN_STOCK)
-  sell         Int           @default(0) @db.Integer
+  sell         Int           @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  category     Category?     @relation(fields: [categoryId], references: [id])
   categoryId   String?
   images       Image[]       @relation("ProductToImage")
-  sizes        Size[]        @relation("ProductToSize")
-  colors       Color[]       @relation("ProductToColor")
   orderedItems OrderedItem[] @relation("OrderedItemToProduct")
+  category     Category?     @relation(fields: [categoryId], references: [id])
+  colors       Color[]       @relation("ProductToColor")
+  sizes        Size[]        @relation("ProductToSize")
 }
 
 model Size {
@@ -70,8 +50,8 @@ model Size {
   value       String        @db.VarChar(255)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  OrderedItem OrderedItem[] @relation("OrderedItemToSize")
   products    Product[]     @relation("ProductToSize")
-  OrderedItem OrderedItem[]
 }
 
 model Color {
@@ -80,42 +60,42 @@ model Color {
   value       String        @db.VarChar(255)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  OrderedItem OrderedItem[] @relation("ColorToOrderedItem")
   products    Product[]     @relation("ProductToColor")
-  OrderedItem OrderedItem[]
 }
 
 model Image {
   id        String   @id @default(cuid())
-  imageUrl  String   @db.Text
-  product   Product? @relation("ProductToImage", fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
   productId String?
+  product   Product? @relation("ProductToImage", fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Order {
   id             String        @id @default(cuid())
-  totalPrice     Int           @db.Integer
-  totalItems     Int           @db.Integer
+  totalPrice     Int
+  totalItems     Int
   status         ORDER_STATUS  @default(PENDING)
-  deliveryCharge Int           @db.Integer
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  user           User?         @relation(fields: [userId], references: [id])
   userId         String?
+  deliveryCharge Int
+  user           User?         @relation(fields: [userId], references: [id])
   orderedItems   OrderedItem[]
 }
 
 model OrderedItem {
   id              String   @id @default(cuid())
-  price           Int      @db.Integer
-  productQuantity Int      @db.Integer
-  color           Color[]
-  size            Size[]
-  order           Order?   @relation(fields: [orderId], references: [id])
+  price           Int
+  productId       String?
   orderId         String?
   updatedAt       DateTime @updatedAt
   createdAt       DateTime @default(now())
+  productQuantity Int
+  order           Order?   @relation(fields: [orderId], references: [id])
   product         Product? @relation("OrderedItemToProduct", fields: [productId], references: [id])
-  productId       String?
+  color           Color[]  @relation("ColorToOrderedItem")
+  size            Size[]   @relation("OrderedItemToSize")
 }
 
 model DeliveryAddress {
@@ -143,20 +123,20 @@ model User {
   image              String?
   emailVerified      DateTime?
   role               ROLE                @default(USER)
-  verificationTokens VerificationToken[]
-  orders             Order[]
-  deliveryAddress    DeliveryAddress?    @relation(fields: [deliveryAddressId], references: [id])
   deliveryAddressId  String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+  orders             Order[]
+  deliveryAddress    DeliveryAddress?    @relation(fields: [deliveryAddressId], references: [id])
+  verificationTokens VerificationToken[]
 }
 
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
-  user       User?    @relation(fields: [userId], references: [id])
   userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@unique([identifier, token])
 }
@@ -166,9 +146,29 @@ model Contact {
   firstName   String   @db.VarChar(50)
   lastName    String   @db.VarChar(50)
   email       String   @db.VarChar(255)
-  phoneNumber Int      @db.Integer()
+  phoneNumber Int
   topic       String   @db.VarChar(255)
-  message     String   @db.Text
+  message     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum ROLE {
+  USER
+  ADMIN
+  MOD
+}
+
+enum STOCK {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+enum ORDER_STATUS {
+  PENDING
+  PROCESSING
+  CANCELLED
+  DELIVERED
+  REFUNDED
 }

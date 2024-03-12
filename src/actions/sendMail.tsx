@@ -64,7 +64,7 @@ export default async function sendMail({ email }: Props) {
       to: email,
       reply_to: "onboarding@resend.dev",
       subject: "Verify your account",
-      react: <RegisterEmail token={createToken.token} />,
+      react: <RegisterEmail token={tokenValue} />,
     });
 
     if (error) {

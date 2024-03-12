@@ -1,6 +1,8 @@
 import SettingsSectionWrapper from "@/components/settings/settings-section-wrapper";
 import { AppearanceForm } from "@/components/settings/appearance-form";
 
+export const revalidate = 0;
+
 export default function AppearancePage() {
   return (
     <SettingsSectionWrapper

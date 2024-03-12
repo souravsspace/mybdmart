@@ -11,6 +11,7 @@ type Props = {
     sort: string | undefined;
     categoryId: string | undefined;
     productId: string | undefined;
+    query: string | undefined;
   };
 };
 
@@ -19,16 +20,24 @@ export default async function ProductsPage({ searchParams }: Props) {
   const sort = searchParams.sort;
   const categoryId = searchParams.categoryId;
   const productId = searchParams.productId;
+  const query = searchParams.query;
 
   const product = await api.clientProduct.allProducts.query({
     page: pageNumber ? parseInt(pageNumber) : 1,
     sort: sort,
     categoryId: categoryId,
     productId: productId,
+    query: query,
   });
 
   if (!product) {
-    return null;
+    return (
+      <Wrapper className="my-4 flex h-full w-full items-center justify-center sm:my-6 md:my-8">
+        <h4 className="text-center">
+          No products found. Please try again later.
+        </h4>
+      </Wrapper>
+    );
   }
 
   const products: ClientProductType[] = product.map((product) => {

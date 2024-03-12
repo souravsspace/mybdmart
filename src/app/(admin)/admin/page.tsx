@@ -33,7 +33,7 @@ export default async function AdminPage() {
   const userSalesData = await getRecentOrdersUserData();
   const FiltteredUser: SalesProps[] = userSalesData.map((data) => {
     return {
-      name: data.user?.name || data.user!.username,
+      name: data.user?.name || (data.user?.username as string),
       email: data.user!.email,
       saleAmount: data.totalPrice,
       image: data.user?.image,

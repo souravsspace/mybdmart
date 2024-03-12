@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 import useUserAuth from "@/hooks/use-user-auth";
 import { useEffect, useState } from "react";
+import SerachInput from "@/components/serach-input";
 
 export default function MobileNav() {
   const { isLoggedIn, userAuthData } = useUserAuth();
@@ -59,6 +60,8 @@ export default function MobileNav() {
                   ))}
                 </div>
 
+                <hr className="my-8" />
+                <SerachInput />
                 <hr className="my-8" />
 
                 <div className="flex w-full flex-col gap-y-3">

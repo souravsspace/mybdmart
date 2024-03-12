@@ -102,7 +102,7 @@ export default function ImageSlider({
             />
             <span
               className={cn(
-                "absolute left-0 top-0 rounded-sm rounded-e-3xl bg-primary px-2 py-0.5 text-center text-sm font-medium uppercase text-white",
+                "absolute left-0 top-0 rounded-sm rounded-e-3xl bg-primary px-2 py-0.5 text-center text-xs font-medium uppercase text-white sm:text-sm",
                 !isNew && discount == 0 && "hidden",
               )}
             >

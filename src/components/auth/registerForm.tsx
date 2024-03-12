@@ -44,7 +44,7 @@ export default function RegisterForm() {
       try {
         await sendMail({ email: sentToEmail });
 
-        toast.success(`Verification email sent to ${sentToEmail}.`);
+        toast.success("Email sent. Please verify your email.");
         router.push("/verify-email?to=" + sentToEmail);
       } catch (error) {
         toast.error("Email send failed.");

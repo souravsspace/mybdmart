@@ -1,5 +1,6 @@
 import Hero from "@/components/hero";
 import ProductReel from "@/components/products/product-reel";
+import SerachInput from "@/components/serach-input";
 import Wrapper from "@/components/ui/wrapper";
 import { useProductsClient } from "@/hooks/use-products-client";
 
@@ -10,15 +11,18 @@ export default async function Home() {
     await useProductsClient();
 
   return (
-    <>
+    <main>
       <Hero />
       <Wrapper>
+        <section className="mt-6 hidden sm:mt-8 md:block">
+          <SerachInput />
+        </section>
         <section id="brand-new">
           <ProductReel
             title="Brand New"
             subtitle="Check those out newly added items."
             href="/products?sort=brand-new"
-            products={BrandNewProducts.slice(0, 4)}
+            products={BrandNewProducts?.slice(0, 4)}
           />
         </section>
         <section id="trending-products">
@@ -26,7 +30,7 @@ export default async function Home() {
             title="Trending"
             subtitle="Check those out our best selling items."
             href="/products?sort=trending-products"
-            products={TrendingProducts.slice(0, 4)}
+            products={TrendingProducts?.slice(0, 4)}
           />
         </section>
         <section id="featured-products">
@@ -34,10 +38,10 @@ export default async function Home() {
             title="Featured"
             subtitle="Check those out our featured items."
             href="/products?sort=featured-products"
-            products={FeaturedProducts.slice(0, 4)}
+            products={FeaturedProducts?.slice(0, 4)}
           />
         </section>
       </Wrapper>
-    </>
+    </main>
   );
 }
