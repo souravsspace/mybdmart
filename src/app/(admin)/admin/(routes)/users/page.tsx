@@ -1,5 +1,4 @@
-import PageTitle from "@/components/admin/page-title";
-import UsersDataTable from "@/components/admin/users/data-table";
+import UserDataClient from "@/components/admin/users/user-data-client";
 import { api } from "@/trpc/server";
 import { type ROLE } from "@prisma/client";
 
@@ -16,11 +15,5 @@ export default async function UsersPage() {
     role: user.role as ROLE,
   }));
 
-  return (
-    <div className="flex w-full flex-col gap-5">
-      <PageTitle title="Users" />
-
-      <UsersDataTable data={filteredData} searchInput="email" />
-    </div>
-  );
+  return <UserDataClient data={filteredData} />;
 }
