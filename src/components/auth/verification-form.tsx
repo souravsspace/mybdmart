@@ -82,7 +82,7 @@ function Slot(props: SlotProps) {
     >
       {props.char !== null && <div>{props.char}</div>}
       {props.hasFakeCaret && (
-        <div className="animate-caret-blink pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 flex animate-caret-blink items-center justify-center">
           <div className="h-8 w-px bg-white" />
         </div>
       )}

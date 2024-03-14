@@ -23,6 +23,7 @@ export const SecurityValidation = z.object({
 export type TSecurityValidation = z.infer<typeof SecurityValidation>;
 
 export const DeliveryAddressFormValidation = z.object({
+  id: z.string().optional(),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),

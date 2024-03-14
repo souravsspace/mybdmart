@@ -123,10 +123,10 @@ model User {
   image              String?
   emailVerified      DateTime?
   role               ROLE                @default(USER)
-  deliveryAddressId  String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   orders             Order[]
+  deliveryAddressId  String?
   deliveryAddress    DeliveryAddress?    @relation(fields: [deliveryAddressId], references: [id])
   verificationTokens VerificationToken[]
 }
@@ -156,7 +156,7 @@ model Contact {
 enum ROLE {
   USER
   ADMIN
-  MOD
+  // MOD
 }
 
 enum STOCK {

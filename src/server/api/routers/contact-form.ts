@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { ContactFormValidator } from "@/types/contact-form-validator";
+import sendContactMail from "@/actions/send-contact-mail";
 
 export const ContactForm = createTRPCRouter({
   submitForm: publicProcedure
@@ -24,7 +25,21 @@ export const ContactForm = createTRPCRouter({
 
       const updatedPhoneNumber = parseInt(phoneNumber.replace("+", ""));
 
-      // TODO: Send email to the admin
+      try {
+        await sendContactMail({
+          firstName,
+          lastName,
+          phoneNumber: String(updatedPhoneNumber),
+          email,
+          topic,
+          message,
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong. Please try again later.",
+        });
+      }
 
       await ctx.db.contact.create({
         data: {

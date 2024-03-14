@@ -176,8 +176,6 @@ export default function ProductForm({
     if (!selectedColor) return toast.error("Please select sizes");
     if (!arrayOfImage) return toast.error("Please select images");
 
-    console.log(data.stock);
-
     if (initialData) {
       updateProductMutate({
         ...data,

@@ -14,7 +14,7 @@ export default async function SettingsLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="mx-2">
-      <Wrapper className="mx-auto mt-0 rounded-md px-2 pb-4 shadow-md sm:mt-6 sm:p-6 md:mt-10 md:p-8">
+      <Wrapper className="mx-auto mb-6 mt-0 rounded-md px-2 pb-4 shadow-md dark:shadow-gray-800 sm:mt-6 sm:p-6 md:mt-10 md:p-8">
         <Heading
           title="Settings"
           subtitle="Manage your account settings and set e-mail preferences."

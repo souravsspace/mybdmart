@@ -7,19 +7,11 @@ import { z } from "zod";
 export const ClientOrder = createTRPCRouter({
   getOrders: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
-    const role = ctx.session?.user.role;
 
-    if (!userId || !role) {
+    if (!userId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "You are not authorized to create a product",
-      });
-    }
-
-    if (!userId || role !== ROLE.ADMIN) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You are not allowed to create a product",
       });
     }
 

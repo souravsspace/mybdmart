@@ -31,6 +31,23 @@ export const authRouter = createTRPCRouter({
       return { success: true, sentToEmail: email };
     }),
 
+  isVerified: publicProcedure.query(async ({ ctx }) => {
+    const user = ctx.session?.user.id;
+
+    const findUser = await ctx.db.user.findUnique({
+      where: {
+        id: user,
+        emailVerified: {
+          not: null,
+        },
+      },
+    });
+
+    if (findUser == null || !findUser) return { verified: false };
+
+    return { verified: true };
+  }),
+
   verifyEmail: publicProcedure
     .input(
       z.object({
@@ -41,68 +58,43 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { code, email } = input;
 
-      const isUser = ctx.db.user.findUnique({
+      const matchUser = await ctx.db.user.findUnique({
         where: {
           email,
         },
       });
 
-      if (isUser == null) throw new TRPCError({ code: "NOT_FOUND" });
+      if (matchUser == null) throw new TRPCError({ code: "NOT_FOUND" });
 
-      // const user = ctx.db.user.findUnique({
-      //   where: {
-      //     email,
-      //   },
-      //   select: {
-      //     verificationTokens: {
-      //       where: {
-      //         token: code,
-      //       },
-      //     },
-      //   },
-      // });
-      // const user = ctx.db.user.findUnique({
-      //   where: {
-      //     email,
-      //   },
-      //   include: {
-      //     verificationTokens: true,
-      //   },
-      // });
-
-      const userVarificationToken = await ctx.db.verificationToken.findMany({
+      const verifiedToken = await ctx.db.verificationToken.findMany({
         where: {
           user: {
             email,
           },
+          identifier: code,
         },
       });
 
-      const data = userVarificationToken.find((token) => {
-        return bcrypt.compare(code, token.token);
-      });
-
-      if (data == null || !data) throw new TRPCError({ code: "CONFLICT" });
-
-      const varifiedToken = await bcrypt.compare(code, data.token);
-
-      if (!varifiedToken) throw new TRPCError({ code: "CONFLICT" });
+      if (!verifiedToken || verifiedToken == null)
+        throw new TRPCError({ code: "CONFLICT" });
 
       await ctx.db.user.update({
         where: {
-          email,
+          id: matchUser.id,
+          email: matchUser.email,
         },
         data: {
-          emailVerified: new Date(),
+          emailVerified: new Date(Date.now()),
         },
       });
 
       await ctx.db.verificationToken.deleteMany({
         where: {
-          token: code,
+          userId: matchUser.id,
+          identifier: code,
         },
       });
 
-      return { success: true, userEmail: email };
+      return { success: true, userEmail: matchUser.email };
     }),
 });

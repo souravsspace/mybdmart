@@ -1,12 +1,10 @@
 "use server";
 
-import { Resend } from "resend";
 import { db } from "@/server/db";
-import RegisterEmail from "@/components/emails/register";
 import { deleteToken } from "@/actions/deleteToken";
 import bcrypt from "bcrypt";
-
-const resend = new Resend(process.env.RESEND_API_KEY as string);
+import { resend } from "@/server/mail";
+import VerifyEmail from "@/components/emails/verify-email";
 
 type Props = {
   email: string;
@@ -21,7 +19,7 @@ export default async function sendMail({ email }: Props) {
   const tokenValue = generateRandomNumber().toString();
 
   const hashedToken = await bcrypt.hash(tokenValue, 10);
-  const hashedIdentifier = await bcrypt.hash(tokenIdentifier, 10);
+  // const hashedIdentifier = await bcrypt.hash(tokenIdentifier, 10);
 
   const expirationMinuteTime = 10;
 
@@ -38,7 +36,7 @@ export default async function sendMail({ email }: Props) {
 
   const createToken = await db.verificationToken.create({
     data: {
-      identifier: hashedIdentifier,
+      identifier: tokenIdentifier,
       token: hashedToken,
       expires: expirationTime,
       userId: user.id,
@@ -60,15 +58,15 @@ export default async function sendMail({ email }: Props) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "no-replay <onboarding@resend.dev>",
+      from: "no-reply <no-reply@mybdmart.com>",
       to: email,
-      reply_to: "onboarding@resend.dev",
+      reply_to: "support@mybdmart.com",
       subject: "Verify your account",
-      react: <RegisterEmail token={tokenValue} />,
+      react: <VerifyEmail verificationCode={tokenIdentifier} />,
     });
 
     if (error) {
-      return error;
+      return error.message;
     }
 
     return data;

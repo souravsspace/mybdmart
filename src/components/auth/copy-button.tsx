@@ -20,7 +20,7 @@ export default function CopyButton({ text }: Props) {
           await copyText(text as string);
           toast.success("Copied to clipboard!");
           setTimeout(() => {
-            router.push("/login");
+            router.push("/settings/security");
           }, 500);
         } catch (error) {
           toast.error("Could not copy to clipboard.");

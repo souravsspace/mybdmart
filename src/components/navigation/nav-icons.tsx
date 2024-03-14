@@ -14,17 +14,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useUserAuth from "@/hooks/use-user-auth";
+import { api } from "@/trpc/react";
 
 export default function NavIcons() {
   const { isLoggedIn, userAuthData } = useUserAuth();
+
+  const { data } = api.authRouter.isVerified.useQuery();
 
   return (
     <div className="flex items-center justify-center">
       {isLoggedIn ? (
         <div className="hidden sm:block">
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="relative">
               <div className="h-7 w-7 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
+              {data?.verified === false && (
+                <div className="absolute -top-2 left-5 right-0 flex h-3 w-5 items-center justify-center rounded-full bg-primary p-2 text-xs font-medium">
+                  <span className="text-white">1</span>
+                </div>
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>
@@ -37,8 +45,13 @@ export default function NavIcons() {
               <DropdownMenuItem>
                 <Link href="/orders">My Orders</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="relative">
                 <Link href="/settings">Settings</Link>
+                {data?.verified === false && (
+                  <div className="absolute right-0 top-2 flex h-3 w-5 items-center justify-center rounded-full bg-primary p-2 text-xs font-medium">
+                    <span className="text-white">1</span>
+                  </div>
+                )}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => signOut()}>
                 Logout

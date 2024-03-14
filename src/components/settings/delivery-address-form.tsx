@@ -52,7 +52,7 @@ export function DeliveryAddressForm(data: Props) {
       googleMapLink: data?.googleMapLink || "",
       insideDhaka: data?.insideDhaka || false,
       phoneNumber: data?.phoneNumber || "",
-      email: data?.email || userAuthData?.email || "",
+      email: userAuthData?.email || "",
       additionalInfo: data?.additionalInfo || "",
     },
   });
@@ -85,12 +85,12 @@ export function DeliveryAddressForm(data: Props) {
       },
       onSuccess: () => {
         toast.success("Delivery address updated successfully.");
-        form.reset();
       },
     });
 
   function onSubmit(updateData: TDeliveryAddressFormValidation) {
     mutate({
+      id: data?.id,
       name: updateData.name,
       city: updateData.city,
       zip: updateData.zip,
@@ -251,14 +251,13 @@ export function DeliveryAddressForm(data: Props) {
               </FormLabel>
               <FormControl>
                 <Input
-                  disabled={isLoading}
+                  disabled={true}
                   placeholder="e.g. your_email@mail.com"
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                Type your email address, where you want to get delivery
-                notification.
+                Your email address, where you want to get delivery notification.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -22,9 +22,15 @@ import useUserAuth from "@/hooks/use-user-auth";
 import { api } from "@/trpc/react";
 import toast from "react-hot-toast";
 import useResetPass from "@/hooks/use-reset-pass";
+import sendMail from "@/actions/sendMail";
+import { useRouter } from "next/navigation";
 
 export function SecurityForm() {
+  const router = useRouter();
   const { userAuthData } = useUserAuth();
+
+  const { data } = api.authRouter.isVerified.useQuery();
+
   const form = useForm<TSecurityValidation>({
     resolver: zodResolver(SecurityValidation),
     defaultValues: {
@@ -63,6 +69,21 @@ export function SecurityForm() {
       return;
     }
     resetPassMutate({ email: userAuthData.email });
+  };
+
+  const handleVerifyEmail = async () => {
+    const sentToEmail = userAuthData!.email as string;
+
+    try {
+      toast.loading("Sending email...");
+      await sendMail({ email: sentToEmail });
+      toast.remove();
+      toast.success("Email sent. Please verify your email.");
+      router.push("/verify-email?to=" + sentToEmail);
+    } catch (error) {
+      toast.error("Email send failed.");
+      router.push("/verify-email?to=" + sentToEmail);
+    }
   };
 
   return (
@@ -106,8 +127,20 @@ export function SecurityForm() {
           onClick={handleForgotPassword}
           className="tracking-tighter"
         >
-          Forget password?
+          Forget password ?
         </button>
+
+        {data?.verified === false && (
+          <Button
+            disabled={isLoading || isLoadingForget}
+            type="button"
+            variant="link"
+            className="sm:ml-2"
+            onClick={handleVerifyEmail}
+          >
+            Verify Email
+          </Button>
+        )}
 
         <div className="flex items-center gap-x-2">
           <Button

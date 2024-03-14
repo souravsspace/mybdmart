@@ -1,21 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { OTPInput, type SlotProps } from "input-otp";
 import sendMail from "@/actions/sendMail";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import useUserAuth from "@/hooks/use-user-auth";
-import {
-  type TVerificationCodeSchema,
-  VerificationCodeSchema,
-} from "@/types/verification-validator";
 import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { ZodError } from "zod";
 import otp from "@/actions/otp";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   email: string;
@@ -25,6 +19,7 @@ export default function ForgetVerificationEmail({ email }: Props) {
   const { userAuthData } = useUserAuth();
 
   const router = useRouter();
+  const [value, setValue] = useState("");
   const [isResending, setIsResending] = useState(false);
 
   const [userEmail] = useState(() => {
@@ -33,13 +28,6 @@ export default function ForgetVerificationEmail({ email }: Props) {
     } else {
       return email;
     }
-  });
-
-  const form = useForm<TVerificationCodeSchema>({
-    defaultValues: {
-      code: "",
-    },
-    resolver: zodResolver(VerificationCodeSchema),
   });
 
   const { isLoading, mutate } = api.authRouter.verifyEmail.useMutation({
@@ -54,37 +42,39 @@ export default function ForgetVerificationEmail({ email }: Props) {
         return;
       }
 
-      if (err instanceof ZodError) {
-        toast.error("Could not verify email. Please try again.");
-        return;
-      }
-
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Could not verify email. Please try again.");
     },
 
     onSuccess: async ({ userEmail }) => {
       toast.success("Email verified successfully.");
 
       try {
-        const data = await otp({ email: userEmail });
+        toast.loading("Generating OTP...");
 
-        router.push(`/new-password?to=${userEmail}&otp=${data}`);
+        const OTP = await otp({ email: userEmail });
+
+        toast.dismiss();
+        router.push(`/new-password?to=${userEmail}&otp=${OTP}`);
       } catch (error) {
+        toast.dismiss();
         toast.error("Could not generate OTP. Please try again.");
       }
     },
   });
 
-  const onSubmit = ({ code }: TVerificationCodeSchema) => {
-    mutate({ code, email: userEmail });
+  const onSubmit = () => {
+    mutate({ code: value, email: userEmail });
   };
 
   const resendEmail = async (userEmail: string) => {
     try {
+      toast.loading("Sending email...");
       setIsResending(true);
       await sendMail({ email: userEmail });
+      toast.dismiss();
       toast.success("Email sent successfully.");
     } catch (error) {
+      toast.dismiss();
       setIsResending(false);
       toast.error("Could not send email. Please try again.");
     } finally {
@@ -95,29 +85,73 @@ export default function ForgetVerificationEmail({ email }: Props) {
   };
 
   return (
-    <form
-      {...form}
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="mt-10 w-52"
-    >
-      <Input
-        type="text"
-        placeholder="Type Your OTP.."
-        {...form.register("code")}
+    <>
+      <OTPInput
+        maxLength={4}
+        value={value}
+        disabled={isLoading}
+        onComplete={onSubmit}
+        onChange={(val) => setValue(val)}
+        containerClassName="group flex items-center has-[:disabled]:opacity-30"
+        render={({ slots }) => (
+          <>
+            <div className="flex">
+              {slots.slice(0, 2).map((slot, idx) => (
+                <Slot key={idx} {...slot} />
+              ))}
+            </div>
+
+            <FakeDash />
+
+            <div className="flex">
+              {slots.slice(2).map((slot, idx) => (
+                <Slot key={idx} {...slot} />
+              ))}
+            </div>
+          </>
+        )}
       />
 
-      <Button disabled={isLoading} type="submit" className="mt-2 w-full">
-        Submit
-      </Button>
       <Button
-        disabled={isLoading || isResending}
-        variant="secondary"
+        variant="link_foreground"
+        className="mt-4 sm:mt-6"
         type="button"
-        className="mt-2 w-full"
+        disabled={isLoading || isResending}
         onClick={() => resendEmail(userEmail)}
       >
-        Resend
+        Click here to resend email
       </Button>
-    </form>
+    </>
+  );
+}
+
+function Slot(props: SlotProps) {
+  return (
+    <div
+      className={cn(
+        "relative h-14 w-10 text-[2rem]",
+        "flex items-center justify-center",
+        "transition-all duration-300",
+        "border-y border-r border-border first:rounded-l-md first:border-l last:rounded-r-md",
+        "group-focus-within:border-accent-foreground/20 group-hover:border-accent-foreground/20",
+        "outline outline-0 outline-accent-foreground/20",
+        { "outline-4 outline-accent-foreground": props.isActive },
+      )}
+    >
+      {props.char !== null && <div>{props.char}</div>}
+      {props.hasFakeCaret && (
+        <div className="pointer-events-none absolute inset-0 flex animate-caret-blink items-center justify-center">
+          <div className="h-8 w-px bg-white" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FakeDash() {
+  return (
+    <div className="flex w-10 items-center justify-center">
+      <div className="h-1 w-3 rounded-full bg-border" />
+    </div>
   );
 }

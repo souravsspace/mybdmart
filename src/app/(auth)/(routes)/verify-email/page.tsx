@@ -19,9 +19,7 @@ export default function VerifyEmail({ searchParams }: Props) {
     <div className="relative flex h-full w-full flex-col items-center justify-center lg:px-0">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex h-full flex-col items-center justify-center space-y-1">
-          <div className="relative flex size-52 items-center justify-center text-muted-foreground">
-            <NavLogo />
-          </div>
+          <NavLogo />
 
           <h3 className="text-2xl font-bold tracking-wider sm:text-3xl">
             Check your email

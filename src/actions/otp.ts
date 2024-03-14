@@ -10,16 +10,22 @@ type Props = {
 
 export default async function otp({ email }: Props) {
   const randomPassword = randomUUID();
-  const hashedPassword = await bcrypt.hash(randomPassword, 10);
+  const updatedRandomPassword = randomPassword.replace(/-/g, "");
 
-  await db.user.update({
-    where: {
-      email,
-    },
-    data: {
-      password: hashedPassword,
-    },
-  });
+  const hashedPassword = await bcrypt.hash(updatedRandomPassword, 10);
 
-  return randomPassword;
+  try {
+    await db.user.update({
+      where: {
+        email,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+  } catch (error) {
+    throw new Error("Could not generate OTP. Please try again.");
+  }
+
+  return updatedRandomPassword;
 }

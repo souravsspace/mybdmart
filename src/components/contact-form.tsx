@@ -51,6 +51,10 @@ export default function ContactForm() {
           toast.error("All fields are required.");
         }
 
+        if (error.data?.code === "INTERNAL_SERVER_ERROR") {
+          toast.error("Error while sending message. Please try again later.");
+        }
+
         toast.error("Something went wrong. Please try again later.");
       },
       onSuccess: () => {
