@@ -73,7 +73,7 @@ export default function ProductMainDetails({ product }: Props) {
               : "Out of Stock"}
         </p>
         <p className="font-sm ml-4 border-l border-gray-300 pl-4 text-base text-muted-foreground">
-          Total Sold: {sell}
+          Total Sold({sell})
         </p>
       </div>
 

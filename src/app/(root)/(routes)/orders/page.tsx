@@ -46,15 +46,6 @@ export default async function OrdersPage() {
         <Separator className="my-4 sm:my-6" />
 
         <OrdersDataTable data={filteredData} />
-        {/* {data.length === 0 ? (
-        <OrdersDataTable data={data} />
-      ) : (
-        <div className="flex h-96 items-center justify-center">
-          <h1 className="text-2xl font-bold text-gray-500 sm:text-3xl">
-            No orders found
-          </h1>
-        </div>
-      )} */}
       </Wrapper>
     </div>
   );

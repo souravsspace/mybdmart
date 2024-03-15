@@ -195,7 +195,7 @@
 
     sudo snap install core
 
-    sudo snap install refresh core
+    sudo snap refresh core
 
     sudo snap install --classic certbot
 

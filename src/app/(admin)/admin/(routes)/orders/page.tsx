@@ -7,7 +7,7 @@ import { type OrderType } from "@/components/admin/orders/order-column";
 export const revalidate = 0;
 
 export default async function OrdersPage() {
-  const data = await api.clientOrder.getOrders.query();
+  const data = await api.clientOrder.getServerOrders.query();
 
   const filteredData: OrderType[] = data.map((order) => {
     return {

@@ -43,19 +43,19 @@ export default async function AdminPage() {
   const cardData: CardProps[] = [
     {
       label: "Total Revenue",
-      amount: "+" + formatPrice(TotalRevenue),
+      amount: "+" + formatPrice(TotalRevenue ? TotalRevenue : 0),
       discription: LastMonthRevenue + "% from last month",
       icon: DollarSign,
     },
     {
       label: "Sale",
-      amount: "+" + englishToBanglaNumber(TotalSale),
+      amount: "+" + englishToBanglaNumber(TotalSale ? TotalSale : 0),
       discription: LastMonthSale + "% from last month",
       icon: CreditCard,
     },
     {
       label: "Users",
-      amount: englishToBanglaNumber(TotalUser),
+      amount: englishToBanglaNumber(TotalUser ? TotalUser : 0),
       discription: LastMonthUser + "% from last month",
       icon: Users,
     },

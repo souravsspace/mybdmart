@@ -1,10 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import Logo from "@/components/ui/logo";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import LoginForm from "@/components/auth/loginForm";
+import useUserAuth from "@/hooks/use-user-auth";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
+  const { userAuthData } = useUserAuth();
+  if (userAuthData) redirect("/");
+
   return (
     <main className="h-full w-full">
       <Link href="/">

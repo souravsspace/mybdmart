@@ -36,6 +36,13 @@ export default function useProduct() {
           toast.error("You are not allowed to delete product!");
           return;
         }
+        if (error.data?.code === "METHOD_NOT_SUPPORTED") {
+          toast.error(
+            "You are not allowed to delete a product that is in an order or has been ordered",
+          );
+          toast.error("Just isArchived the product instead of deleting it");
+          return;
+        }
 
         toast.error("Failed to delete product");
       },

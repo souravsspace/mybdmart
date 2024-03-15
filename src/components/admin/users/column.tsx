@@ -97,9 +97,9 @@ export const UserColumn: ColumnDef<UserType>[] = [
           toast.loading("Updating user role...");
           await updateUserRole(id, role);
           toast.remove();
-          toast.success("User role updated successfully!");
+          toast.success("User role updated successfully");
         } catch (error) {
-          toast.error("Failed to update user role!");
+          toast.error(error as string);
         }
       };
       return (

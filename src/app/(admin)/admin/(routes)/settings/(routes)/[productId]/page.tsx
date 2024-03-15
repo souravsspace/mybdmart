@@ -1,5 +1,5 @@
-import ProductForm from "@/components/admin/product/product-form";
 import { api } from "@/trpc/server";
+import ProductForm from "@/components/admin/product/product-form";
 import { type productType } from "@/types/admin-product";
 
 type Props = {

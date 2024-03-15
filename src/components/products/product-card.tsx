@@ -37,7 +37,6 @@ export default function ProductCard({ product, id, index }: Props) {
   }, []);
 
   if (!isMounted) return null;
-
   if (!product || !isVisible) return <ProductSkeletonHero />;
 
   const validUrls = product.images

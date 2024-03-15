@@ -40,8 +40,7 @@ export function calculateDiscountPercentage(
 type BanglaDigit = { [key: number]: string };
 
 export function englishToBanglaNumber(number: number | undefined): string {
-  if (!number) return "Input must be a number";
-  // if (isNaN(number)) return "Input must be a number";
+  if (!number) return "০";
 
   const banglaDigits: BanglaDigit = {
     0: "০",

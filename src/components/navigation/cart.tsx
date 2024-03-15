@@ -19,8 +19,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export default function Cart() {
-  const { items, clearCart } = useCart();
   const router = useRouter();
+  const { items, clearCart } = useCart();
 
   const itemCount = items.length;
   const cartTotal = items.reduce((total, { product }) => {
@@ -38,7 +38,7 @@ export default function Cart() {
 
   const isAddedDeliveryAddress = deliveryAddress?.userDeliveryAddress;
 
-  const { mutateAsync, isLoading } = api.clientOrder.createOrder.useMutation({
+  const { mutate, isLoading } = api.clientOrder.createOrder.useMutation({
     onError: (error) => {
       if (error.data?.code === "UNAUTHORIZED") {
         toast.error("You are not authorized to create a order!");
@@ -52,19 +52,20 @@ export default function Cart() {
       toast.error("Failed to place order!");
     },
     onSuccess: () => {
+      clearCart();
       toast.success("Checkout successful!");
       router.push("/orders");
     },
   });
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!isAddedDeliveryAddress) {
       toast.error("Please add delivery address!");
       router.push("/settings/delivery-address");
       return;
     }
 
-    await mutateAsync({
+    mutate({
       deliveryCharge,
       totalItems: itemCount,
       totalPrice: cartTotal + deliveryCharge,
@@ -78,7 +79,6 @@ export default function Cart() {
       sizeId: items.map((product) => product.product.sizeId),
       colorId: items.map((product) => product.product.colorId),
     });
-    clearCart();
   };
 
   return (

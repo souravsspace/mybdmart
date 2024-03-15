@@ -203,7 +203,7 @@ export default function ProductForm({
   if (createIsLoading)
     return (
       <div className="flex flex-col items-center justify-center gap-2">
-        <div className="my-4">
+        <div className="my-6 sm:my-8">
           <h4 className="text-muted-foreground">
             Uploading product to the server...
           </h4>

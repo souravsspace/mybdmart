@@ -6,6 +6,7 @@ import ProductMainDetails from "@/components/products/product-main-details";
 import ProductAddToCart from "@/components/products/product-add-to-cart";
 import { api } from "@/trpc/server";
 import { type ClientProductType } from "@/types/client-product";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -19,6 +20,7 @@ export default async function ProductPage({ params: { productId } }: Props) {
   const getProduct = await api.soloClientProduct.soloProduct.query({
     productId,
   });
+
   const getSimilarProducts =
     await api.soloClientProduct.getSimilarProducts.query({
       categoryName: getProduct.category?.name || "",
@@ -64,6 +66,8 @@ export default async function ProductPage({ params: { productId } }: Props) {
   );
 
   const validUrls = product.images.map((image) => image.imageUrl);
+
+  if (!product) return notFound();
 
   return (
     <Wrapper>

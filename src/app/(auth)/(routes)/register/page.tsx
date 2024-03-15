@@ -1,11 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import Logo from "@/components/ui/logo";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
 import RegisterForm from "@/components/auth/registerForm";
+import useUserAuth from "@/hooks/use-user-auth";
+import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
+  const { userAuthData } = useUserAuth();
+  if (userAuthData) redirect("/");
   return (
     <main className="h-full w-full">
       <Link href="/">

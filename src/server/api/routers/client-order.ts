@@ -39,6 +39,37 @@ export const ClientOrder = createTRPCRouter({
 
     return orders;
   }),
+  getServerOrders: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+
+    if (!userId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not authorized to create a product",
+      });
+    }
+
+    const orders = await ctx.db.order.findMany({
+      include: {
+        orderedItems: {
+          include: {
+            product: true,
+            color: true,
+            size: true,
+            order: true,
+          },
+        },
+        user: {
+          select: {
+            email: true,
+            deliveryAddress: true,
+          },
+        },
+      },
+    });
+
+    return orders;
+  }),
   updateOrderStatus: publicProcedure
     .input(
       z.object({
@@ -50,6 +81,7 @@ export const ClientOrder = createTRPCRouter({
           ORDER_STATUS.DELIVERED,
           ORDER_STATUS.REFUNDED,
         ]),
+        // productId: z.array(z.string()),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -85,23 +117,53 @@ export const ClientOrder = createTRPCRouter({
         });
       }
 
-      await ctx.db.order.update({
+      const updatedOrder = await ctx.db.order.update({
         where: {
           id: orderId,
         },
         data: {
           status,
         },
+        include: {
+          orderedItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
       });
 
-      return {
-        success: true,
-      };
+      if (updatedOrder.status === ORDER_STATUS.DELIVERED) {
+        await Promise.all(
+          updatedOrder.orderedItems.map(async (item) => {
+            return await ctx.db.product.update({
+              where: {
+                id: item.product?.id,
+              },
+              data: {
+                sell: {
+                  increment: item.productQuantity,
+                },
+              },
+            });
+          }),
+        );
+
+        return {
+          success: true,
+        };
+      }
+
+      throw new TRPCError({
+        code: "UNPROCESSABLE_CONTENT",
+        message: "Failed to update order status",
+      });
     }),
   createOrder: publicProcedure
     .input(CLIENT_ORDER)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session?.user.id;
+
       const {
         ProductQuantity,
         deliveryCharge,

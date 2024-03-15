@@ -280,6 +280,20 @@ export const Product = createTRPCRouter({
         },
       });
 
+      const inOrderedProducts = await ctx.db.orderedItem.findFirst({
+        where: {
+          productId: input.id,
+        },
+      });
+
+      if (inOrderedProducts) {
+        throw new TRPCError({
+          code: "METHOD_NOT_SUPPORTED",
+          message:
+            "You are not allowed to delete a product that is in an order",
+        });
+      }
+
       if (!product) {
         throw new TRPCError({
           code: "NOT_FOUND",

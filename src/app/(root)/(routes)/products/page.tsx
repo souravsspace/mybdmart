@@ -30,7 +30,7 @@ export default async function ProductsPage({ searchParams }: Props) {
     query: query,
   });
 
-  if (!product) {
+  if (!product || product.length == 0) {
     return (
       <Wrapper className="my-4 flex h-full w-full items-center justify-center sm:my-6 md:my-8">
         <h4 className="text-center">
@@ -63,16 +63,22 @@ export default async function ProductsPage({ searchParams }: Props) {
   return (
     <Wrapper className="my-4 sm:my-6 md:my-8">
       <div className="grid w-full grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-        {!products
-          ? null
-          : products.map((product, index) => (
-              <ProductCard
-                key={`product-${product.id}`}
-                product={product}
-                index={index}
-                id={product.id}
-              />
-            ))}
+        {!products ? (
+          <div className="item-center flex w-full justify-center">
+            <h4 className="my-6 text-center text-muted-foreground">
+              No products found. Please try again later.
+            </h4>
+          </div>
+        ) : (
+          products.map((product, index) => (
+            <ProductCard
+              key={`product-${product.id}`}
+              product={product}
+              index={index}
+              id={product.id}
+            />
+          ))
+        )}
       </div>
     </Wrapper>
   );
