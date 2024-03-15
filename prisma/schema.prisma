@@ -156,7 +156,7 @@ model Contact {
 enum ROLE {
   USER
   ADMIN
-  // MOD
+  MOD
 }
 
 enum STOCK {
