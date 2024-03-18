@@ -20,6 +20,7 @@ import {
 } from "@/lib/utils";
 import { type DeliveryAddress, ORDER_STATUS } from "@prisma/client";
 import { onUpdateOrderStatus } from "@/actions/update-order-status";
+import Link from "next/link";
 
 type SizeAndColor = {
   name: string;
@@ -189,7 +190,17 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const rowValue = row.original.status;
 
@@ -266,9 +277,9 @@ export const OrderColumn: ColumnDef<OrderType>[] = [
               Copy order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem className="cursor-pointer">
-              View Order
-            </DropdownMenuItem> */}
+            <DropdownMenuItem className="cursor-pointer">
+              <Link href={`/admin/orders/${order.id}`}>View Order</Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

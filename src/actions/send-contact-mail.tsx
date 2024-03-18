@@ -19,12 +19,6 @@ export default async function sendContactMail({
       to: "support <support@mybdmart.com>",
       reply_to: email,
       subject: `Contact form: ${topic}`,
-      text: `First Name: ${firstName}
-      Last Name: ${lastName}
-      Email: ${email}
-      Phone Number: ${phoneNumber}
-      Topic: ${topic}
-      Message: ${message}`,
       react: (
         <ContactEmail
           name={fullName}

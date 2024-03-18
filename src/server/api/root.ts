@@ -16,6 +16,7 @@ import { ClientProduct } from "@/server/api/routers/client-product";
 import { ContactForm } from "@/server/api/routers/contact-form";
 import { soloClientProduct } from "@/server/api/routers/solo-client-product";
 import { ClientOrder } from "@/server/api/routers/client-order";
+import { OrderedItems } from "@/server/api/routers/ordered-items";
 
 /**
  * This is the primary router for your server.
@@ -40,6 +41,7 @@ export const appRouter = createTRPCRouter({
   contactForm: ContactForm,
   soloClientProduct: soloClientProduct,
   clientOrder: ClientOrder,
+  orderedItems: OrderedItems,
 });
 
 // export type definition of API

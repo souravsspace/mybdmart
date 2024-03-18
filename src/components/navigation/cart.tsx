@@ -17,10 +17,12 @@ import CartItem from "./cartItem";
 import { api } from "@/trpc/react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import useUserAuth from "@/hooks/use-user-auth";
 
 export default function Cart() {
   const router = useRouter();
   const { items, clearCart } = useCart();
+  const { userAuthData } = useUserAuth();
 
   const itemCount = items.length;
   const cartTotal = items.reduce((total, { product }) => {
@@ -34,7 +36,7 @@ export default function Cart() {
 
   const deliveryCharge = deliveryChargeQuery.data?.deliveryCharge
     ? deliveryChargeQuery.data?.deliveryCharge
-    : 120;
+    : 130;
 
   const isAddedDeliveryAddress = deliveryAddress?.userDeliveryAddress;
 
@@ -59,6 +61,10 @@ export default function Cart() {
   });
 
   const handleCheckout = () => {
+    if (!userAuthData?.email) {
+      toast.error("Please login to continue!");
+      return;
+    }
     if (!isAddedDeliveryAddress) {
       toast.error("Please add delivery address!");
       router.push("/settings/delivery-address");

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useUserAuth from "@/hooks/use-user-auth";
 import { api } from "@/trpc/react";
+import { ROLE } from "@prisma/client";
 
 export default function NavIcons() {
   const { isLoggedIn, userAuthData } = useUserAuth();
@@ -42,6 +43,11 @@ export default function NavIcons() {
                   userAuthData?.email?.split("@")[0]}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {userAuthData?.role === ROLE.ADMIN ? (
+                <DropdownMenuItem>
+                  <Link href="/admin">Dashboard</Link>
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem>
                 <Link href="/orders">My Orders</Link>
               </DropdownMenuItem>

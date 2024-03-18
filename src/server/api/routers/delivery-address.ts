@@ -30,6 +30,12 @@ export const deliveryAddress = createTRPCRouter({
       },
     });
 
+    if (!userDeliveryAddress) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+      });
+    }
+
     return {
       userDeliveryAddress,
     };
@@ -150,12 +156,12 @@ export const deliveryAddress = createTRPCRouter({
 
     if (!deliveryAddress?.insideDhaka) {
       return {
-        deliveryCharge: 120,
+        deliveryCharge: 130,
       };
     }
 
     return {
-      deliveryCharge: 70,
+      deliveryCharge: 80,
     };
   }),
 });

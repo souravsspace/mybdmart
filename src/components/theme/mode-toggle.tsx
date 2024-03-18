@@ -15,6 +15,14 @@ import {
 export function ModeToggle() {
   const { setTheme } = useTheme();
 
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -1,6 +1,5 @@
 "use client";
 
-// import { MdMenuOpen } from "react-icons/md";
 import { CgMenuLeft } from "react-icons/cg";
 
 import {
@@ -36,7 +35,6 @@ export default function MobileNav() {
     <div className="block md:hidden">
       <Sheet key="left">
         <SheetTrigger>
-          {/* <MdMenuOpen className="mr-3.5 h-7 w-7" /> */}
           <CgMenuLeft className="mr-3.5 h-7 w-7" />
         </SheetTrigger>
         <SheetContent side="left">

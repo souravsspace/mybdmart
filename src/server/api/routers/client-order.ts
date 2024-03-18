@@ -50,6 +50,9 @@ export const ClientOrder = createTRPCRouter({
     }
 
     const orders = await ctx.db.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         orderedItems: {
           include: {

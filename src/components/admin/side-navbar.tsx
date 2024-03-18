@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   ShoppingCart,
@@ -15,9 +15,16 @@ import { Navbar } from "./navbar";
 
 export default function SideNavbar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth < 768;
+
+  if (!isMounted) return null;
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed);

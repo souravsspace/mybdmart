@@ -49,24 +49,45 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      const dbUser = await db.user.findUnique({
-        where: {
-          email: token.email as string,
-        },
-      });
+      // const dbUser = await db.user.findUnique({
+      //   where: {
+      //     email: user?.email,
+      //   },
+      // });
 
-      if (!dbUser) {
-        token.id !== user.id;
-        return token;
+      // if (!dbUser) {
+      //   token.id !== user.id;
+      //   return token;
+      // }
+
+      // return {
+      //   id: dbUser.id,
+      //   name: dbUser.name,
+      //   role: dbUser.role,
+      //   email: dbUser.email,
+      //   username: dbUser.username,
+      // };
+      if (typeof user?.email === "string") {
+        const dbUser = await db.user.findUnique({
+          where: {
+            email: user.email,
+          },
+        });
+
+        if (!dbUser) {
+          token.id !== user.id;
+          return token;
+        }
+
+        return {
+          id: dbUser.id,
+          name: dbUser.name,
+          role: dbUser.role,
+          email: dbUser.email,
+          username: dbUser.username,
+        };
       }
-
-      return {
-        id: dbUser.id,
-        name: dbUser.name,
-        role: dbUser.role,
-        email: dbUser.email,
-        username: dbUser.username,
-      };
+      return token;
     },
   },
   session: {
