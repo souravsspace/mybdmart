@@ -208,3 +208,15 @@
 > View the nginx file
 
     sudo nano /etc/nginx/sites-available/default
+
+> Update files
+
+    git pull
+
+> if not working then
+
+    git reset --hard
+
+    rm prisma/migrations/migration_lock.toml
+
+    git pull
