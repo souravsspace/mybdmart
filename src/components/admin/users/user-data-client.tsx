@@ -17,6 +17,7 @@ export default function UserDataClient({ data }: Props) {
   }, [isMounted]);
 
   if (!isMounted) return null;
+
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Users" />

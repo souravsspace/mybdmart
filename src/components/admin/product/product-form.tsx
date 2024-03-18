@@ -74,6 +74,7 @@ export default function ProductForm({
   const productId = initialData?.id;
 
   const [open, setOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const {
     deleteProductMutate,
@@ -104,6 +105,7 @@ export default function ProductForm({
   } = useProductColor({ options: colors });
 
   useEffect(() => {
+    setIsMounted(true);
     if (initialData) {
       // Filter out the initial data from sizes and colors arrays
       const filteredSizes = sizes.filter((size) =>
@@ -153,6 +155,8 @@ export default function ProductForm({
       stock: initialData?.stock || STOCK.IN_STOCK,
     },
   });
+
+  if (!isMounted) return null;
 
   const isFormLoading =
     form.formState.isLoading ||

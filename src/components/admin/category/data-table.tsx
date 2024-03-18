@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { categoryColumn as columns, type categoryType } from "./column";
 
 type Props = {
@@ -43,6 +43,12 @@ export default function CategoriesDataTable({ data, searchInput }: Props) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const table = useReactTable({
     data,
@@ -62,6 +68,8 @@ export default function CategoriesDataTable({ data, searchInput }: Props) {
       rowSelection,
     },
   });
+
+  if (!isMounted) return null;
 
   return (
     <div className="w-full">

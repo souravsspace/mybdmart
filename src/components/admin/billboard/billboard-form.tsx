@@ -25,6 +25,7 @@ import useImageToBase64 from "@/hooks/use-image-to-base64";
 import useBillboard from "@/hooks/use-billboard";
 import DragAndDropImage from "@/components/admin/ui/drag-and-drop-image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Props = {
   initialData: Billboard | null;
@@ -32,6 +33,11 @@ type Props = {
 
 export default function BillboardForm({ initialData }: Props) {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const billboardId = initialData?.id;
   const { convertToBase64, theImage } = useImageToBase64();
@@ -48,6 +54,8 @@ export default function BillboardForm({ initialData }: Props) {
       name: initialData?.name || "",
     },
   });
+
+  if (!isMounted) return null;
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";

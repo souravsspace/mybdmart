@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import SubHeading from "@/components/admin/ui/sub-heading";
 import useSize from "@/hooks/use-size";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Props = {
   initialData: Size | null;
@@ -26,6 +27,12 @@ type Props = {
 
 export default function SizeForm({ initialData }: Props) {
   const router = useRouter();
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const sizeId = initialData?.id;
   const {
@@ -42,6 +49,8 @@ export default function SizeForm({ initialData }: Props) {
       value: initialData?.value || "",
     },
   });
+
+  if (!isMounted) return null;
 
   const actionButton = initialData ? "Update" : "Create";
   const secondActionButton = initialData ? "Delete" : "Cancel";

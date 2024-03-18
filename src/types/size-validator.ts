@@ -3,7 +3,7 @@ import { z } from "zod";
 export const SizeValidator = z.object({
   name: z
     .string()
-    .min(2, {
+    .min(1, {
       message: "Size Name must be at least 2 characters long",
     })
     .max(255, {
@@ -11,7 +11,7 @@ export const SizeValidator = z.object({
     }),
   value: z
     .string()
-    .min(2, {
+    .min(1, {
       message: "Size Value must be at least 2 characters long",
     })
     .max(255, {
