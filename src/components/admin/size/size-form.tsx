@@ -69,6 +69,7 @@ export default function SizeForm({ initialData }: Props) {
     updateSizeMutate({
       id: sizeId,
       name,
+      value,
     });
   };
 
